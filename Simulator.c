@@ -127,10 +127,6 @@ void create_processes(int num_process, int num_IO){
 
 }
 
-//queue
-void q_push(process i){
-
-}
 
 int main(int argc, char **argv){
   int num_process, num_IO;
