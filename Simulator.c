@@ -243,18 +243,18 @@ void create_processes(int num_process, int num_IO){
   int count = 0;
   for(int j = 0; j < num_IO; j++){
     IOPointer newIO = (IOPointer)malloc(sizeof(struct IO));
-    do{
+    //do{
       int whichP = rand() % num_process + 1;
       int IOburst = rand() % 10 + 1; //IO burst time 1~10
       // 1 <= when < CPUburst 이어야한다.
       int when = rand() % (jobQ[whichP]->CPUburst - 1) + 1;
-      for(int k = 0; k < j; k++){
-        //해당 프로세스가 같은 시간에 다른 IO burst 있는지 확인하고 있으면, 다시 선택.
-        if(ioQ[k]->pid == whichP && ioQ[k]->when == when) continue;
-        add_ioQ(newIO);
-        count++;
-      }
-    }while(j == count);
+      // for(int k = 0; k < j; k++){
+      //   //해당 프로세스가 같은 시간에 다른 IO burst 있는지 확인하고 있으면, 다시 선택.
+      //   if(ioQ[k]->pid == whichP && ioQ[k]->when == when) continue;
+      //   add_ioQ(newIO);
+      //   count++;
+      // }
+    //}while(j == count);
   }
 
 }
