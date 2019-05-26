@@ -175,11 +175,28 @@ void mergesort(proPointer list[], int p, int r){
 }
 
 void job2ready(){
-  mergesort(jobQ, jQ_front, jQ_rear);
-  init_readyQ();
-  for(int i = 0; i < (jQ_rear - jQ_front); i++){
-    add_readyQ(poll_jobQ());
-  }
+  // mergesort(jobQ, jQ_front, jQ_rear);
+  // init_readyQ();
+  // for(int i = 0; i < (jQ_rear - jQ_front); i++){
+  //   add_readyQ(poll_jobQ());
+  // }
+  proPointer temp;
+  for (int i = 0; i <= jQ_rear; i++)
+   {
+       for (int j = 0; j <= jQ_rear - i; j++)
+       {
+           if (jobQ[j]->pid > jobQ[j + 1]->pid)
+           {
+               temp        = jobQ[j]->pid;
+               jobQ[j]->pid     = jobQ[j + 1]->pid;
+               jobQ[j + 1]->pid = temp;
+           }
+       }
+   }
+   init_readyQ();
+   for(int i = 0; i <= jQ_rear; i++){
+     add_readyQ(poll_jobQ[i]);
+   }
 }
 
 void printQ_job(){
