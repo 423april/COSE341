@@ -273,9 +273,9 @@ int main(int argc, char **argv){
   scanf("%d", &num_IO);
 
   create_processes(num_process, num_IO);
-  printQ_job();
-  job2ready();
-  printQ_ready();
+  // printQ_job();
+  // job2ready();
+  // printQ_ready();
 
   return 0;
 }
