@@ -4,6 +4,7 @@
 
 #define MAX_PROCESS_NUM 30
 #define MAX_IO_NUM 60
+#define INF 1000000
 
 //프로세스 구조체
 typedef struct process* proPointer;
@@ -30,6 +31,14 @@ int jQ_front, jQ_rear;
 //IO 담아놓은 배열을 MAX_IO_NUM만큼 선언
 IOPointer ioQ[MAX_IO_NUM];
 int ioQ_front, ioQ_rear;
+
+//ready queue 배열 선언
+proPointer readyQ[MAX_PROCESS_NUM];
+int rQ_front, rQ_rear;
+
+//waiting queue 배열 선언
+proPointer waitQ[MAX_PROCESS_NUM];
+int wQ_front, wQ_rear;
 
 //job queue 초기화
 void init_jobQ(){
@@ -80,6 +89,110 @@ IOPointer poll_ioQ(){
     return ioQ[++ioQ_front];
 }
 
+//ready queue 초기화
+void init_readyQ(){
+  rQ_front = -1;
+  rQ_rear = -1;
+
+  for(int i = 0; i < MAX_PROCESS_NUM; i++){
+    readyQ[i] = NULL;
+  }
+}
+//ready queue enqueue
+void add_readyQ(proPointer newP){
+  if(rQ_rear == MAX_PROCESS_NUM - 1)
+    printf("readyQ is FULL");
+  else
+    readyQ[++rQ_rear] = newP;
+}
+//ready queue dequeue
+proPointer poll_readyQ(){
+  if(rQ_front == rQ_rear)
+    printf("readyQ is EMPTY");
+  else
+    return readyQ[++rQ_front];
+}
+
+//wait queue 초기화
+void init_waitQ(){
+  wQ_front = -1;
+  wQ_rear = -1;
+
+  for(int i = 0; i < MAX_PROCESS_NUM; i++){
+    waitQ[i] = NULL;
+  }
+}
+//wait queue enqueue
+void add_waitQ(proPointer newP){
+  if(wQ_rear == MAX_PROCESS_NUM - 1)
+    printf("waitQ is FULL");
+  else
+    waitQ[++wQ_rear] = newP;
+}
+//wait queue dequeue
+proPointer poll_waitQ(){
+  if(wQ_front == wQ_rear)
+    printf("waitQ is EMPTY");
+  else
+    return waitQ[++wQ_front];
+}
+
+//arrival time을 기준으로 정렬해서 ready queue에 넣어준다.
+void merge(proPointer list[], int p, int q, int r){
+  int n1 = q - r + 1;
+  int n2 = r - q;
+  proPointer L[n1 + 1];
+  proPointer R[n1 + 1];
+  int i, j;
+  for(i = 0; i < n1; i++){
+    L[i] = list[p + i - 1];
+  }
+  L[n1] = INF;
+  for(j = 0; j < n2; j++){
+    R[j] = list[q + j];
+  }
+  R[n2] = INF;
+  i = 0; j = 0;
+  for(int k = p; k <= r; k++){
+    if(L[i]->arrival <= R[j]->arrival){
+      list[k] = L[i];
+      i++;
+    }
+    else{
+      list[k] = R[j];
+      j++;
+    }
+  }
+}//end merge
+
+void mergesort(proPointer list[], int p, int r){
+  if(p < r){
+    int q = (p+r)/2;
+    mergesort(list, p, q);
+    mergesort(list, q+1, r);
+    merge(list, p, q, r);
+  }
+}
+
+void job2ready(){
+  mergesort(jobQ, jQ_front, jQ_rear);
+  init_readyQ();
+  for(int i = 0; i < (jQ_rear - jQ_front); i++){
+    add_readyQ(poll_jobQ());
+  }
+}
+
+void printQ_job(){
+  for(int i = 0; i < (jQ_rear - jQ_front); i++){
+    printf("p%d ", jobQ[i]->pid);
+  }
+}
+
+void printQ_ready(){
+  for(int i = 0; i < (rQ_rear - rQ_front); i++){
+    printf("p%d ", readyQ[i]->pid);
+  }
+}
 
 /*
 create_processes
@@ -138,6 +251,9 @@ int main(int argc, char **argv){
   scanf("%d", &num_IO);
 
   create_processes(num_process, num_IO);
+  printQ_job();
+  job2ready();
+  printQ_ready();
 
   return 0;
 }
