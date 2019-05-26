@@ -220,7 +220,9 @@ input:
 프로세스 id 오름차순으로 job queue에 넣어준다.
 */
 void create_processes(int num_process, int num_IO){
-  //난수 생성
+ 	int count = 0;
+
+	//난수 생성
   srand( (unsigned)time(NULL) );
 
   //job queue 초기화
@@ -240,21 +242,30 @@ void create_processes(int num_process, int num_IO){
     add_jobQ(newP);
   }
 
-  int count = 0;
   for(int j = 0; j < num_IO; j++){
-    IOPointer newIO = (IOPointer)malloc(sizeof(struct IO));
-    do{
+    printf("%d\n", count);
+	  IOPointer newIO = (IOPointer)malloc(sizeof(struct IO));
+ //   do{
       int whichP = rand() % num_process + 1;
       int IOburst = rand() % 10 + 1; //IO burst time 1~10
       // 1 <= when < CPUburst 이어야한다.
       int when = rand() % (jobQ[whichP]->CPUburst - 1) + 1;
-      for(int k = 0; k < j; k++){
+      newIO->pid = whichP;
+      newIO->IOburst = IOburst;
+      newIO->when = when;
+      add_ioQ(newIO);
+      count++;
+      printf("pid: %d, when %d\n", whichP, when);
+   //  if(j != 0){
+    //  for(int k = 0; k < j; k++){
         //해당 프로세스가 같은 시간에 다른 IO burst 있는지 확인하고 있으면, 다시 선택.
-        if(ioQ[k]->pid == whichP && ioQ[k]->when == when) continue;
-        //add_ioQ(newIO);
-        count++;
-      }
-    }while(j == count);
+      //  if(ioQ[k]->pid == whichP && ioQ[k]->when == when) continue;
+//	printf("IO same place\n");
+//	add_ioQ(newIO);
+//        count++;
+//       }
+  //    }
+   //  }while(j == count);
   }
 
 }
@@ -270,7 +281,7 @@ int main(int argc, char **argv){
   scanf("%d", &num_IO);
 
   create_processes(num_process, num_IO);
-  printQ_job();
+//  printQ_job();
   // job2ready();
   // printQ_ready();
 
