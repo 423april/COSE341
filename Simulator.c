@@ -187,15 +187,15 @@ void job2ready(){
        {
            if (jobQ[j]->pid > jobQ[j + 1]->pid)
            {
-               temp        = jobQ[j]->pid;
-               jobQ[j]->pid     = jobQ[j + 1]->pid;
-               jobQ[j + 1]->pid = temp;
+               temp        = jobQ[j];
+               jobQ[j]     = jobQ[j + 1];
+               jobQ[j + 1] = temp;
            }
        }
    }
    init_readyQ();
    for(int i = 0; i <= jQ_rear; i++){
-     add_readyQ(poll_jobQ[i]);
+     add_readyQ(poll_jobQ());
    }
 }
 
