@@ -239,7 +239,11 @@ void create_processes(int num_process, int num_IO){
     //job queue에 넣어준다. 순서는 pid 오름차순.
     add_jobQ(newP);
   }
+  for(int i = 0; i < num_process; i++){
+    printf("p%d ", jobQ[i]->pid);
+  }
 
+  int count = 0;
   for(int j = 0; j < num_IO; j++){
     IOPointer newIO = (IOPointer)malloc(sizeof(struct IO));
     do{
@@ -251,8 +255,9 @@ void create_processes(int num_process, int num_IO){
         //해당 프로세스가 같은 시간에 다른 IO burst 있는지 확인하고 있으면, 다시 선택.
         if(ioQ[k]->pid == whichP && ioQ[k]->when == when) continue;
         add_ioQ(newIO);
+        count++;
       }
-    }while(ioQ[j] == NULL);
+    }while(j == count);
   }
 
 }
