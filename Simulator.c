@@ -155,18 +155,29 @@ void printQ_ready(){
 //arrival time을 기준으로 정렬해서 ready queue에 넣어준다.
 void merge(proPointer list[], int p, int q, int r){
   int n1 = q - p + 1;
-  int n2 = r - q;
+  int n2 = r - q ;
+  printf("n1: %d, n2: %d\n", n1, n2);
   proPointer L[n1 + 1];
   proPointer R[n1 + 1];
+  printf("created L and R\n");
   int i, j;
   for(i = 0; i < n1; i++){
-    L[i] = list[p + i - 1];
+    L[i] = list[p + i];
   }
-  L[n1]->arrival = INF;
+  printf("L insert til n1 - 1\n");
+  proPointer dummy1 = (proPointer)malloc(sizeof(struct process));
+  dummy1 -> arrival = INF;
+  L[n1] = dummy1;
+  printf("dummy interted\n");
   for(j = 0; j < n2; j++){
-    R[j] = list[q + j];
+    R[j] = list[q + 1 + j];
   }
-  R[n2]->arrival = INF;
+  printf("R insert til n2 -1 \n");
+  proPointer dummy2 = (proPointer)malloc(sizeof(struct process));
+  dummy2 -> arrival = INF;
+  R[n2] = dummy2;
+  printf("dummy inserted\n");
+  printf("L,R init good\n");
   i = 0; j = 0;
   for(int k = p; k <= r; k++){
     if(L[i]->arrival <= R[j]->arrival){
@@ -178,25 +189,35 @@ void merge(proPointer list[], int p, int q, int r){
       j++;
     }
   }
+  printf("merge %d, %d, %d well\n", p, q, r);
 }//end merge
 
 void mergesort(proPointer list[], int p, int r){
   if(p < r){
+	  printf("p: %d, r: %d\n", p, r);
     int q = (p+r)/2;
     mergesort(list, p, q);
     mergesort(list, q+1, r);
+    printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
     merge(list, p, q, r);
   }
 }
 
 void job2ready(){
 	printQ_job();
-  mergesort(jobQ, jQ_front, jQ_rear);
+  mergesort(jobQ, jQ_front+1, jQ_rear);
   printQ_job();
   init_readyQ();
+  printf("jQ front %d, rear %d\n", jQ_front, jQ_rear);
   for(int i = 0; i < (jQ_rear - jQ_front); i++){
-    add_readyQ(poll_jobQ());
+	   proPointer temp = (proPointer)malloc(sizeof(struct process));
+   	temp = poll_jobQ();
+	 printf("jQ front %d, rear %d\n", jQ_front, jQ_rear);
+	  printf("pid: %d, arrival: %d\n",temp->pid, temp->arrival );
+	  add_readyQ(temp);
   }
+  printf("ready front %d rear %d\n", rQ_front, rQ_rear);
+  printQ_ready();
   // printf("init temp\n");
   // proPointer temp;
   // printf("inited temp\n");
@@ -247,7 +268,7 @@ void create_processes(int num_process, int num_IO){
   for(int i = 0; i < num_process; i++){
     proPointer newP = (proPointer)malloc(sizeof(struct process));
     newP->pid = i+1;
-    newP->CPUburst = rand() % 25 + 1; //CPU burst time 1 ~ 25
+    newP->CPUburst = rand() % 25 + 2; //CPU burst time 2 ~ 26
     newP->arrival = rand() % (num_process + 10);
     newP->priority = rand() % num_process + 1;
     newP->CPUburst_remain = newP -> CPUburst;
