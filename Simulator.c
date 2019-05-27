@@ -223,7 +223,6 @@ input:
 프로세스 id 오름차순으로 job queue에 넣어준다.
 */
 void create_processes(int num_process, int num_IO){
- 	//int count = 0;
 
 	//난수 생성
   srand( (unsigned)time(NULL) );
@@ -244,32 +243,30 @@ void create_processes(int num_process, int num_IO){
     //job queue에 넣어준다. 순서는 pid 오름차순.
     add_jobQ(newP);
   }
-//
-//   for(int j = 0; j < num_IO; j++){
-//     printf("%d\n", count);
-// 	  IOPointer newIO = (IOPointer)malloc(sizeof(struct IO));
-//  //   do{
-//       int whichP = rand() % num_process + 1;
-//       int IOburst = rand() % 10 + 1; //IO burst time 1~10
-//       // 1 <= when < CPUburst 이어야한다.
-//       int when = rand() % (jobQ[whichP]->CPUburst - 1) + 1;
-//       newIO->pid = whichP;
-//       newIO->IOburst = IOburst;
-//       newIO->when = when;
-//       add_ioQ(newIO);
-//       count++;
-//       printf("pid: %d, when %d\n", whichP, when);
-//    //  if(j != 0){
-//     //  for(int k = 0; k < j; k++){
-//         //해당 프로세스가 같은 시간에 다른 IO burst 있는지 확인하고 있으면, 다시 선택.
-//       //  if(ioQ[k]->pid == whichP && ioQ[k]->when == when) continue;
-// //	printf("IO same place\n");
-// //	add_ioQ(newIO);
-// //        count++;
-// //       }
-//   //    }
-//    //  }while(j == count);
-//   }
+  printQ_job();
+  for(int j = 0; j < num_IO; j++){
+    printf("%d\n", count);
+	  IOPointer newIO = (IOPointer)malloc(sizeof(struct IO));
+      newIO->pid = rand() % num_process + 1;
+      newIO->IOburst = rand() % 10 + 1; //IO burst time 1~10
+      // 1 <= when < CPUburst 이어야한다.
+      newIO->when = rand() % (jobQ[whichP]->CPUburst - 1) + 1;
+      add_ioQ(newIO);
+      printf("pid: %d, IOburst: %d, when %d\n", newIO->pid, newIO->IOburst, newIO->when);
+  //   if(j != 0){
+  //    for(int k = 0; k < j; k++){
+  //       해당 프로세스가 같은 시간에 다른 IO burst 있는지 확인하고 있으면, 다시 선택.
+  //      if(ioQ[k]->pid == whichP && ioQ[k]->when == when) continue;
+	// printf("IO same place\n");
+	// add_ioQ(newIO);
+  //      count++;
+  //     }
+     }
+     for(int i = 0; i < (ioQ_rear - ioQ_front); i++){
+       printf("ioQ: ");
+       printf("p%d , IOburst %d, when %d\n", ioQ[i]->pid, ioQ[i]->IOburst, ioQ[i]->when);
+     }
+  }
 
 }
 
@@ -284,7 +281,7 @@ int main(int argc, char **argv){
   scanf("%d", &num_IO);
 
   create_processes(num_process, num_IO);
-  printQ_job();
+
 
   return 0;
 }
