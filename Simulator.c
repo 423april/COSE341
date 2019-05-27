@@ -22,6 +22,9 @@ typedef struct process{
   int arrival;
   int priority;
   int CPUburst_remain;
+  int waitingTime;
+  int turnaroundTime;
+  int responseTime;
 }process;
 
 typedef struct IO* IOPointer;
@@ -159,19 +162,22 @@ void printQ_ready(){
   }
 }
 
-prePointer* clonereadyQ(){
-  prePointer clonereadyQ[MAX_PROCESS_NUM];
-  proPointer newP = (proPointer)malloc(sizeof(struct process));
-  for(int i = 0; i <= rQ_rear; i++){
-    newP->pid = readyQ[i]->pid;
-    newP->CPUburst = readyQ[i]->CPUburst;
-    newP->arrival = readyQ[i]->arrival;
-    newP->priority = readyQ[i]->priority;
-    newP->CPUburst_remain = newP->CPUburst;
-    clonereadyQ[i] = newP;
-  }
-  return clonereadyQ;
-}
+// proPointer* clonereadyQ(){
+//   proPointer clonereadyQ[MAX_PROCESS_NUM];
+//   int clonereadyQ_front = -1;
+//   int clonereadyQ_rear = -1;
+//
+//   proPointer newP = (proPointer)malloc(sizeof(struct process));
+//   for(int i = 0; i <= rQ_rear; i++){
+//     newP->pid = readyQ[i]->pid;
+//     newP->CPUburst = readyQ[i]->CPUburst;
+//     newP->arrival = readyQ[i]->arrival;
+//     newP->priority = readyQ[i]->priority;
+//     newP->CPUburst_remain = newP->CPUburst;
+//     clonereadyQ[++clonereadyQ_rear] = newP;
+//   }
+//   return clonereadyQ;
+// }
 
 //arrival time을 기준으로 정렬해서 ready queue에 넣어준다.
 void merge(proPointer list[], int p, int q, int r){
@@ -267,6 +273,9 @@ void create_processes(int num_process, int num_IO){
     newP->arrival = rand() % (num_process + 10);
     newP->priority = rand() % num_process + 1;
     newP->CPUburst_remain = newP -> CPUburst;
+    newP->waitingTime = 0;
+    newP->turnaroundTime = 0;
+    newP->responseTime = 0;
 
     //job queue에 넣어준다. 순서는 pid 오름차순.
     add_jobQ(newP);
@@ -297,20 +306,59 @@ void create_processes(int num_process, int num_IO){
 
 //선입선출
 void FCFS(){
-  prePointer FCFSrQ = clonereadyQ();
-  int FCFSrQ_front = rQ_front;
-  int FCFSrQ_rear = rQ_rear;
+  proPointer FCFSrQ[rQ_rear - rQ_front];
+  int FCFSrQ_front = -1;
+  int FCFSrQ_rear = -1;
+  int nowTime = 0;
+  int totalTime = 0;
+  //FCFS용 레디큐를 clone.
+  proPointer newP = (proPointer)malloc(sizeof(struct process));
+  newP->pid = readyQ[i]->pid;
+  newP->CPUburst = readyQ[i]->CPUburst;
+  newP->CPUburst_remain = readyQ[i]->CPUburst_remain;
+  newP->priority = readyQ[i]->priority;
+  newP->arrival = readyQ[i]->arrival;
+  newP->waitingTime = readyQ[i]->waitingTime;
+  newP->turnaroundTime = readyQ[i]->turnaroundTime;
+  newP->responseTime = readyQ[i]->responseTime;
+  FCFSrQ[++FCFSrQ_rear] = newP;
 
   //레디큐는 도착시간 순으로 정렬되어있다.
-  for(int i = 0; i <= rQ_rear; i++){
-    for(int j = 0; j < FCFSrQ[i]->CPUburst; j++){
-      printf("p%d ", FCFSrQ[i]->pid);
-      FCFSrQ[i]->CPUburst_remain--;
+  do{
+    newP = FCFSrQ[++FCFSrQ_front];
+
+    do{
+      nowTime++;
+      newP->CPUburst_remain--;
+      printf("p%d ", newP->pid);
+      wait(FCFSrQ, FCFSrQ_front, FCFSrQ_rear, newP->pid);
+      if(newP->CPUburst_remain == 0){
+        newP->turnaroundTime = nowTime - newP->arrival;
+      }
+      if(newP->CPUburst == newP->CPUburst_remain){
+        newP->responseTime = nowTime - newP->arrival;
+      }
+
+    }while(newP->CPUburst_remain > 0);
+
+  }while(isEmpty(FCFSrQ_front, FCFSrQ_rear));
+}
+
+int isEmpty(int front, int rear){
+  if(front == rear)
+    return 1; //true;
+  else
+    return 0;//false;
+}
+
+//한 프로세스를 실행하는 동안 다른 프로세스들의 waiting time을 +1 해주는 함수
+void wait(proPointer list[], int front, int rear, int pid){
+  for(int i = 0; i < rear; i++){
+    if(i != pid-1){
+      list[i]->waitingTime++;
     }
   }
 }
-
-
 
 int main(int argc, char **argv){
   int num_process, num_IO;
