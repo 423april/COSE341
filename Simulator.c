@@ -6,7 +6,7 @@
 #define MAX_IO_NUM 60
 #define INF 1000000
 
-#define FCFS 1
+#define fcfs 1
 #define SJF 2
 #define SJFPRE 3 //SJF preemptive
 #define PRI 4 //Priority non-preemptive
@@ -311,7 +311,14 @@ void create_processes(int num_process, int num_IO){
       }
     }
   }
-  
+
+  int isEmpty(int front, int rear){
+    if(front == rear)
+      return 1; //true;
+    else
+      return 0;//false;
+  }
+
 //선입선출
 void FCFS(){
   proPointer FCFSrQ[rQ_rear - rQ_front];
@@ -350,13 +357,6 @@ void FCFS(){
     }while(newP->CPUburst_remain > 0);
 
   }while(isEmpty(FCFSrQ_front, FCFSrQ_rear));
-}
-
-int isEmpty(int front, int rear){
-  if(front == rear)
-    return 1; //true;
-  else
-    return 0;//false;
 }
 
 int main(int argc, char **argv){
