@@ -245,12 +245,11 @@ void create_processes(int num_process, int num_IO){
   }
   printQ_job();
   for(int j = 0; j < num_IO; j++){
-    printf("%d\n", count);
 	  IOPointer newIO = (IOPointer)malloc(sizeof(struct IO));
       newIO->pid = rand() % num_process + 1;
       newIO->IOburst = rand() % 10 + 1; //IO burst time 1~10
       // 1 <= when < CPUburst 이어야한다.
-      newIO->when = rand() % (jobQ[whichP]->CPUburst - 1) + 1;
+      newIO->when = rand() % (jobQ[newIO->pid - 1]->CPUburst - 1) + 1;
       add_ioQ(newIO);
       printf("pid: %d, IOburst: %d, when %d\n", newIO->pid, newIO->IOburst, newIO->when);
   //   if(j != 0){
@@ -268,7 +267,7 @@ void create_processes(int num_process, int num_IO){
      }
   }
 
-}
+
 
 
 int main(int argc, char **argv){
