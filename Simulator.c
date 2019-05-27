@@ -6,6 +6,13 @@
 #define MAX_IO_NUM 60
 #define INF 1000000
 
+#define FCFS 1
+#define SJF 2
+#define SJFPRE 3 //SJF preemptive
+#define PRI 4 //Priority non-preemptive
+#define RR 5
+#define PRIPRE 6 //Priority preemptive
+
 //프로세스 구조체
 typedef struct process* proPointer;
 typedef struct process{
@@ -152,6 +159,20 @@ void printQ_ready(){
   }
 }
 
+prePointer* clonereadyQ(){
+  prePointer clonereadyQ[MAX_PROCESS_NUM];
+  proPointer newP = (proPointer)malloc(sizeof(struct process));
+  for(int i = 0; i <= rQ_rear; i++){
+    newP->pid = readyQ[i]->pid;
+    newP->CPUburst = readyQ[i]->CPUburst;
+    newP->arrival = readyQ[i]->arrival;
+    newP->priority = readyQ[i]->priority;
+    newP->CPUburst_remain = newP->CPUburst;
+    clonereadyQ[i] = newP;
+  }
+  return clonereadyQ;
+}
+
 //arrival time을 기준으로 정렬해서 ready queue에 넣어준다.
 void merge(proPointer list[], int p, int q, int r){
   int n1 = q - p + 1;
@@ -204,21 +225,21 @@ void mergesort(proPointer list[], int p, int r){
 }
 
 void job2ready(){
-	printQ_job();
+	//printQ_job();
   mergesort(jobQ, jQ_front+1, jQ_rear);
-  printQ_job();
+  //printQ_job();
   init_readyQ();
-  printf("jQ front %d, rear %d\n", jQ_front, jQ_rear);
+  //printf("jQ front %d, rear %d\n", jQ_front, jQ_rear);
   for(int i = 0; i <= jQ_rear; i++){
-    printf("i: %d\n", i);
+    //printf("i: %d\n", i);
 	   proPointer temp = (proPointer)malloc(sizeof(struct process));
    	temp = poll_jobQ();
-	 printf("jQ front %d, rear %d\n", jQ_front, jQ_rear);
-	  printf("pid: %d, arrival: %d\n",temp->pid, temp->arrival );
+	 //printf("jQ front %d, rear %d\n", jQ_front, jQ_rear);
+	 // printf("pid: %d, arrival: %d\n",temp->pid, temp->arrival );
 	  add_readyQ(temp);
   }
-  printf("ready front %d rear %d\n", rQ_front, rQ_rear);
-  printQ_ready();
+  //printf("ready front %d rear %d\n", rQ_front, rQ_rear);
+  //printQ_ready();
 }
 
 /*
@@ -273,6 +294,21 @@ void create_processes(int num_process, int num_IO){
        printf("p%d , IOburst %d, when %d\n", ioQ[i]->pid, ioQ[i]->IOburst, ioQ[i]->when);
      }
   }
+
+//선입선출
+void FCFS(){
+  prePointer FCFSrQ = clonereadyQ();
+  int FCFSrQ_front = rQ_front;
+  int FCFSrQ_rear = rQ_rear;
+
+  //레디큐는 도착시간 순으로 정렬되어있다.
+  for(int i = 0; i <= rQ_rear; i++){
+    for(int j = 0; j < FCFSrQ[i]->CPUburst; j++){
+      printf("p%d ", FCFSrQ[i]->pid);
+      FCFSrQ[i]->CPUburst_remain--;
+    }
+  }
+}
 
 
 
