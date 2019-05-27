@@ -190,7 +190,9 @@ void mergesort(proPointer list[], int p, int r){
 }
 
 void job2ready(){
+	printQ_job();
   mergesort(jobQ, jQ_front, jQ_rear);
+  printQ_job();
   init_readyQ();
   for(int i = 0; i < (jQ_rear - jQ_front); i++){
     add_readyQ(poll_jobQ());
