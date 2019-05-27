@@ -137,6 +137,21 @@ proPointer poll_waitQ(){
     return waitQ[++wQ_front];
 }
 
+void printQ_job(){
+  for(int i = 0; i < (jQ_rear - jQ_front); i++){
+    printf("p%d , ", jobQ[i]->pid);
+    printf("CPUburst %d, ", jobQ[i]->CPUburst);
+    printf("arrival %d, ", jobQ[i]->arrival);
+    printf("priority %d\n", jobQ[i]->priority);
+  }
+}
+
+void printQ_ready(){
+  for(int i = 0; i < (rQ_rear - rQ_front); i++){
+    printf("p%d ", readyQ[i]->pid);
+  }
+}
+
 //arrival time을 기준으로 정렬해서 ready queue에 넣어준다.
 void merge(proPointer list[], int p, int q, int r){
   int n1 = q - r + 1;
@@ -199,21 +214,6 @@ void job2ready(){
    }
 }
 
-void printQ_job(){
-  for(int i = 0; i < (jQ_rear - jQ_front); i++){
-    printf("p%d , ", jobQ[i]->pid);
-    printf("CPUburst %d, ", jobQ[i]->CPUburst);
-    printf("arrival %d, ", jobQ[i]->arrival);
-    printf("priority %d\n", jobQ[i]->priority);
-  }
-}
-
-void printQ_ready(){
-  for(int i = 0; i < (rQ_rear - rQ_front); i++){
-    printf("p%d ", readyQ[i]->pid);
-  }
-}
-
 /*
 create_processes
 input:
@@ -266,7 +266,6 @@ void create_processes(int num_process, int num_IO){
        printf("p%d , IOburst %d, when %d\n", ioQ[i]->pid, ioQ[i]->IOburst, ioQ[i]->when);
      }
   }
-
 
 
 
