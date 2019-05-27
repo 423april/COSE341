@@ -328,15 +328,17 @@ void FCFS(){
   int totalTime = 0;
   //FCFS용 레디큐를 clone.
   proPointer newP = (proPointer)malloc(sizeof(struct process));
-  newP->pid = readyQ[i]->pid;
-  newP->CPUburst = readyQ[i]->CPUburst;
-  newP->CPUburst_remain = readyQ[i]->CPUburst_remain;
-  newP->priority = readyQ[i]->priority;
-  newP->arrival = readyQ[i]->arrival;
-  newP->waitingTime = readyQ[i]->waitingTime;
-  newP->turnaroundTime = readyQ[i]->turnaroundTime;
-  newP->responseTime = readyQ[i]->responseTime;
-  FCFSrQ[++FCFSrQ_rear] = newP;
+  for(int i = 0 ; i <= rQ_rear; i++){
+    newP->pid = readyQ[i]->pid;
+    newP->CPUburst = readyQ[i]->CPUburst;
+    newP->CPUburst_remain = readyQ[i]->CPUburst_remain;
+    newP->priority = readyQ[i]->priority;
+    newP->arrival = readyQ[i]->arrival;
+    newP->waitingTime = readyQ[i]->waitingTime;
+    newP->turnaroundTime = readyQ[i]->turnaroundTime;
+    newP->responseTime = readyQ[i]->responseTime;
+    FCFSrQ[++FCFSrQ_rear] = newP;  
+  }
 
   //레디큐는 도착시간 순으로 정렬되어있다.
   do{
