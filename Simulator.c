@@ -190,38 +190,38 @@ void mergesort(proPointer list[], int p, int r){
 }
 
 void job2ready(){
-  // mergesort(jobQ, jQ_front, jQ_rear);
-  // init_readyQ();
-  // for(int i = 0; i < (jQ_rear - jQ_front); i++){
-  //   add_readyQ(poll_jobQ());
-  // }
-  printf("init temp\n");
-  proPointer temp;
-  printf("inited temp\n");
-  printQ_job();
-  printf("jQ_rear: %d\n", jQ_rear);
-  for (int i = 0; i <= jQ_rear; i++)
-   {  printf("i: %d, ", i);
-       for (int j = 0; j <= jQ_rear; j++)
-       { printf("j: %d, ", j);
-           if (jobQ[j]->arrival  > jobQ[j + 1]-> arrival)
-           {
-               temp        = jobQ[j];
-               jobQ[j]     = jobQ[j + 1];
-               jobQ[j + 1] = temp;
-	       for(int k = 0; k < (jQ_rear-jQ_front); k++){
-		      printf("p%d ", jobQ[k]->pid);
-	       }
-	      printf("\n"); 
-           }
-       }
-   }
-  printQ_job();
-   init_readyQ();
-   for(int i = 0; i <= jQ_rear; i++){
-     add_readyQ(poll_jobQ());
-   }
-   printQ_ready();
+  mergesort(jobQ, jQ_front, jQ_rear);
+  init_readyQ();
+  for(int i = 0; i < (jQ_rear - jQ_front); i++){
+    add_readyQ(poll_jobQ());
+  }
+  // printf("init temp\n");
+  // proPointer temp;
+  // printf("inited temp\n");
+  // printQ_job();
+  // printf("jQ_rear: %d\n", jQ_rear);
+  // for (int i = 0; i <= jQ_rear; i++)
+  //  {  printf("i: %d, ", i);
+  //      for (int j = 0; j <= jQ_rear; j++)
+  //      { printf("j: %d, ", j);
+  //          if (jobQ[j]->arrival  > jobQ[j + 1]-> arrival)
+  //          {
+  //              temp        = jobQ[j];
+  //              jobQ[j]     = jobQ[j + 1];
+  //              jobQ[j + 1] = temp;
+	//        for(int k = 0; k < (jQ_rear-jQ_front); k++){
+	// 	      printf("p%d ", jobQ[k]->pid);
+	//        }
+	//       printf("\n");
+  //          }
+  //      }
+  //  }
+  // printQ_job();
+  //  init_readyQ();
+  //  for(int i = 0; i <= jQ_rear; i++){
+  //    add_readyQ(poll_jobQ());
+  //  }
+  //  printQ_ready();
 }
 
 /*
