@@ -154,7 +154,7 @@ void printQ_ready(){
 
 //arrival time을 기준으로 정렬해서 ready queue에 넣어준다.
 void merge(proPointer list[], int p, int q, int r){
-  int n1 = q - r + 1;
+  int n1 = q - p + 1;
   int n2 = r - q;
   proPointer L[n1 + 1];
   proPointer R[n1 + 1];
