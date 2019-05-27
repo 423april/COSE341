@@ -210,6 +210,7 @@ void job2ready(){
   init_readyQ();
   printf("jQ front %d, rear %d\n", jQ_front, jQ_rear);
   for(int i = 0; i < (jQ_rear - jQ_front); i++){
+    printf("i: %d", i);
 	   proPointer temp = (proPointer)malloc(sizeof(struct process));
    	temp = poll_jobQ();
 	 printf("jQ front %d, rear %d\n", jQ_front, jQ_rear);
@@ -218,33 +219,6 @@ void job2ready(){
   }
   printf("ready front %d rear %d\n", rQ_front, rQ_rear);
   printQ_ready();
-  // printf("init temp\n");
-  // proPointer temp;
-  // printf("inited temp\n");
-  // printQ_job();
-  // printf("jQ_rear: %d\n", jQ_rear);
-  // for (int i = 0; i <= jQ_rear; i++)
-  //  {  printf("i: %d, ", i);
-  //      for (int j = 0; j <= jQ_rear; j++)
-  //      { printf("j: %d, ", j);
-  //          if (jobQ[j]->arrival  > jobQ[j + 1]-> arrival)
-  //          {
-  //              temp        = jobQ[j];
-  //              jobQ[j]     = jobQ[j + 1];
-  //              jobQ[j + 1] = temp;
-	//        for(int k = 0; k < (jQ_rear-jQ_front); k++){
-	// 	      printf("p%d ", jobQ[k]->pid);
-	//        }
-	//       printf("\n");
-  //          }
-  //      }
-  //  }
-  // printQ_job();
-  //  init_readyQ();
-  //  for(int i = 0; i <= jQ_rear; i++){
-  //    add_readyQ(poll_jobQ());
-  //  }
-  //  printQ_ready();
 }
 
 /*
