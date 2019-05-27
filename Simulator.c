@@ -209,8 +209,8 @@ void job2ready(){
   printQ_job();
   init_readyQ();
   printf("jQ front %d, rear %d\n", jQ_front, jQ_rear);
-  for(int i = 0; i < (jQ_rear - jQ_front); i++){
-    printf("i: %d", i);
+  for(int i = 0; i <= jQ_rear; i++){
+    printf("i: %d\n", i);
 	   proPointer temp = (proPointer)malloc(sizeof(struct process));
    	temp = poll_jobQ();
 	 printf("jQ front %d, rear %d\n", jQ_front, jQ_rear);
