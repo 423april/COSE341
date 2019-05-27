@@ -201,7 +201,10 @@ void job2ready(){
 
 void printQ_job(){
   for(int i = 0; i < (jQ_rear - jQ_front); i++){
-    printf("p%d ", jobQ[i]->pid);
+    printf("p%d , ", jobQ[i]->pid);
+    printf("CPUburst %d, ", jobQ[i]->CPUburst);
+    printf("arrival %d, ", jobQ[i]->arrival);
+    printf("priority %d\n", jobQ[i]->priority);
   }
 }
 
@@ -281,7 +284,7 @@ int main(int argc, char **argv){
   scanf("%d", &num_IO);
 
   create_processes(num_process, num_IO);
-  printQ_ready();
+  printQ_job();
 
   return 0;
 }
