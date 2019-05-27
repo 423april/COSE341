@@ -162,11 +162,11 @@ void merge(proPointer list[], int p, int q, int r){
   for(i = 0; i < n1; i++){
     L[i] = list[p + i - 1];
   }
-  L[n1] = INF;
+  L[n1]->arrival = INF;
   for(j = 0; j < n2; j++){
     R[j] = list[q + j];
   }
-  R[n2] = INF;
+  R[n2]->arrival = INF;
   i = 0; j = 0;
   for(int k = p; k <= r; k++){
     if(L[i]->arrival <= R[j]->arrival){
