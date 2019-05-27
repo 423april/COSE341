@@ -303,7 +303,15 @@ void create_processes(int num_process, int num_IO){
        printf("p%d , IOburst %d, when %d\n", ioQ[i]->pid, ioQ[i]->IOburst, ioQ[i]->when);
      }
   }
-
+  //한 프로세스를 실행하는 동안 다른 프로세스들의 waiting time을 +1 해주는 함수
+  void wait(proPointer list[], int front, int rear, int pid){
+    for(int i = 0; i < rear; i++){
+      if(i != pid-1){
+        list[i]->waitingTime++;
+      }
+    }
+  }
+  
 //선입선출
 void FCFS(){
   proPointer FCFSrQ[rQ_rear - rQ_front];
@@ -349,15 +357,6 @@ int isEmpty(int front, int rear){
     return 1; //true;
   else
     return 0;//false;
-}
-
-//한 프로세스를 실행하는 동안 다른 프로세스들의 waiting time을 +1 해주는 함수
-void wait(proPointer list[], int front, int rear, int pid){
-  for(int i = 0; i < rear; i++){
-    if(i != pid-1){
-      list[i]->waitingTime++;
-    }
-  }
 }
 
 int main(int argc, char **argv){
