@@ -1034,7 +1034,7 @@ void PRESJF_alg(int num_IO){
 
 //레디큐 복사
   //clone_readyQ();
-  init_clonereadyQ();
+  //init_clonereadyQ();
 
   //wait queue 초기화
   init_waitQ();
