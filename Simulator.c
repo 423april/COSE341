@@ -188,9 +188,9 @@ void printQ_job(){
   }
 }
 
-void printQ_ready(){
-  for(int i = 0; i < (rQ_rear - rQ_front); i++){
-    printf("p%d ", readyQ[i]->pid);
+void printQ_cloneready(){
+  for(int i = 0; i < (crQ_rear - crQ_front); i++){
+    printf("p%d ", clonereadyQ[i]->pid);
   }
   printf("\n");
 }
@@ -467,7 +467,7 @@ void create_processes(int num_process, int num_IO){
           newP = poll_waitQ();
           newP->arrival = nowTime;
           add_clonereadyQ(newP);
-          //mergesort(waitQ, wQ_front + 1, wQ_rear, 1);
+          printQ_cloneready();
         }
       }
     }
@@ -485,12 +485,13 @@ void FCFS_alg(){
   //현재 시간 나타내는 변수
   int nowTime = 0;
 
-  printf("at readyQ: %d\n", crQ_rear - crQ_front);
+  //printf("at readyQ: %d\n", crQ_rear - crQ_front);
 
   //레디큐는 도착시간 순으로 정렬되어있다.
   do{
     proPointer newP = (proPointer)malloc(sizeof(struct process));
     newP = poll_clonereadyQ();
+    printQ_cloneready();
     //printf("p%d at CPU\n", newP->pid);
     //printf("at readyQ: %d\n", crQ_rear - crQ_front);
     do{
