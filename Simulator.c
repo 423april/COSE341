@@ -695,6 +695,8 @@ void FCFS_alg(int num_IO){
                 printf("p%d ", clonereadyQ[i]->pid);
               }
               printf("\n");
+            }else{
+              newP = NULL;
             }
             break;
             }
@@ -703,7 +705,7 @@ void FCFS_alg(int num_IO){
 
       }/////else
       nowTime++;
-    }while(newP->CPUburst_remain > 0);
+    }while(newP->CPUburst_remain > 0 || !isEmpty(wQ_front, wQ_rear));
     //add_terminatedQ(newP);
     wT[newP->pid - 1] = newP->waitingTime;
     tT[newP->pid - 1] = newP->turnaroundTime;
