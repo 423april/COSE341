@@ -439,7 +439,7 @@ void create_processes(int num_process, int num_IO){
   }
   //한 프로세스를 실행하는 동안 다른 프로세스들의 waiting time을 +1 해주는 함수
   void wait(proPointer list[], int front, int rear, int pid){
-    for(int i = front_1; i <= rear; i++){
+    for(int i = front+1; i <= rear; i++){
       if(i != pid-1){
         list[i]->waitingTime++;
       }
@@ -466,7 +466,7 @@ void create_processes(int num_process, int num_IO){
   }
 
 //선입선출
-void fcfs(){
+void FCFS_alg(){
   printf("start FCFS algorithm: \n");
   //레디큐를 복사한다. //현재 arrival time 오름차순 정렬되어있다.
   clone_readyQ();
@@ -481,7 +481,7 @@ void fcfs(){
 
   //레디큐는 도착시간 순으로 정렬되어있다.
   do{
-    newP = poll_clonereadyQ;
+    newP = poll_clonereadyQ();
 
     do{
       nowTime++;
@@ -504,14 +504,14 @@ void fcfs(){
       if(newP->CPUburst_remain == 0){
         newP->turnaroundTime = nowTime - newP->arrival;
       }
-      //처음 response 했을때까지 레디큐에서 기다린 시간. 
+      //처음 response 했을때까지 레디큐에서 기다린 시간.
       if(newP->CPUburst == newP->CPUburst_remain){
         newP->responseTime = nowTime - newP->arrival;
       }
 
     }while(newP->CPUburst_remain > 0);
 
-  }while(isEmpty(FCFSrQ_front, FCFSrQ_rear));
+  }while(isEmpty(crQ_front, crQ_rear));
 }
 
 int main(int argc, char **argv){
@@ -525,7 +525,7 @@ int main(int argc, char **argv){
 
   create_processes(num_process, num_IO);
   job2ready();
-  FCFS();
+  FCFS_alg();
 
   return 0;
 }
