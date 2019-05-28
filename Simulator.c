@@ -687,13 +687,15 @@ void FCFS_alg(int num_IO){
              // free(newP);
              // proPointer newP = (proPointer)malloc(sizeof(struct process));
             //  clone_process(newP, poll_clonereadyQ());
-            newP = poll_clonereadyQ();
-            printf("clone ready queue: ");
-            for(int i = crQ_front+1; i <= crQ_rear; i++){
-              printf("p%d ", clonereadyQ[i]->pid);
+            if(!isEmpty(crQ_front, crQ_rear)){
+              newP = poll_clonereadyQ();
+              printf("clone ready queue: ");
+              for(int i = crQ_front+1; i <= crQ_rear; i++){
+                printf("p%d ", clonereadyQ[i]->pid);
+              }
+              printf("\n");
             }
-            printf("\n");
-              break;
+            break;
             }
           }
         }
