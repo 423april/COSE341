@@ -661,7 +661,7 @@ void create_processes(int num_process, int num_IO){
     avgrT = (double)sumrT/num;
     printf("avgwT: %f, avgtT: %f, avgrT: %f\n", avgwT, avgtT, avgrT);
   }
-  
+
 //선입선출
 void FCFS_alg(int num_IO){
   printf("\nstart FCFS algorithm: \n");
@@ -773,23 +773,7 @@ void FCFS_alg(int num_IO){
     // printf("\n new process polled! p%d\n", newP->pid);
   }while(!isEmpty(crQ_front, crQ_rear) || !isEmpty(wQ_front, wQ_rear));
   printf("\n");
-  //evaluation
-  int num = rQ_rear - rQ_front;
-  int sumwT = 0;
-  int sumtT = 0;
-  int sumrT = 0;
-  double avgwT, avgtT, avgrT;
-  for(int i = 0; i < rQ_rear - rQ_front; i++){
-    printf("pid: %d, waiting time: %d, turnaround time: %d, response time: %d\n",
-      i+1, wT[i], tT[i], rT[i]);
-      sumwT += wT[i];
-      sumtT += tT[i];
-      sumrT += rT[i];
-  }
-  avgwT = (double)sumwT/num;
-  avgtT = (double)sumtT/num;
-  avgrT = (double)sumrT/num;
-  printf("avgwT: %f, avgtT: %f, avgrT: %f\n", avgwT, avgtT, avgrT);
+  evaluation(wT, tT, rT);
 }
 
 //preemption 없는 SJF 알고리즘.
@@ -899,23 +883,7 @@ void SJF_alg(int num_IO){
     // printf("\n new process polled! p%d\n", newP->pid);
   }while(!isEmpty(crQ_front, crQ_rear) || !isEmpty(wQ_front, wQ_rear));
   printf("\n");
-  //evaluation
-  int num = rQ_rear - rQ_front;
-  int sumwT = 0;
-  int sumtT = 0;
-  int sumrT = 0;
-  double avgwT, avgtT, avgrT;
-  for(int i = 0; i < rQ_rear - rQ_front; i++){
-    printf("pid: %d, waiting time: %d, turnaround time: %d, response time: %d\n",
-      i+1, wT[i], tT[i], rT[i]);
-      sumwT += wT[i];
-      sumtT += tT[i];
-      sumrT += rT[i];
-  }
-  avgwT = (double)sumwT/num;
-  avgtT = (double)sumtT/num;
-  avgrT = (double)sumrT/num;
-  printf("avgwT: %f, avgtT: %f, avgrT: %f\n", avgwT, avgtT, avgrT);
+  evaluation(wT, tT, rT);
 }
 
 //preemption 없는 priority 알고리즘.
@@ -1025,23 +993,7 @@ void PRI_alg(int num_IO){
     // printf("\n new process polled! p%d\n", newP->pid);
   }while(!isEmpty(crQ_front, crQ_rear) || !isEmpty(wQ_front, wQ_rear));
   printf("\n");
-  //evaluation
-  int num = rQ_rear - rQ_front;
-  int sumwT = 0;
-  int sumtT = 0;
-  int sumrT = 0;
-  double avgwT, avgtT, avgrT;
-  for(int i = 0; i < rQ_rear - rQ_front; i++){
-    printf("pid: %d, waiting time: %d, turnaround time: %d, response time: %d\n",
-      i+1, wT[i], tT[i], rT[i]);
-      sumwT += wT[i];
-      sumtT += tT[i];
-      sumrT += rT[i];
-  }
-  avgwT = (double)sumwT/num;
-  avgtT = (double)sumtT/num;
-  avgrT = (double)sumrT/num;
-  printf("avgwT: %f, avgtT: %f, avgrT: %f\n", avgwT, avgtT, avgrT);
+  evaluation(wT, tT, rT);
 }
 
 //preemption 있는 SJF 알고리즘.
