@@ -791,6 +791,7 @@ void SJF_alg(int num_IO){
   int nowTime = 0;
 
   proPointer newP;
+  printf("NULL?");
   proPointer jobP = NULL;
   do{
     //새로 프로세스가 도착할때마다 레디큐에 넣어주고 CPUburst_remain 오름차순으로 정렬한다.
