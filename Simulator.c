@@ -954,8 +954,8 @@ void PRESJF_alg(int num_IO){
 
   clone_jobQ();
 
-//레디큐 복사
-  //init_clonereadyQ();
+//레디큐 initialize.
+  init_clonereadyQ();
 
   //wait queue 초기화
   init_waitQ();
@@ -966,14 +966,21 @@ void PRESJF_alg(int num_IO){
   //현재 시간 나타내는 변수
   int nowTime = 0;
 
-  proPointer newP;
+  proPointer inP = NULL;
+  proPointer newP = NULL;
 
   do{
-    // newP = poll_jobQ();
-    // if(newP->arrival == nowTime){
-    //   add_clonereadyQ(newP);
-    //   mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
-    // }
+    //지금 들어온 프로세스의 remain time이 현재 수행중인 프로세스의 remain time보다 작으면 preempt.
+    if(cjobQ[cjQ_front+1]->arrival == nowTime){
+      inP = poll_cjobQ();
+      if(newP != NULL && newP->CPUburst_remain > inP->CPUburst_remain){
+        add_clonereadyQ(newP);
+        newP = inP;
+      }else{
+        add_clonereadyQ(inP);
+        mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
+      }
+    }
     if(!isEmpty(crQ_front, crQ_rear)){
       newP = poll_clonereadyQ();
       printf("\n new process polled! p%d\n", newP->pid);
@@ -985,14 +992,16 @@ void PRESJF_alg(int num_IO){
     }
 
     do{
-
+      //아직 아무 프로세스도 도착하지 않았을때
       //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
-      if(newP == NULL || nowTime < newP->arrival){
+      if(newP == NULL){
         printf("bb ");
         //다른 프로세스들 웨이팅 타임 더해준다.
-        wait(newP->pid);
+        if(!isEmpty(crQ_front, crQ_rear))
+          wait(newP->pid);
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
-        waiting(nowTime, 2);
+        if(!isEmpty(wQ_front, wQ_rear))
+          waiting(nowTime, 2);
       }
 
       else{
@@ -1046,6 +1055,18 @@ void PRESJF_alg(int num_IO){
 
       }/////else
       nowTime++;
+
+      //지금 들어온 프로세스의 remain time이 현재 수행중인 프로세스의 remain time보다 작으면 preempt.
+      if(cjobQ[cjQ_front+1]->arrival == nowTime){
+        inP = poll_cjobQ();
+        if(newP != NULL && newP->CPUburst_remain > inP->CPUburst_remain){
+          add_clonereadyQ(newP);
+          newP = inP;
+        }else{
+          add_clonereadyQ(inP);
+          mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
+        }
+      }
     }while(newP == NULL || newP->CPUburst_remain > 0);
     wT[newP->pid - 1] = newP->waitingTime;
     tT[newP->pid - 1] = newP->turnaroundTime;
@@ -1073,10 +1094,10 @@ int main(int argc, char **argv){
   scanf("%d", &num_IO);
 
   create_processes(num_process, num_IO);
-  job2ready();
-  FCFS_alg(num_IO);
-  SJF_alg(num_IO);
-  PRI_alg(num_IO);
+  //job2ready();
+  //FCFS_alg(num_IO);
+  //SJF_alg(num_IO);
+  //PRI_alg(num_IO);
   PRESJF_alg(num_IO);
 
   return 0;
