@@ -584,7 +584,7 @@ void create_processes(int num_process, int num_IO){
           proPointer newP = (proPointer)malloc(sizeof(struct process));
           //clone_process(newP, poll_waitQ());
           newP = poll_waitQ();
-	         printf("waiting exit: p%d, waitingTime: %d\n", newP->pid, newP->waitingTime);
+	         printf("waiting exit: p%d, CPU remain: %d\n", newP->pid, newP->CPUburst_remain);
           //waiting queue는 남아있는 IOburst time 오름차순으로 정렬한다.
           mergesort(waitQ, wQ_front+1, wQ_rear, 1);
           add_clonereadyQ(newP);
@@ -616,11 +616,11 @@ void FCFS_alg(int num_IO){
 
   //레디큐는 도착시간 순으로 정렬되어있다.
   proPointer newP = (proPointer)malloc(sizeof(struct process));
-  newP = poll_clonereadyQ();
-  printf("\n new process polled! p%d\n", newP->pid);
+  //newP = poll_clonereadyQ();
+  //printf("\n new process polled! p%d\n", newP->pid);
   do{
-
-
+    newP = poll_clonereadyQ();
+    printf("\n new process polled! p%d\n", newP->pid);
     do{
       //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
       if(nowTime < newP->arrival){
@@ -669,11 +669,11 @@ void FCFS_alg(int num_IO){
     wT[newP->pid - 1] = newP->waitingTime;
     tT[newP->pid - 1] = newP->turnaroundTime;
     rT[newP->pid - 1] = newP->responseTime;
-    free(newP);
-    proPointer newP = (proPointer)malloc(sizeof(struct process));
-    newP = poll_clonereadyQ();
-    printf("\n new process polled! p%d\n", newP->pid);
-  }while(!isEmpty(crQ_front, crQ_rear) && !isEmpty(wQ_front, wQ_rear));
+    //free(newP);
+    //proPointer newP = (proPointer)malloc(sizeof(struct process));
+    // newP = poll_clonereadyQ();
+    // printf("\n new process polled! p%d\n", newP->pid);
+  }while(!isEmpty(crQ_front, crQ_rear));
   printf("\n");
   //evaluation
   int num = rQ_rear - rQ_front;
