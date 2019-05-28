@@ -572,6 +572,7 @@ void create_processes(int num_process, int num_IO){
         if(waitQ[i]->IOburst_remain == 0){
           proPointer newP = (proPointer)malloc(sizeof(struct process));
           newP = poll_waitQ();
+	  printf("waiting exit: p%d, waitingTime: %d\n", newP->pid, newP->waitingTime);
           //waiting queue는 남아있는 IOburst time 오름차순으로 정렬한다.
           mergesort(waitQ, wQ_front+1, wQ_rear, 1);
           add_clonereadyQ(newP);
@@ -633,14 +634,15 @@ void FCFS_alg(int num_IO){
           if(newP->IO[i] != NULL){
             if(ioQ[i]->pid == newP->pid){
               if(newP->CPUburst - newP->CPUburst_remain == ioQ[i]->when){
-                proPointer waitP = (proPointer)malloc(sizeof(struct process));
-                waitP->IOburst = ioQ[i]->IOburst;
-                waitP->IOburst_remain = ioQ[i]->IOburst;
-                add_waitQ(waitP);
+               // proPointer waitP = (proPointer)malloc(sizeof(struct process));
+                newP->IOburst = ioQ[i]->IOburst;
+                newP->IOburst_remain = ioQ[i]->IOburst;
+                add_waitQ(newP);
+		printf("waitP: p%d, IOburst remain: %d\n", newP->pid, newP->IOburst_remain);
                 //IOburst_remain 순으로 정렬.
                 mergesort(waitQ, wQ_front+1, wQ_rear, 1);
-                free(newP);
-                proPointer newP = (proPointer)malloc(sizeof(struct process));
+               // free(newP);
+               // proPointer newP = (proPointer)malloc(sizeof(struct process));
                 newP = poll_clonereadyQ();
                 break;
               }
