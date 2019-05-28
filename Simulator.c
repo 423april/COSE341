@@ -492,13 +492,15 @@ void FCFS_alg(){
     newP = poll_clonereadyQ();
 
     do{
-      //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다. 
+      //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
       if(nowTime < newP->arrival){
         printf("bb ");
       }
       else{
         //해당 프로세스의 CPUburst_remain -1해준다.
         newP->CPUburst_remain--;
+        printf("time: %d ", nowTime);
+        printf("cpu remain: %d ", newP->CPUburst_remain);
         printf("p%d ", newP->pid);
         //다른 프로세스들 웨이팅 타임 더해준다.
         wait(clonereadyQ, crQ_front, crQ_rear, newP->pid);
@@ -522,7 +524,7 @@ void FCFS_alg(){
             add_waitQ(newP);
             mergesort(waitQ, wQ_front+1, wQ_rear, 1);
             free(newP);
-	           newP = (proPointer)malloc(sizeof(struct process));
+	          newP = (proPointer)malloc(sizeof(struct process));
             newP = poll_clonereadyQ();
             continue;
           }
@@ -530,8 +532,8 @@ void FCFS_alg(){
 
       }/////else
       nowTime++;
-    }while(newP->CPUburst_remain >= 0);
-    printf("finished one segment, start next\n");
+    }while(newP->CPUburst_remain > 0);
+    printf("\nfinished one segment, start next\n");
     printf("p%d at CPU\n", newP->pid);
   }while(isEmpty(crQ_front, crQ_rear));
 }
