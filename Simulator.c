@@ -673,7 +673,7 @@ void FCFS_alg(int num_IO){
     //proPointer newP = (proPointer)malloc(sizeof(struct process));
     // newP = poll_clonereadyQ();
     // printf("\n new process polled! p%d\n", newP->pid);
-  }while(!isEmpty(crQ_front, crQ_rear));
+  }while(!isEmpty(crQ_front, crQ_rear) || !isEmpty(wQ_front, wQ_rear));
   printf("\n");
   //evaluation
   int num = rQ_rear - rQ_front;
