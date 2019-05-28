@@ -540,8 +540,10 @@ void create_processes(int num_process, int num_IO){
         }
       }
       mergesort_when(jobQ[newIO->pid - 1]->IO, 0, num);
-	for(int k = 0; k < num; k++){
-		printf("IO: index: %d, IOburst: %d, when: %d\n",k, jobQ[newIO->pid - 1]->IO[k]->IOburst, jobQ[newIO->pid - 1]->IO[k]->when);}
+    	for(int k = 0; k < num; k++){
+    		printf("IO: index: %d, IOburst: %d, when: %d\n",k, jobQ[newIO->pid - 1]->IO[k]->IOburst,
+          jobQ[newIO->pid - 1]->IO[k]->when);
+      }
       printf("IO assigned\n");
      }
   }
@@ -613,10 +615,6 @@ void FCFS_alg(int num_IO){
         printf("p%d ", newP->pid);
         //해당 프로세스의 CPUburst_remain -1해준다.
         newP->CPUburst_remain--;
-        //다른 프로세스들 웨이팅 타임 더해준다.
-        wait(newP->pid);
-        //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
-        waiting(nowTime, 0);
         //실행 마치면 turnaroundTime 계산한다.
         if(newP->CPUburst_remain == 0){
           newP->turnaroundTime = nowTime - newP->arrival + 1;
@@ -625,16 +623,24 @@ void FCFS_alg(int num_IO){
         if(newP->CPUburst == newP->CPUburst_remain+1){
           newP->responseTime = nowTime - newP->arrival;
         }
+        //다른 프로세스들 웨이팅 타임 더해준다.
+        wait(newP->pid);
+        //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
+        waiting(nowTime, 0);
 
         //현재 시간이 IO가 일어나야 한다면 waitQ에 해당 프로세스를 넣는다.
         for(int i = 0; i < num_IO; i++){
           if(newP->IO[i] != NULL){
             if(ioQ[i]->pid == newP->pid){
               if(newP->CPUburst - newP->CPUburst_remain == ioQ[i]->when){
-                newP->IOburst = ioQ[i]->IOburst;
-                add_waitQ(newP);
+                proPointer waitP = (proPointer)malloc(sizeof(struct process));
+                waitP->IOburst = ioQ[i]->IOburst;
+                waitP->IOburst_remain = ioQ[i]->IOburst_remain;
+                add_waitQ(waitP);
                 //IOburst_remain 순으로 정렬.
                 mergesort(waitQ, wQ_front+1, wQ_rear, 1);
+                free(newP);
+                proPointer newP = (proPointer)malloc(sizeof(struct process));
                 newP = poll_clonereadyQ();
                 break;
               }
