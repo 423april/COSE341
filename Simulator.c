@@ -48,6 +48,9 @@ int rQ_front, rQ_rear;
 proPointer waitQ[MAX_PROCESS_NUM];
 int wQ_front, wQ_rear;
 
+proPointer cjobQ[MAX_PROCESS_NUM];
+int cjQ_front, cjQ_rear;
+
 proPointer clonereadyQ[MAX_PROCESS_NUM];
 int crQ_front, crQ_rear;
 
@@ -76,6 +79,30 @@ proPointer poll_jobQ(){
     printf("jobQ is EMPTY");
   else
     return jobQ[++jQ_front];
+}
+
+//cjob queue 초기화
+void init_cjobQ(){
+  cjQ_front = -1;
+  cjQ_rear = -1;
+
+  for(int i = 0; i < MAX_PROCESS_NUM; i++){
+    cjobQ[i] = NULL;
+  }
+}
+//cjob queue enqueue
+void add_cjobQ(proPointer newP){
+  if(cjQ_rear == MAX_PROCESS_NUM - 1)
+    printf("cjobQ is FULL");
+  else
+    cjobQ[++jQ_rear] = newP;
+}
+//cjob queue dequeue
+proPointer poll_cjobQ(){
+  if(cjQ_front == cjQ_rear)
+    printf("cjobQ is EMPTY");
+  else
+    return cjobQ[++cjQ_front];
 }
 
 //IO queue 초기화
@@ -229,6 +256,25 @@ void printQ_cloneready(){
     printf("priority %d\n", clonereadyQ[i]->priority);
   }
   printf("\n");
+}
+
+void clone_jobQ(){
+  init_cjobQ();
+  for(int i = cjQ_front+1; i <= cjQ_rear; i++){
+    proPointer newP = (proPointer)malloc(sizeof(struct process));
+    newP->pid = cjobQ[i]->pid;
+    newP->CPUburst = cjobQ[i]->CPUburst;
+    newP->arrival = cjobQ[i]->arrival;
+    newP->priority = cjobQ[i]->priority;
+    newP->CPUburst_remain = cjobQ[i]->CPUburst_remain;
+    newP->IOburst_remain = cjobQ[i]->IOburst_remain;
+    memcpy(newP->IO, cjobQ[i]->IO, sizeof(newP->IO));
+    newP->waitingTime = cjobQ[i]->waitingTime;
+    newP->turnaroundTime = cjobQ[i]->turnaroundTime;
+    newP->responseTime = cjobQ[i]->responseTime;
+    newP->IOburst = cjobQ[i]->IOburst;
+    add_cjobQ(newP);
+  }
 }
 
 //알고리즘 여러개 돌릴때 같은 데이터 써야하므로 기존 레디큐를 복사해서 사용한다.
@@ -729,13 +775,13 @@ void FCFS_alg(int num_IO){
 void SJF_alg(int num_IO){
   printf("start non-preemptive SJF algorithm: \n");
 
-  //레디큐를 CPUburst_remain 오름차순으로 정렬한다.
-    mergesort(readyQ, rQ_front+1, rQ_rear, 2);
-  //레디큐를 복사한다.
-  clone_readyQ();
+  //job queue 복사
+  clone_jobQ();
 
+  //일단 큐 선언.
+  init_clonereadyQ();
 
-//wait queue 초기화
+  //wait queue 초기화
   init_waitQ();
 
   int wT[rQ_rear - rQ_front];
@@ -744,10 +790,16 @@ void SJF_alg(int num_IO){
   //현재 시간 나타내는 변수
   int nowTime = 0;
 
-  //레디큐는 도착시간 순으로 정렬되어있다.
-  proPointer newP;
+  proPointer newP = NULL;
 
   do{
+    //새로 프로세스가 도착할때마다 레디큐에 넣어주고 CPUburst_remain 오름차순으로 정렬한다.
+    if(!isEmpty(cjQ_front, cjQ_rear)){
+      if(cjobQ[cjQ_front+1]->arrival == nowTime){
+        add_clonereadyQ(poll_cjobQ());
+        mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
+      }
+    }
     if(!isEmpty(crQ_front, crQ_rear)){
       newP = poll_clonereadyQ();
       printf("\n new process polled! p%d\n", newP->pid);
@@ -759,9 +811,16 @@ void SJF_alg(int num_IO){
     }
 
     do{
+      //새로 프로세스가 도착할때마다 레디큐에 넣어주고 CPUburst_remain 오름차순으로 정렬한다.
+      if(!isEmpty(cjQ_front, cjQ_rear)){
+        if(cjobQ[cjQ_front+1]->arrival == nowTime){
+          add_clonereadyQ(poll_cjobQ());
+          mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
+        }
+      }
 
       //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
-      if(newP == NULL || nowTime < newP->arrival){
+      if(newP == NULL){
         printf("bb ");
         //다른 프로세스들 웨이팅 타임 더해준다.
         wait(newP->pid);
