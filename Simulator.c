@@ -496,7 +496,7 @@ void FCFS_alg(){
       else{
         //현재 시간이 IO가 일어나야 한다면 waitQ에 해당 프로세스를 넣는다.
         if(newP->IO != NULL){
-          if(newP->IO->when == nowTime){
+          if(newP->IO->when == newP->CPUburst - newP->CPUburst_remain){
             IOPointer nowIO = (IOPointer)malloc(sizeof(struct IO));
             nowIO = poll_ioQ();
             newP->IOburst = nowIO->IOburst;
