@@ -618,6 +618,7 @@ void FCFS_alg(int num_IO){
   proPointer newP = (proPointer)malloc(sizeof(struct process));
   do{
     newP = poll_clonereadyQ();
+    printf("\n new process polled! p%d\n", newP->pid);
 
     do{
       //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
@@ -667,7 +668,7 @@ void FCFS_alg(int num_IO){
     wT[newP->pid - 1] = newP->waitingTime;
     tT[newP->pid - 1] = newP->turnaroundTime;
     rT[newP->pid - 1] = newP->responseTime;
-    free(newP);
+    //free(newP);
   }while(!isEmpty(crQ_front, crQ_rear) && !isEmpty(wQ_front, wQ_rear));
   printf("\n");
   //evaluation
