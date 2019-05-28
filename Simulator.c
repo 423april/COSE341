@@ -625,11 +625,11 @@ void FCFS_alg(int num_IO){
   int nowTime = 0;
 
   //레디큐는 도착시간 순으로 정렬되어있다.
-  proPointer newP = (proPointer)malloc(sizeof(struct process));
+  //proPointer newP = (proPointer)malloc(sizeof(struct process));
   //newP = poll_clonereadyQ();
   //printf("\n new process polled! p%d\n", newP->pid);
   do{
-    newP = poll_clonereadyQ();
+    proPointer newP = poll_clonereadyQ();
     printf("\n new process polled! p%d\n", newP->pid);
     printf("clone ready queue: ");
     for(int i = crQ_front+1; i <= crQ_rear; i++){
