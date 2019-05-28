@@ -212,6 +212,9 @@ void printQ_ready(){
   printf("\nreadyQ: ");
   for(int i = 0; i < (rQ_rear - rQ_front); i++){
     printf("p%d ", readyQ[i]->pid);
+    printf("CPUburst %d, ", readyQ[i]->CPUburst);
+    printf("arrival %d, ", readyQ[i]->arrival);
+    printf("priority %d\n", readyQ[i]->priority);
   }
   printf("\n");
 }
@@ -220,6 +223,9 @@ void printQ_cloneready(){
   printf("\nclone readyQ: ");
   for(int i = crQ_front+1; i <= crQ_rear; i++){
     printf("p%d ", clonereadyQ[i]->pid);
+    printf("CPUburst %d, ", clonereadyQ[i]->CPUburst);
+    printf("arrival %d, ", clonereadyQ[i]->arrival);
+    printf("priority %d\n", clonereadyQ[i]->priority);
   }
   printf("\n");
 }
@@ -242,10 +248,7 @@ void clone_readyQ(){
     newP->IOburst = readyQ[i]->IOburst;
     add_clonereadyQ(newP);
   }
-  for(int i= crQ_front+1; i <= crQ_rear; i++){
-    printf("p%d ", clonereadyQ[i]->pid);
-  }
-  printf("\n");
+  printQ_cloneready();
 }
 
 void clone_process(proPointer old, proPointer new){
@@ -579,7 +582,8 @@ void create_processes(int num_process, int num_IO){
         waitQ[i]->IOburst_remain--;
         if(waitQ[i]->IOburst_remain == 0){
           proPointer newP = (proPointer)malloc(sizeof(struct process));
-          clone_process(newP, poll_waitQ());
+          //clone_process(newP, poll_waitQ());
+          newP = poll_waitQ();
 	         printf("waiting exit: p%d, waitingTime: %d\n", newP->pid, newP->waitingTime);
           //waiting queue는 남아있는 IOburst time 오름차순으로 정렬한다.
           mergesort(waitQ, wQ_front+1, wQ_rear, 1);
@@ -649,7 +653,8 @@ void FCFS_alg(int num_IO){
               mergesort(waitQ, wQ_front+1, wQ_rear, 1);
              // free(newP);
              // proPointer newP = (proPointer)malloc(sizeof(struct process));
-              clone_process(newP, poll_clonereadyQ());
+            //  clone_process(newP, poll_clonereadyQ());
+            newP = poll_clonereadyQ();
               break;
             }
           }
