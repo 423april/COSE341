@@ -777,13 +777,10 @@ void FCFS_alg(int num_IO){
 void SJF_alg(int num_IO){
   printf("start non-preemptive SJF algorithm: \n");
 
-  //job queue 복사
-  clone_jobQ();
-  printf("clonejob");
+  mergesort(readyQ, rQ_front+1, rQ_rear, 2);
 
-  //일단 큐 선언.
-  init_clonereadyQ();
-  printf("cloneready init");
+//레디큐 복사
+  clone_readyQ();
 
   //wait queue 초기화
   init_waitQ();
@@ -793,28 +790,12 @@ void SJF_alg(int num_IO){
   int rT[rQ_rear - rQ_front];
   //현재 시간 나타내는 변수
   int nowTime = 0;
-  printf("init");
 
   proPointer newP;
-  printf("NULL?");
-  proPointer jobP = NULL;
+
   do{
-    //새로 프로세스가 도착할때마다 레디큐에 넣어주고 CPUburst_remain 오름차순으로 정렬한다.
-    printf("1");
-    if(!isEmpty(cjQ_front, cjQ_rear)){
-      printf("2");
-      if(cjobQ[cjQ_front+1]->arrival == nowTime){
-        printf("3");
-        jobP = poll_cjobQ();
-        printf("4");
-        add_clonereadyQ(jobP);
-        printf("5");
-        mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
-        printf("6");
-      }
-    }
+
     if(!isEmpty(crQ_front, crQ_rear)){
-      printf("7");
       newP = poll_clonereadyQ();
       printf("\n new process polled! p%d\n", newP->pid);
       printf("clone ready queue: ");
@@ -825,16 +806,9 @@ void SJF_alg(int num_IO){
     }
 
     do{
-      //새로 프로세스가 도착할때마다 레디큐에 넣어주고 CPUburst_remain 오름차순으로 정렬한다.
-      if(!isEmpty(cjQ_front, cjQ_rear)){
-        if(cjobQ[cjQ_front+1]->arrival == nowTime){
-          add_clonereadyQ(poll_cjobQ());
-          mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
-        }
-      }
 
       //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
-      if(newP == NULL){
+      if(newP == NULL || nowTime < newP->arrival){
         printf("bb ");
         //다른 프로세스들 웨이팅 타임 더해준다.
         wait(newP->pid);
@@ -850,7 +824,7 @@ void SJF_alg(int num_IO){
         //다른 프로세스들 웨이팅 타임 더해준다.
         wait(newP->pid);
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
-        waiting(nowTime, 0);
+        waiting(nowTime, 2);
 
 
         //실행 마치면 turnaroundTime 계산한다.
