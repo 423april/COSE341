@@ -738,42 +738,62 @@ void FCFS_alg(int num_IO){
   printf("avgwT: %f, avgtT: %f, avgrT: %f\n", avgwT, avgtT, avgrT);
 }
 
-//선입선출 없는 SJF 알고리즘.
+//preemption 없는 SJF 알고리즘.
 //CPU_remain이 가장 작은 것부터 실행
 void SJF_alg(int num_IO){
-  printf("\nstart non-preemptive SJF algorithm: \n");
+  printf("start non-preemptive SJF algorithm: \n");
+
 //레디큐를 CPUburst_remain 오름차순으로 정렬한다.
   mergesort(readyQ, rQ_front+1, rQ_rear, 2);
-  //레디큐를 복사한다.
+  //레디큐를 복사한다. //현재 arrival time 오름차순 정렬되어있다.
   clone_readyQ();
+
 //wait queue 초기화
   init_waitQ();
-
-//각 프로세스의 evaluation을 위한 배열을 선언한다.
+//terminated queue 초기화
+  //init_terminatedQ();
   int wT[rQ_rear - rQ_front];
   int tT[rQ_rear - rQ_front];
   int rT[rQ_rear - rQ_front];
   //현재 시간 나타내는 변수
   int nowTime = 0;
 
-  //레디큐는 CPUburst_remain 순으로 정렬되어있다.
-  proPointer newP = (proPointer)malloc(sizeof(struct process));
+  //레디큐는 도착시간 순으로 정렬되어있다.
+  proPointer newP;
+
   do{
-    newP = poll_clonereadyQ();
+    if(!isEmpty(crQ_front, crQ_rear)){
+      newP = poll_clonereadyQ();
+      printf("\n new process polled! p%d\n", newP->pid);
+      printf("clone ready queue: ");
+      for(int i = crQ_front+1; i <= crQ_rear; i++){
+        printf("p%d ", clonereadyQ[i]->pid);
+      }
+      printf("\n");
+    }
 
     do{
+
       //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
-      if(nowTime < newP->arrival){
+      if(newP == NULL || nowTime < newP->arrival){
         printf("bb ");
-      }
-      else{
-        printf("p%d ", newP->pid);
-        //해당 프로세스의 CPUburst_remain -1해준다.
-        newP->CPUburst_remain--;
         //다른 프로세스들 웨이팅 타임 더해준다.
         wait(newP->pid);
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
         waiting(nowTime, 2);
+      }
+
+      else{
+        printf("p%d ", newP->pid);
+        //해당 프로세스의 CPUburst_remain -1해준다.
+        newP->CPUburst_remain--;
+
+        //다른 프로세스들 웨이팅 타임 더해준다.
+        wait(newP->pid);
+        //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
+        waiting(nowTime, 0);
+
+
         //실행 마치면 turnaroundTime 계산한다.
         if(newP->CPUburst_remain == 0){
           newP->turnaroundTime = nowTime - newP->arrival + 1;
@@ -782,6 +802,7 @@ void SJF_alg(int num_IO){
         if(newP->CPUburst == newP->CPUburst_remain+1){
           newP->responseTime = nowTime - newP->arrival;
         }
+
 
         //현재 시간이 IO가 일어나야 한다면 waitQ에 해당 프로세스를 넣는다.
         for(int i = 0; i < num_IO; i++){
@@ -793,23 +814,37 @@ void SJF_alg(int num_IO){
               printf("waitP: p%d, IOburst remain: %d\n", newP->pid, newP->IOburst_remain);
               //IOburst_remain 순으로 정렬.
               mergesort(waitQ, wQ_front+1, wQ_rear, 1);
-             // free(newP);
-             // proPointer newP = (proPointer)malloc(sizeof(struct process));
+            if(!isEmpty(crQ_front, crQ_rear)){
               newP = poll_clonereadyQ();
-              break;
+              printf("after waitQ process: p%d\n", newP->pid);
+              printf("clone ready queue: ");
+              for(int i = crQ_front+1; i <= crQ_rear; i++){
+                printf("p%d ", clonereadyQ[i]->pid);
+              }
+              printf("\n");
+            }else{
+              printf("next is blank\n");
+              newP = NULL;
+              printf("NULL\n");
+            }
+            break;
             }
           }
         }
 
       }/////else
       nowTime++;
-    }while(newP->CPUburst_remain > 0);
+    }while(newP == NULL || newP->CPUburst_remain > 0);
     //add_terminatedQ(newP);
     wT[newP->pid - 1] = newP->waitingTime;
     tT[newP->pid - 1] = newP->turnaroundTime;
     rT[newP->pid - 1] = newP->responseTime;
-    free(newP);
-  }while(!isEmpty(crQ_front, crQ_rear));
+    newP = NULL;
+    //free(newP);
+    //proPointer newP = (proPointer)malloc(sizeof(struct process));
+    // newP = poll_clonereadyQ();
+    // printf("\n new process polled! p%d\n", newP->pid);
+  }while(!isEmpty(crQ_front, crQ_rear) || !isEmpty(wQ_front, wQ_rear));
   printf("\n");
   //evaluation
   int num = rQ_rear - rQ_front;
@@ -829,7 +864,6 @@ void SJF_alg(int num_IO){
   avgrT = (double)sumrT/num;
   printf("avgwT: %f, avgtT: %f, avgrT: %f\n", avgwT, avgtT, avgrT);
 }
-
 
 
 int main(int argc, char **argv){
