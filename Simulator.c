@@ -234,7 +234,7 @@ void clone_readyQ(){
     newP->priority = readyQ[i]->priority;
     newP->CPUburst_remain = readyQ[i]->CPUburst_remain;
     newP->IOburst_remain = readyQ[i]->IOburst_remain;
-    newP->IO = readyQ[i]->&IO;
+    memcpy(newP->IO, ready[i]->IO, sizeof(newP->IO));
     newP->waitingTime = readyQ[i]->waitingTime;
     newP->turnaroundTime = readyQ[i]->turnaroundTime;
     newP->responseTime = readyQ[i]->responseTime;
