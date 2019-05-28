@@ -486,7 +486,7 @@ void FCFS_alg(){
     do{
       nowTime++;
       if(nowTime < newP->arrival){
-        printf("\' \' ");
+        printf("bb ");
       }
       else{
         //현재 시간이 IO가 일어나야 한다면 waitQ에 해당 프로세스를 넣는다.
