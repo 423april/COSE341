@@ -520,7 +520,7 @@ void FCFS_alg(){
             newP->IOburst = nowIO->IOburst;
             add_waitQ(newP);
             mergesort(waitQ, wQ_front+1, wQ_rear, 1);
-            realloc(newP, sizeof(struct process));
+            newP = realloc(newP, sizeof(struct process));
             newP = poll_clonereadyQ();
             continue;
           }
