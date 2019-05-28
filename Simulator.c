@@ -545,7 +545,7 @@ void FCFS_alg(){
         if(newP->CPUburst_remain == 0){
           printf("now: %d ", nowTime);
           printf("arrival: %d\n", newP->arrival);
-          newP->turnaroundTime = nowTime - newP->arrival;
+          newP->turnaroundTime = nowTime - newP->arrival + 1;
         }
         //처음 response 했을때까지 레디큐에서 기다린 시간.
         if(newP->CPUburst == newP->CPUburst_remain+1){
