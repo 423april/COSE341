@@ -529,7 +529,8 @@ void FCFS_alg(){
       }/////else
       nowTime++;
     }while(newP->CPUburst_remain > 0);
-
+    printf("finished one segment, start next\n");
+    printf("p%d at CPU\n", newP->pid);
   }while(isEmpty(crQ_front, crQ_rear));
 }
 
