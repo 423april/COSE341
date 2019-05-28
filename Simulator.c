@@ -575,10 +575,10 @@ void FCFS_alg(){
       }/////else
       nowTime++;
     }while(newP->CPUburst_remain > 0);
-    //free(newP);
     add_terminatedQ(newP);
+    free(newP);
   }while(!isEmpty(crQ_front, crQ_rear));
-
+  printf("\n");
   //evaluation
   int num = rQ_rear - rQ_front;
   int sumwT = 0;
