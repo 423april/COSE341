@@ -777,9 +777,11 @@ void SJF_alg(int num_IO){
 
   //job queue 복사
   clone_jobQ();
+  printf("clonejob");
 
   //일단 큐 선언.
   init_clonereadyQ();
+  printf("cloneready init");
 
   //wait queue 초기화
   init_waitQ();
@@ -789,6 +791,7 @@ void SJF_alg(int num_IO){
   int rT[rQ_rear - rQ_front];
   //현재 시간 나타내는 변수
   int nowTime = 0;
+  printf("init");
 
   proPointer newP;
   printf("NULL?");
