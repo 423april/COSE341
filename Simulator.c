@@ -1392,11 +1392,9 @@ int main(int argc, char **argv){
   scanf("%d", &tq);
 
   create_processes(num_process, num_IO);
-  printQ_job();
   job2ready();
-  printQ_job();
   //FCFS_alg(num_IO);
-  //SJF_alg(num_IO);
+  SJF_alg(num_IO);
   //PRI_alg(num_IO);
   //PRESJF_alg(num_IO);
   //PREPRI_alg(num_IO);
