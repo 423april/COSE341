@@ -453,11 +453,13 @@ void create_processes(int num_process, int num_IO){
 //waiting queue에서 얼마나 기다리고 있는지 매 타임 +1 해주고,
 //waitingQ time이 IOburst와 같아지면 내보낸다.
   void waiting(int nowTime){
-    for(int i = ioQ_front + 1; i <= ioQ_rear; i++){
-      waitQ[i]->waitingQ++;
-      if(waitQ[i]->waitingQ == waitQ[i]->IOburst){
-        add_clonereadyQ(poll_waitQ());
-        mergesort(waitQ, wQ_front + 1, wQ_rear, 1);
+    if(!isEmpty(ioQ_front, ioQ_rear)){
+      for(int i = ioQ_front + 1; i <= ioQ_rear; i++){
+        waitQ[i]->waitingQ++;
+        if(waitQ[i]->waitingQ == waitQ[i]->IOburst){
+          add_clonereadyQ(poll_waitQ());
+          mergesort(waitQ, wQ_front + 1, wQ_rear, 1);
+        }
       }
     }
   }
@@ -483,13 +485,16 @@ void FCFS_alg(){
     do{
       nowTime++;
       //현재 시간이 IO가 일어나야 한다면 waitQ에 해당 프로세스를 넣는다.
-      if(newP->IO->when == nowTime){
-        IOPointer nowIO = (IOPointer)malloc(sizeof(struct IO));
-        nowIO = poll_ioQ();
-        newP->IOburst = nowIO->IOburst;
-        add_waitQ(newP);
-        mergesort(waitQ, wQ_front+1, wQ_rear, 1);
+      if(newP->IO != NULL){
+        if(newP->IO->when == nowTime){
+          IOPointer nowIO = (IOPointer)malloc(sizeof(struct IO));
+          nowIO = poll_ioQ();
+          newP->IOburst = nowIO->IOburst;
+          add_waitQ(newP);
+          mergesort(waitQ, wQ_front+1, wQ_rear, 1);
+        }
       }
+
       //해당 프로세스의 CPUburst_remain -1해준다.
       newP->CPUburst_remain--;
       printf("p%d ", newP->pid);
