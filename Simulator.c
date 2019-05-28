@@ -32,7 +32,7 @@ typedef struct process{
   int arrival;
   int priority;
   int CPUburst_remain;
-  int IObusrt_remain;
+  int IOburst_remain;
   IOPointer IO;
   int waitingTime;
   int turnaroundTime;
@@ -197,7 +197,7 @@ void printQ_ready(){
 }
 
 //알고리즘 여러개 돌릴때 같은 데이터 써야하므로 기존 레디큐를 복사해서 사용한다.
-void clonereadyQ(){
+void clone_readyQ(){
   init_clonereadyQ();
   proPointer newP = (proPointer)malloc(sizeof(struct process));
   for(int i = 0; i <= rQ_rear; i++){
@@ -305,7 +305,7 @@ void mergesort(proPointer list[], int p, int r, int type){
 
 void job2ready(){
 	//printQ_job();
-  mergesort_arrival(jobQ, jQ_front+1, jQ_rear, 0);
+  mergesort(jobQ, jQ_front+1, jQ_rear, 0);
   //printQ_job();
   init_readyQ();
   //printf("jQ front %d, rear %d\n", jQ_front, jQ_rear);
@@ -421,12 +421,12 @@ void create_processes(int num_process, int num_IO){
       //프로세스 상세에 가장 먼저 일어나는 IO를 표시해준다.
       if(jobQ[newIO->pid - 1] == NULL){
         jobQ[newIO->pid - 1]->IO = newIO;
-        jobQ[newIO->pid - 1]->IObusrt = newIO->IOburst;
-        jobQ[newIO->pid - 1]->IObusrt_remain = newIO->IOburst;
+        jobQ[newIO->pid - 1]->IOburst = newIO->IOburst;
+        jobQ[newIO->pid - 1]->IOburst_remain = newIO->IOburst;
       }else if(jobQ[newIO->pid - 1]->IO->when > newIO->when){
         jobQ[newIO->pid - 1]->IO = newIO;
-        jobQ[newIO->pid - 1]->IObusrt = newIO->IOburst;
-        jobQ[newIO->pid - 1]->IObusrt_remain = newIO->IOburst;
+        jobQ[newIO->pid - 1]->IOburst = newIO->IOburst;
+        jobQ[newIO->pid - 1]->IOburst_remain = newIO->IOburst;
       }
       //printf("pid: %d, IOburst: %d, when %d\n", newIO->pid, newIO->IOburst, newIO->when);
      }
@@ -439,7 +439,7 @@ void create_processes(int num_process, int num_IO){
   }
   //한 프로세스를 실행하는 동안 다른 프로세스들의 waiting time을 +1 해주는 함수
   void wait(proPointer list[], int front, int rear, int pid){
-    for(int i = 0; i < rear; i++){
+    for(int i = front_1; i <= rear; i++){
       if(i != pid-1){
         list[i]->waitingTime++;
       }
@@ -467,8 +467,9 @@ void create_processes(int num_process, int num_IO){
 
 //선입선출
 void fcfs(){
+  printf("start FCFS algorithm: \n");
   //레디큐를 복사한다. //현재 arrival time 오름차순 정렬되어있다.
-  clonereadyQ();
+  clone_readyQ();
 
 //wait queue 초기화
   init_waitQ();
@@ -476,12 +477,15 @@ void fcfs(){
   //현재 시간 나타내는 변수
   int nowTime = 0;
 
+  proPointer newP = (proPointer)malloc(sizeof(struct process));
+
   //레디큐는 도착시간 순으로 정렬되어있다.
   do{
     newP = poll_clonereadyQ;
 
     do{
       nowTime++;
+      //현재 시간이 IO가 일어나야 한다면 waitQ에 해당 프로세스를 넣는다.
       if(newP->IO->when == nowTime){
         IOPointer nowIO = (IOPointer)malloc(sizeof(struct IO));
         nowIO = poll_ioQ();
@@ -489,12 +493,18 @@ void fcfs(){
         add_waitQ(newP);
         mergesort(waitQ, wQ_front+1, wQ_rear, 1);
       }
+      //해당 프로세스의 CPUburst_remain -1해준다.
       newP->CPUburst_remain--;
       printf("p%d ", newP->pid);
-      wait(FCFSrQ, FCFSrQ_front, FCFSrQ_rear, newP->pid);
+      //다른 프로세스들 웨이팅 타임 더해준다.
+      wait(clonereadyQ, crQ_front, crQ_rear, newP->pid);
+      //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
+      waiting(nowTime);
+      //실행 마치면 turnaroundTime 계산한다.
       if(newP->CPUburst_remain == 0){
         newP->turnaroundTime = nowTime - newP->arrival;
       }
+      //처음 response 했을때까지 레디큐에서 기다린 시간. 
       if(newP->CPUburst == newP->CPUburst_remain){
         newP->responseTime = nowTime - newP->arrival;
       }
