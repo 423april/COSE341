@@ -58,6 +58,9 @@ int wQ_front, wQ_rear;
 proPointer clonereadyQ[MAX_PROCESS_NUM];
 int crQ_front, crQ_rear;
 
+proPointer terminatedQ[MAX_PROCESS_NUM];
+int tQ_front, tQ_rear;
+
 //job queue 초기화
 void init_jobQ(){
   jQ_front = -1;
@@ -177,6 +180,30 @@ proPointer poll_clonereadyQ(){
     printf("clonereadyQ is EMPTY");
   else
     return clonereadyQ[++crQ_front];
+}
+
+//terminated queue 초기화
+void init_terminatedQ(){
+  tQ_front = -1;
+  tQ_rear = -1;
+
+  for(int i = 0; i < MAX_PROCESS_NUM; i++){
+    terminatedQ[i] = NULL;
+  }
+}
+//terminated queue enqueue
+void add_terminatedQ(proPointer newP){
+  if(tQ_rear == MAX_PROCESS_NUM - 1)
+    printf("terminatedQ is FULL");
+  else
+    terminatedQ[++tQ_rear] = newP;
+}
+//terminated queue dequeue
+proPointer poll_terminatedQ(){
+  if(tQ_front == tQ_rear)
+    printf("terminatedQ is EMPTY");
+  else
+    return terminatedQ[++tQ_front];
 }
 
 void printQ_job(){
@@ -489,6 +516,8 @@ void FCFS_alg(){
 
 //wait queue 초기화
   init_waitQ();
+//terminated queue 초기화
+  init_terminatedQ();
 
   //현재 시간 나타내는 변수
   int nowTime = 0;
@@ -496,10 +525,10 @@ void FCFS_alg(){
   //printf("at readyQ: %d\n", crQ_rear - crQ_front);
 
   //레디큐는 도착시간 순으로 정렬되어있다.
+  proPointer newP = (proPointer)malloc(sizeof(struct process));
   do{
     //printQ_cloneready();
     //printf("f: %d, r: %d\n", crQ_front, crQ_rear);
-    proPointer newP = (proPointer)malloc(sizeof(struct process));
     newP = poll_clonereadyQ();
     //printf("pid: %d\n", newP->pid);
 
@@ -538,8 +567,6 @@ void FCFS_alg(){
             newP->IOburst = nowIO->IOburst;
             add_waitQ(newP);
             mergesort(waitQ, wQ_front+1, wQ_rear, 1);
-           // free(newP);
-	     //     newP = (proPointer)malloc(sizeof(struct process));
             newP = poll_clonereadyQ();
             continue;
           }
@@ -548,16 +575,30 @@ void FCFS_alg(){
       }/////else
       nowTime++;
     }while(newP->CPUburst_remain > 0);
-    free(newP);
-    //printf("\nfinished one segment, start next\n");
-    //printf("p%d at CPU\n", newP->pid);
+    //free(newP);
+    add_terminatedQ(newP);
   }while(!isEmpty(crQ_front, crQ_rear));
+
+  //evaluation
+  int num = rQ_rear - rQ_front;
+  int sumwT = 0;
+  int sumtT = 0;
+  int sumrT = 0;
+  double avgwT, avgtT, avgrT;
+  for(int i = tQ_front + 1; i < tQ_rear; i++){
+    printf("pid: %d, waiting time: %d, turnaround time: %d, response time: %d\n",
+      terminatedQ[i]->pid, terminatedQ->waitingTime, terminatedQ[i]->turnaroundTime, terminatedQ[i]->responseTime);
+      sumwT += terminatedQ->waitingTime;
+      sumtT += terminatedQ[i]->turnaroundTime;
+      sumrT += terminatedQ[i]->responseTime;
+  }
+  avgwT = (double)sumwT/num;
+  avgtT = (double)sumtT/num;
+  avgrT = (double)sumrT/num;
+  printf("avgwT: %f, avgtT: %f, avgrT: %f\n", avgwT, avgtT, avgrT);
 }
 
-// void simulate(){
-//   int nowTime = 0;
-//
-// }
+
 
 int main(int argc, char **argv){
   int num_process, num_IO;
