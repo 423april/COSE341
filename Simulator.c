@@ -634,7 +634,7 @@ void FCFS_alg(int num_IO){
     do{
 
       //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
-      if(nowTime < newP->arrival){
+      if(nowTime < newP->arrival || newP == NULL){
         printf("bb ");
 
         //다른 프로세스들 웨이팅 타임 더해준다.
