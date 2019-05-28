@@ -252,21 +252,6 @@ void clone_readyQ(){
   printQ_cloneready();
 }
 
-void clone_process(proPointer old, proPointer new){
-  old->pid = new->pid;
-  old->CPUburst = new->CPUburst;
-  old->arrival = new->arrival;
-  old->priority = new->priority;
-  old->CPUburst_remain = new->CPUburst_remain;
-  old->IOburst_remain = new->IOburst_remain;
-  memcpy(old->IO, new->IO, sizeof(old->IO));
-  old->waitingTime = new->waitingTime;
-  old->turnaroundTime = new->turnaroundTime;
-  old->responseTime = new->responseTime;
-  old->IOburst = new->IOburst;
-
-}
-
 //arrival time을 기준으로 정렬해서 ready queue에 넣어준다.
 //type는 arrival time으로 정렬하는 것인지, IOburst_remain으로 정렬하는지 결정한다.
 //arrival time: 0, IOburst_remain: 1, CPUburst_remain: 2, priority: 3
@@ -744,11 +729,11 @@ void FCFS_alg(int num_IO){
 void SJF_alg(int num_IO){
   printf("start non-preemptive SJF algorithm: \n");
 
+  //레디큐를 CPUburst_remain 오름차순으로 정렬한다.
+    mergesort(readyQ, rQ_front+1, rQ_rear, 2);
   //레디큐를 복사한다.
   clone_readyQ();
 
-  //레디큐를 CPUburst_remain 오름차순으로 정렬한다.
-    mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
 
 //wait queue 초기화
   init_waitQ();
