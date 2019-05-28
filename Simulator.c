@@ -254,7 +254,7 @@ proPointer clone_process(proPointer new){
   old->CPUburst = new->CPUburst;
   old->arrival = new->arrival;
   old->priority = new->priority;
-  newP->CPUburst_remain = new->CPUburst_remain;
+  old->CPUburst_remain = new->CPUburst_remain;
   old->IOburst_remain = new->IOburst_remain;
   memcpy(old->IO, new->IO, sizeof(old->IO));
   old->waitingTime = new->waitingTime;
