@@ -472,10 +472,10 @@ void create_processes(int num_process, int num_IO){
       for(int i = wQ_front + 1; i <= wQ_rear; i++){
         waitQ[i]->waitingQ++;
         if(waitQ[i]->waitingQ == waitQ[i]->IOburst){
-          proPointer newP = (proPointer)malloc(sizeof(struct process));
-          newP = poll_waitQ();
-          newP->arrival = nowTime;
-          add_clonereadyQ(newP);
+          // proPointer newP = (proPointer)malloc(sizeof(struct process));
+          // newP = poll_waitQ();
+          // newP->arrival = nowTime;
+          add_clonereadyQ(poll_waitQ());
           printQ_cloneready();
         }
       }
