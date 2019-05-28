@@ -248,6 +248,23 @@ void clone_readyQ(){
   printf("\n");
 }
 
+proPointer clone_process(proPointer new){
+  proPointer old;
+  old->pid = new->pid;
+  old->CPUburst = new->CPUburst;
+  old->arrival = new->arrival;
+  old->priority = new->priority;
+  newP->CPUburst_remain = new->CPUburst_remain;
+  old->IOburst_remain = new->IOburst_remain;
+  memcpy(old->IO, new->IO, sizeof(old->IO));
+  old->waitingTime = new->waitingTime;
+  old->turnaroundTime = new->turnaroundTime;
+  old->responseTime = new->responseTime;
+  old->IOburst = new->IOburst;
+
+  return old;
+}
+
 //arrival time을 기준으로 정렬해서 ready queue에 넣어준다.
 //type는 arrival time으로 정렬하는 것인지, IOburst_remain으로 정렬하는지 결정한다.
 //arrival time: 0, IOburst_remain: 1, CPUburst_remain: 2, priority: 3
@@ -564,7 +581,7 @@ void create_processes(int num_process, int num_IO){
         waitQ[i]->IOburst_remain--;
         if(waitQ[i]->IOburst_remain == 0){
           proPointer newP = (proPointer)malloc(sizeof(struct process));
-          newP = poll_waitQ();
+          newP = clone_process(poll_waitQ());
 	         printf("waiting exit: p%d, waitingTime: %d\n", newP->pid, newP->waitingTime);
           //waiting queue는 남아있는 IOburst time 오름차순으로 정렬한다.
           mergesort(waitQ, wQ_front+1, wQ_rear, 1);
@@ -634,7 +651,7 @@ void FCFS_alg(int num_IO){
               mergesort(waitQ, wQ_front+1, wQ_rear, 1);
              // free(newP);
              // proPointer newP = (proPointer)malloc(sizeof(struct process));
-              newP = poll_clonereadyQ();
+              newP = clone_process(poll_clonereadyQ());
               break;
             }
           }
