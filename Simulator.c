@@ -234,16 +234,16 @@ void clone_jobQ(){
   init_cjobQ();
   for(int i = cjQ_front+1; i <= cjQ_rear; i++){
     proPointer newP = (proPointer)malloc(sizeof(struct process));
-    newP->pid = cjobQ[i]->pid;
-    newP->CPUburst = cjobQ[i]->CPUburst;
-    newP->arrival = cjobQ[i]->arrival;
-    newP->priority = cjobQ[i]->priority;
-    newP->CPUburst_remain = cjobQ[i]->CPUburst_remain;
-    newP->IOburst = cjobQ[i]->IOburst;
-    newP->IOburst_remain = cjobQ[i]->IOburst_remain;
-    newP->waitingTime = cjobQ[i]->waitingTime;
-    newP->turnaroundTime = cjobQ[i]->turnaroundTime;
-    newP->responseTime = cjobQ[i]->responseTime;
+    newP->pid = jobQ[i]->pid;
+    newP->CPUburst = jobQ[i]->CPUburst;
+    newP->arrival = jobQ[i]->arrival;
+    newP->priority = jobQ[i]->priority;
+    newP->CPUburst_remain = jobQ[i]->CPUburst_remain;
+    newP->IOburst = jobQ[i]->IOburst;
+    newP->IOburst_remain = jobQ[i]->IOburst_remain;
+    newP->waitingTime = jobQ[i]->waitingTime;
+    newP->turnaroundTime = jobQ[i]->turnaroundTime;
+    newP->responseTime = jobQ[i]->responseTime;
     add_cjobQ(newP);
     printf("%d ", cjobQ[i]->pid);
   }
@@ -741,10 +741,6 @@ void SJF_alg(int num_IO){
   mergesort(jobQ, jQ_front+1, jQ_rear, 0);
   printQ_job();
   clone_jobQ();
-  printf("clone jobQ: \n");
-  for(int i = cjQ_front+1; i <= cjQ_rear; i++){
-    printf("p%d ", cjobQ[i]->pid);
-  }
 
 //레디큐 init
   init_clonereadyQ();
