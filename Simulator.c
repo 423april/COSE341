@@ -542,8 +542,8 @@ void FCFS_alg(){
             newP->IOburst = nowIO->IOburst;
             add_waitQ(newP);
             mergesort(waitQ, wQ_front+1, wQ_rear, 1);
-            free(newP);
-	          newP = (proPointer)malloc(sizeof(struct process));
+           // free(newP);
+	     //     newP = (proPointer)malloc(sizeof(struct process));
             newP = poll_clonereadyQ();
             continue;
           }
