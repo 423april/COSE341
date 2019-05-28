@@ -588,7 +588,7 @@ void create_processes(int num_process, int num_IO){
           //waiting queue는 남아있는 IOburst time 오름차순으로 정렬한다.
           mergesort(waitQ, wQ_front+1, wQ_rear, 1);
           add_clonereadyQ(newP);
-          print("clone ready queue: ");
+          printf("clone ready queue: ");
           for(int i = crQ_front+1; i < crQ_rear; i++){
             printf("p%d ", clonereadyQ[i]->pid);
           }
