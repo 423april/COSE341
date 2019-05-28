@@ -192,6 +192,7 @@ void printQ_ready(){
   for(int i = 0; i < (rQ_rear - rQ_front); i++){
     printf("p%d ", readyQ[i]->pid);
   }
+  printf("\n");
 }
 
 //알고리즘 여러개 돌릴때 같은 데이터 써야하므로 기존 레디큐를 복사해서 사용한다.
@@ -213,6 +214,10 @@ void clone_readyQ(){
     newP->waitingQ = readyQ[i]->waitingQ;
     add_clonereadyQ(newP);
   }
+  for(int i= crQ_front+1; i <= crQ_rear; i++){
+    printf("p%d ", clonereadyQ[i]->pid);
+  }
+  printf("\n");
 }
 
 //arrival time을 기준으로 정렬해서 ready queue에 넣어준다.
