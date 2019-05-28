@@ -738,8 +738,12 @@ void SJF_alg(int num_IO){
   printf("\n**************start non-preemptive SJF algorithm:**************\n");
 
   //job queue는 arrival 오름차순으로 정렬
-  //clone_jobQ();
   mergesort(jobQ, jQ_front+1, jQ_rear, 0);
+  clone_jobQ();
+  printf("clone jobQ: \n");
+  for(int i = cjQ_front+1; i <= cjQ_rear; i++){
+    printf("p%d ", cjobQ[i]->pid);
+  }
 
 //레디큐 init
   init_clonereadyQ();
@@ -860,8 +864,8 @@ void PRI_alg(int num_IO){
   printf("\n***********start non-preemptive priority algorithm:************\n");
 
   //job queue는 arrival 오름차순으로 정렬
+  mergesort(jobQ, jQ_front+1, jQ_rear, 0);
   clone_jobQ();
-  mergesort(cjobQ, cjQ_front+1, cjQ_rear, 0);
 
 //레디큐 initialize
   init_readyQ();
