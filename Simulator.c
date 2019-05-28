@@ -598,7 +598,7 @@ void create_processes(int num_process, int num_IO){
           if(type == 0) return;
           else
             mergesort(clonereadyQ, crQ_front+1, crQ_rear, type);
-          print("clone ready queue: ");
+          printf("clone ready queue: ");
           for(int i = crQ_front+1; i < crQ_rear; i++){
             printf("p%d ", clonereadyQ[i]->pid);
           }
