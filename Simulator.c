@@ -547,7 +547,7 @@ void create_processes(int num_process, int num_IO){
       //중복제거의 노력
      for(int i = 1; i < j; i++){
        if(newIO->pid == ioQ[i]->pid && newIO->when == ioQ[i]->when){
-         newIO->pid = newP->pid % num_process + 2;
+         newIO->pid = newIO->pid % num_process + 2;
        }
      }
 
