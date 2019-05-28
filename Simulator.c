@@ -588,11 +588,21 @@ void create_processes(int num_process, int num_IO){
           //waiting queue는 남아있는 IOburst time 오름차순으로 정렬한다.
           mergesort(waitQ, wQ_front+1, wQ_rear, 1);
           add_clonereadyQ(newP);
+          print("clone ready queue: ");
+          for(int i = crQ_front+1; i < crQ_rear; i++){
+            printf("p%d ", clonereadyQ[i]->pid);
+          }
+          printf("\n");
           //해당 우선순위에 부합하게 오름차순 정렬한다. arrival time은 넣은 그대로가 순서가 되므로
           //따로 정렬해주지 않는다.
           if(type == 0) return;
           else
             mergesort(clonereadyQ, crQ_front+1, crQ_rear, type);
+          print("clone ready queue: ");
+          for(int i = crQ_front+1; i < crQ_rear; i++){
+            printf("p%d ", clonereadyQ[i]->pid);
+          }
+          printf("\n");
         }
       }
     }
@@ -642,7 +652,7 @@ void FCFS_alg(int num_IO){
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
         waiting(nowTime, 0);
 
-        
+
         //실행 마치면 turnaroundTime 계산한다.
         if(newP->CPUburst_remain == 0){
           newP->turnaroundTime = nowTime - newP->arrival + 1;
