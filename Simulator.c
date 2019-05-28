@@ -1030,10 +1030,11 @@ void PRESJF_alg(int num_IO){
   printf("\nstart preemptive SJF algorithm: \n");
 
   clone_jobQ();
-  mergesort(readyQ, rQ_front+1, rQ_rear, 2);
+  //mergesort(readyQ, rQ_front+1, rQ_rear, 2);
 
 //레디큐 복사
-  clone_readyQ();
+  //clone_readyQ();
+  init_clonereadyQ();
 
   //wait queue 초기화
   init_waitQ();
@@ -1047,7 +1048,11 @@ void PRESJF_alg(int num_IO){
   proPointer newP;
 
   do{
-
+    newP = poll_jobQ();
+    if(newP->arrival == nowTime){
+      add_clonereadyQ();
+      mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
+    }
     if(!isEmpty(crQ_front, crQ_rear)){
       newP = poll_clonereadyQ();
       printf("\n new process polled! p%d\n", newP->pid);
