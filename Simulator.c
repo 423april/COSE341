@@ -499,8 +499,8 @@ void FCFS_alg(){
       else{
         //해당 프로세스의 CPUburst_remain -1해준다.
         newP->CPUburst_remain--;
-        printf("time: %d ", nowTime);
-        printf("cpu remain: %d ", newP->CPUburst_remain);
+        //printf("time: %d ", nowTime);
+        //printf("cpu remain: %d ", newP->CPUburst_remain);
         printf("p%d ", newP->pid);
         //다른 프로세스들 웨이팅 타임 더해준다.
         wait(clonereadyQ, crQ_front, crQ_rear, newP->pid);
