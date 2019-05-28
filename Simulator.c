@@ -25,7 +25,6 @@ typedef struct process{
   int priority;
   int CPUburst_remain;
   int IOburst_remain;
-  IOPointer IO[MAX_IO_NUM];
   int waitingTime;
   int turnaroundTime;
   int responseTime;
@@ -240,12 +239,11 @@ void clone_jobQ(){
     newP->arrival = cjobQ[i]->arrival;
     newP->priority = cjobQ[i]->priority;
     newP->CPUburst_remain = cjobQ[i]->CPUburst_remain;
+    newP->IOburst = cjobQ[i]->IOburst;
     newP->IOburst_remain = cjobQ[i]->IOburst_remain;
-    memcpy(newP->IO, cjobQ[i]->IO, sizeof(newP->IO));
     newP->waitingTime = cjobQ[i]->waitingTime;
     newP->turnaroundTime = cjobQ[i]->turnaroundTime;
     newP->responseTime = cjobQ[i]->responseTime;
-    newP->IOburst = cjobQ[i]->IOburst;
     add_cjobQ(newP);
     printf("%d ", cjobQ[i]->pid);
   }
@@ -263,7 +261,6 @@ void clone_readyQ(){
     newP->priority = readyQ[i]->priority;
     newP->CPUburst_remain = readyQ[i]->CPUburst_remain;
     newP->IOburst_remain = readyQ[i]->IOburst_remain;
-    memcpy(newP->IO, readyQ[i]->IO, sizeof(newP->IO));
     newP->waitingTime = readyQ[i]->waitingTime;
     newP->turnaroundTime = readyQ[i]->turnaroundTime;
     newP->responseTime = readyQ[i]->responseTime;
@@ -447,8 +444,8 @@ void job2ready(){
   //printf("jQ front %d, rear %d\n", jQ_front, jQ_rear);
   for(int i = 0; i <= jQ_rear; i++){
     //printf("i: %d\n", i);
-	   proPointer temp = (proPointer)malloc(sizeof(struct process));
-   	temp = poll_jobQ();
+	   proPointer temp = jobQ[i];
+
 	 //printf("jQ front %d, rear %d\n", jQ_front, jQ_rear);
 	 // printf("pid: %d, arrival: %d\n",temp->pid, temp->arrival );
 	  add_readyQ(temp);
@@ -539,7 +536,6 @@ void create_processes(int num_process, int num_IO){
     newP->responseTime = 0;
     newP->IOburst = 0;
     newP->IOburst_remain = 0;
-    newP->IO[0] = NULL;
 
     //job queue에 넣어준다. 순서는 pid 오름차순.
     add_jobQ(newP);
