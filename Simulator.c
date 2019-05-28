@@ -1,4 +1,4 @@
-#include <stdio.h>
+cjobQ#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
@@ -740,7 +740,7 @@ void SJF_alg(int num_IO){
 
   //job queue는 arrival 오름차순으로 정렬
   clone_jobQ();
-  mergesort(cjQ, cjQ_front+1, cjQ_rear, 0);
+  mergesort(cjobQ, cjQ_front+1, cjQ_rear, 0);
 
 //레디큐 init
   init_clonereadyQ();
@@ -857,7 +857,7 @@ void PRI_alg(int num_IO){
 
   //job queue는 arrival 오름차순으로 정렬
   clone_jobQ();
-  mergesort(cjQ, cjQ_front+1, cjQ_rear, 0);
+  mergesort(cjobQ, cjQ_front+1, cjQ_rear, 0);
 
 //레디큐 initialize
   init_readyQ();
@@ -973,7 +973,7 @@ void PRESJF_alg(int num_IO){
 
   //job queue는 arrival 오름차순으로 정렬
   clone_jobQ();
-  mergesort(cjQ, cjQ_front+1, cjQ_rear, 0);
+  mergesort(cjobQ, cjQ_front+1, cjQ_rear, 0);
 
 //레디큐 initialize.
   init_clonereadyQ();
@@ -1110,7 +1110,7 @@ void PREPRI_alg(int num_IO){
 
   //job queue는 arrival 오름차순으로 정렬
   clone_jobQ();
-  mergesort(cjQ, cjQ_front+1, cjQ_rear, 0);
+  mergesort(cjobQ, cjQ_front+1, cjQ_rear, 0);
 
 //레디큐 initialize.
   init_clonereadyQ();
@@ -1239,12 +1239,12 @@ void PREPRI_alg(int num_IO){
 //Round Robin 알고리즘.
 //arrival이 가장 작은 것부터 실행
 //time quantum = 3(default);
-void PRESJF_alg(int num_IO, int tq){
+void RR_alg(int num_IO, int tq){
   printf("\n************start Round Robin algorithm****************\n");
 
   //job queue는 arrival 오름차순으로 정렬
   clone_jobQ();
-  mergesort(cjQ, cjQ_front+1, cjQ_rear, 0);
+  mergesort(cjobQ, cjQ_front+1, cjQ_rear, 0);
 
 //레디큐 initialize.
   init_clonereadyQ();
