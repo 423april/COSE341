@@ -245,7 +245,6 @@ void clone_jobQ(){
     newP->turnaroundTime = jobQ[i]->turnaroundTime;
     newP->responseTime = jobQ[i]->responseTime;
     add_cjobQ(newP);
-    printf("%d ", newP->pid);
   }
 
 }
