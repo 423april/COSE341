@@ -453,8 +453,8 @@ void create_processes(int num_process, int num_IO){
 //waiting queue에서 얼마나 기다리고 있는지 매 타임 +1 해주고,
 //waitingQ time이 IOburst와 같아지면 내보낸다.
   void waiting(int nowTime){
-    if(!isEmpty(ioQ_front, ioQ_rear)){
-      for(int i = ioQ_front + 1; i <= ioQ_rear; i++){
+    if(!isEmpty(wQ_front, wQ_rear)){
+      for(int i = wQ_front + 1; i <= wQ_rear; i++){
         waitQ[i]->waitingQ++;
         if(waitQ[i]->waitingQ == waitQ[i]->IOburst){
           add_clonereadyQ(poll_waitQ());
