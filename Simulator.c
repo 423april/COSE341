@@ -416,7 +416,7 @@ void create_processes(int num_process, int num_IO){
       add_ioQ(newIO);
       printf("pid: %d, IOburst: %d, when %d\n", newIO->pid, newIO->IOburst, newIO->when);
       //프로세스 상세에 가장 먼저 일어나는 IO를 표시해준다.
-      if(jobQ[newIO->pid - 1] == NULL){
+      if(jobQ[newIO->pid - 1]->IO == NULL){
         jobQ[newIO->pid - 1]->IO = newIO;
         jobQ[newIO->pid - 1]->IOburst = newIO->IOburst;
         jobQ[newIO->pid - 1]->IOburst_remain = newIO->IOburst;
