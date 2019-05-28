@@ -773,6 +773,7 @@ int main(int argc, char **argv){
   create_processes(num_process, num_IO);
   job2ready();
   FCFS_alg();
+  SJF_alg();
 
   return 0;
 }
