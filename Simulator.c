@@ -645,14 +645,8 @@ void FCFS_alg(int num_IO){
     do{
 
       //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
-      if(isEmpty(crQ_front, crQ_rear)){
-        //printf("bb ");
-        //다른 프로세스들 웨이팅 타임 더해준다.
-        wait(newP->pid);
-        //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
-        waiting(nowTime, 0);
-      }else if(nowTime < newP->arrival){
-        //printf("bb ");
+      if(newP == NULL || nowTime < newP->arrival){
+        printf("bb ");
         //다른 프로세스들 웨이팅 타임 더해준다.
         wait(newP->pid);
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
@@ -711,6 +705,7 @@ void FCFS_alg(int num_IO){
     wT[newP->pid - 1] = newP->waitingTime;
     tT[newP->pid - 1] = newP->turnaroundTime;
     rT[newP->pid - 1] = newP->responseTime;
+    newP = NULL;
     //free(newP);
     //proPointer newP = (proPointer)malloc(sizeof(struct process));
     // newP = poll_clonereadyQ();
