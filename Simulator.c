@@ -520,7 +520,8 @@ void FCFS_alg(){
             newP->IOburst = nowIO->IOburst;
             add_waitQ(newP);
             mergesort(waitQ, wQ_front+1, wQ_rear, 1);
-            newP = realloc(newP, sizeof(struct process));
+            free(newP);
+	    newP = (proPointer)malloc(sizeof(struct process));
             newP = poll_clonereadyQ();
             continue;
           }
@@ -528,7 +529,7 @@ void FCFS_alg(){
 
       }/////else
       nowTime++;
-    }while(newP->CPUburst_remain > 0);
+    }while(newP->CPUburst_remain >= 0);
     printf("finished one segment, start next\n");
     printf("p%d at CPU\n", newP->pid);
   }while(isEmpty(crQ_front, crQ_rear));
