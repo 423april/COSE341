@@ -1027,7 +1027,7 @@ void PRI_alg(int num_IO){
 //preemption 있는 SJF 알고리즘.
 //CPU_remain이 가장 작은 것부터 실행
 void PRESJF_alg(int num_IO){
-  printf("\nstart preemptive SJF algorithm: \n");
+  printf("\n************start preemptive SJF algorithm****************\n");
 
   clone_jobQ();
   //mergesort(readyQ, rQ_front+1, rQ_rear, 2);
@@ -1048,11 +1048,11 @@ void PRESJF_alg(int num_IO){
   proPointer newP;
 
   do{
-    newP = poll_jobQ();
-    if(newP->arrival == nowTime){
-      add_clonereadyQ(newP);
-      mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
-    }
+    // newP = poll_jobQ();
+    // if(newP->arrival == nowTime){
+    //   add_clonereadyQ(newP);
+    //   mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
+    // }
     if(!isEmpty(crQ_front, crQ_rear)){
       newP = poll_clonereadyQ();
       printf("\n new process polled! p%d\n", newP->pid);
