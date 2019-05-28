@@ -622,6 +622,11 @@ void FCFS_alg(int num_IO){
     newP = poll_clonereadyQ();
     printf("\n new process polled! p%d\n", newP->pid);
     do{
+      //다른 프로세스들 웨이팅 타임 더해준다.
+      wait(newP->pid);
+      //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
+      waiting(nowTime, 0);
+      
       //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
       if(nowTime < newP->arrival){
         printf("bb ");
@@ -638,10 +643,7 @@ void FCFS_alg(int num_IO){
         if(newP->CPUburst == newP->CPUburst_remain+1){
           newP->responseTime = nowTime - newP->arrival;
         }
-        //다른 프로세스들 웨이팅 타임 더해준다.
-        wait(newP->pid);
-        //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
-        waiting(nowTime, 0);
+
 
         //현재 시간이 IO가 일어나야 한다면 waitQ에 해당 프로세스를 넣는다.
         for(int i = 0; i < num_IO; i++){
