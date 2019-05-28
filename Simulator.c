@@ -492,7 +492,6 @@ void FCFS_alg(){
     newP = poll_clonereadyQ();
 
     do{
-      nowTime++;
       if(nowTime < newP->arrival){
         printf("bb ");
       }
@@ -521,13 +520,14 @@ void FCFS_alg(){
             newP->IOburst = nowIO->IOburst;
             add_waitQ(newP);
             mergesort(waitQ, wQ_front+1, wQ_rear, 1);
+            proPointer newP = (proPointer)realloc(sizeof(struct process));
             newP = poll_clonereadyQ();
             continue;
           }
         }
 
       }/////else
-
+      nowTime++;
     }while(newP->CPUburst_remain > 0);
 
   }while(isEmpty(crQ_front, crQ_rear));
