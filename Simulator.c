@@ -574,7 +574,7 @@ void create_processes(int num_process, int num_IO){
 
 //waiting queue에서 얼마나 기다리고 있는지 매 타임 +1 해주고,
 //waitingQ time이 IOburst와 같아지면 내보낸다.
-  void waiting(int nowTime){
+  void waiting(int nowTime, int type){
     if(!isEmpty(wQ_front, wQ_rear)){
       for(int i = wQ_front + 1; i <= wQ_rear; i++){
         waitQ[i]->waitingQ++;
@@ -582,6 +582,16 @@ void create_processes(int num_process, int num_IO){
           proPointer newP = (proPointer)malloc(sizeof(struct process));
           newP = poll_waitQ();
           add_clonereadyQ(newP);
+          switch(type){
+            case 2:
+              mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
+              break;
+            case 3:
+              mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
+              break;
+            default:
+              break;
+          }
         }
       }
     }
@@ -620,7 +630,7 @@ void FCFS_alg(){
         //다른 프로세스들 웨이팅 타임 더해준다.
         wait(newP->pid);
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
-        waiting(nowTime);
+        waiting(nowTime, 0);
         //실행 마치면 turnaroundTime 계산한다.
         if(newP->CPUburst_remain == 0){
           newP->turnaroundTime = nowTime - newP->arrival + 1;
@@ -707,7 +717,7 @@ void SJF_alg(){
         //다른 프로세스들 웨이팅 타임 더해준다.
         wait(newP->pid);
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
-        waiting(nowTime);
+        waiting(nowTime, 2);
         //실행 마치면 turnaroundTime 계산한다.
         if(newP->CPUburst_remain == 0){
           newP->turnaroundTime = nowTime - newP->arrival + 1;
