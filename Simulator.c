@@ -488,7 +488,6 @@ void FCFS_alg(){
 
   //레디큐는 도착시간 순으로 정렬되어있다.
   do{
-    printf("\nfinished one segment, start next\n");
     proPointer newP = (proPointer)malloc(sizeof(struct process));
     newP = poll_clonereadyQ();
     printf("p%d at CPU\n", newP->pid);
@@ -535,6 +534,8 @@ void FCFS_alg(){
       nowTime++;
     }while(newP->CPUburst_remain > 0);
     free(newP);
+    printf("\nfinished one segment, start next\n");
+    printf("p%d at CPU\n", newP->pid);
   }while(isEmpty(crQ_front, crQ_rear));
 }
 
