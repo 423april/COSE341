@@ -517,7 +517,13 @@ void FCFS_alg(){
 //wait queue 초기화
   init_waitQ();
 //terminated queue 초기화
-  init_terminatedQ();
+  //init_terminatedQ();
+  int wT[rQ_rear - rQ_front];
+  for(int i = 0; i < rQ_rear - rQ_front; i++){
+    wT[i] = 0;
+  }
+  int tT[rQ_rear - rQ_front];
+  int rT[rQ_rear - rQ_front];
 
   //현재 시간 나타내는 변수
   int nowTime = 0;
@@ -555,7 +561,7 @@ void FCFS_alg(){
           newP->turnaroundTime = nowTime - newP->arrival;
         }
         //처음 response 했을때까지 레디큐에서 기다린 시간.
-        if(newP->CPUburst == newP->CPUburst_remain){
+        if(newP->CPUburst == newP->CPUburst_remain+1){
           newP->responseTime = nowTime - newP->arrival;
         }
 
@@ -575,7 +581,10 @@ void FCFS_alg(){
       }/////else
       nowTime++;
     }while(newP->CPUburst_remain > 0);
-    add_terminatedQ(newP);
+    //add_terminatedQ(newP);
+    wT[newP->pid - 1] = newP->waitingTime;
+    tT[newP->pid - 1] = newP->turnaroundTime;
+    rT[newP->pid - 1] = newP->responseTime;
     free(newP);
   }while(!isEmpty(crQ_front, crQ_rear));
   printf("\n");
@@ -585,12 +594,12 @@ void FCFS_alg(){
   int sumtT = 0;
   int sumrT = 0;
   double avgwT, avgtT, avgrT;
-  for(int i = tQ_front + 1; i <= tQ_rear; i++){
+  for(int i = 0; i < rQ_rear - rQ_front; i++){
     printf("pid: %d, waiting time: %d, turnaround time: %d, response time: %d\n",
-      terminatedQ[i]->pid, terminatedQ[i]->waitingTime, terminatedQ[i]->turnaroundTime, terminatedQ[i]->responseTime);
-      sumwT += terminatedQ[i]->waitingTime;
-      sumtT += terminatedQ[i]->turnaroundTime;
-      sumrT += terminatedQ[i]->responseTime;
+      i+1, wT[i], tT[i], rT[i]);
+      sumwT += wT[i];
+      sumtT += tT[i];
+      sumrT += rT[i];
   }
   avgwT = (double)sumwT/num;
   avgtT = (double)sumtT/num;
