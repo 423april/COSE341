@@ -1050,7 +1050,7 @@ void PRESJF_alg(int num_IO){
   do{
     newP = poll_jobQ();
     if(newP->arrival == nowTime){
-      add_clonereadyQ();
+      add_clonereadyQ(newP);
       mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
     }
     if(!isEmpty(crQ_front, crQ_rear)){
