@@ -198,8 +198,8 @@ void printQ_ready(){
 //알고리즘 여러개 돌릴때 같은 데이터 써야하므로 기존 레디큐를 복사해서 사용한다.
 void clone_readyQ(){
   init_clonereadyQ();
-  proPointer newP = (proPointer)malloc(sizeof(struct process));
   for(int i = 0; i <= rQ_rear; i++){
+    proPointer newP = (proPointer)malloc(sizeof(struct process));
     newP->pid = readyQ[i]->pid;
     newP->CPUburst = readyQ[i]->CPUburst;
     newP->arrival = readyQ[i]->arrival;
