@@ -485,12 +485,14 @@ void FCFS_alg(){
   //현재 시간 나타내는 변수
   int nowTime = 0;
 
+  printf("at readyQ: %d\n", crQ_rear - crQ_front);
 
   //레디큐는 도착시간 순으로 정렬되어있다.
   do{
     proPointer newP = (proPointer)malloc(sizeof(struct process));
     newP = poll_clonereadyQ();
     printf("p%d at CPU\n", newP->pid);
+    printf("at readyQ: %d\n", crQ_rear - crQ_front);
     do{
       //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
       if(nowTime < newP->arrival){
