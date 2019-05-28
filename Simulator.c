@@ -6,33 +6,40 @@
 #define MAX_IO_NUM 60
 #define INF 1000000
 
-#define fcfs 1
+#define FCFS 1
 #define SJF 2
 #define SJFPRE 3 //SJF preemptive
 #define PRI 4 //Priority non-preemptive
 #define RR 5
 #define PRIPRE 6 //Priority preemptive
 
+typedef struct IO* IOPointer;
+typedef struct IO{
+  int pid;
+  int IOburst;
+//해당 프로세스의 CPUburst_remain 이 얼마일때 IO interrupt 될 것인지.
+  int when;
+  //해당 프로세스에서 다음 IObusrt 있다면 그것을 가리킨다.
+  IOPointer next;
+}IO;
+
 //프로세스 구조체
 typedef struct process* proPointer;
 typedef struct process{
   int pid;
   int CPUburst;
-  //int IOburst;
+  int IOburst;
   int arrival;
   int priority;
   int CPUburst_remain;
+  int IObusrt_remain;
+  IOPointer IO;
   int waitingTime;
   int turnaroundTime;
   int responseTime;
+  //waiting queue에서 기다린 시간
+  int waitingQ;
 }process;
-
-typedef struct IO* IOPointer;
-typedef struct IO{
-  int pid;
-  int IOburst;
-  int when; //해당 프로세스의 CPUburst_remain 이 얼마일때 IO interrupt 될 것인지.
-}IO;
 
 //job queue를 최대 프로세스 개수만큼 선언
 proPointer jobQ[MAX_PROCESS_NUM];
@@ -49,6 +56,9 @@ int rQ_front, rQ_rear;
 //waiting queue 배열 선언
 proPointer waitQ[MAX_PROCESS_NUM];
 int wQ_front, wQ_rear;
+
+proPointer clonereadyQ[MAX_PROCESS_NUM];
+int crQ_front, crQ_rear;
 
 //job queue 초기화
 void init_jobQ(){
@@ -147,6 +157,30 @@ proPointer poll_waitQ(){
     return waitQ[++wQ_front];
 }
 
+//clone ready queue 초기화
+void init_clonereadyQ(){
+  crQ_front = -1;
+  crQ_rear = -1;
+
+  for(int i = 0; i < MAX_PROCESS_NUM; i++){
+    clonereadyQ[i] = NULL;
+  }
+}
+//clone ready queue enqueue
+void add_clonereadyQ(proPointer newP){
+  if(crQ_rear == MAX_PROCESS_NUM - 1)
+    printf("clonereadyQ is FULL");
+  else
+    clonereadyQ[++crQ_rear] = newP;
+}
+//clone ready queue dequeue
+proPointer poll_clonereadyQ(){
+  if(crQ_front == crQ_rear)
+    printf("clonereadyQ is EMPTY");
+  else
+    return clonereadyQ[++crQ_front];
+}
+
 void printQ_job(){
   for(int i = 0; i < (jQ_rear - jQ_front); i++){
     printf("p%d , ", jobQ[i]->pid);
@@ -162,25 +196,31 @@ void printQ_ready(){
   }
 }
 
-// proPointer* clonereadyQ(){
-//   proPointer clonereadyQ[MAX_PROCESS_NUM];
-//   int clonereadyQ_front = -1;
-//   int clonereadyQ_rear = -1;
-//
-//   proPointer newP = (proPointer)malloc(sizeof(struct process));
-//   for(int i = 0; i <= rQ_rear; i++){
-//     newP->pid = readyQ[i]->pid;
-//     newP->CPUburst = readyQ[i]->CPUburst;
-//     newP->arrival = readyQ[i]->arrival;
-//     newP->priority = readyQ[i]->priority;
-//     newP->CPUburst_remain = newP->CPUburst;
-//     clonereadyQ[++clonereadyQ_rear] = newP;
-//   }
-//   return clonereadyQ;
-// }
+//알고리즘 여러개 돌릴때 같은 데이터 써야하므로 기존 레디큐를 복사해서 사용한다.
+void clonereadyQ(){
+  init_clonereadyQ();
+  proPointer newP = (proPointer)malloc(sizeof(struct process));
+  for(int i = 0; i <= rQ_rear; i++){
+    newP->pid = readyQ[i]->pid;
+    newP->CPUburst = readyQ[i]->CPUburst;
+    newP->arrival = readyQ[i]->arrival;
+    newP->priority = readyQ[i]->priority;
+    newP->CPUburst_remain = readyQ[i]->CPUburst_remain;
+    newP->IOburst_remain = readyQ[i]->IOburst_remain;
+    newP->IO = readyQ[i]->IO;
+    newP->waitingTime = readyQ[i]->waitingTime;
+    newP->turnaroundTime = readyQ[i]->turnaroundTime;
+    newP->responseTime = readyQ[i]->responseTime;
+    newP->IOburst = readyQ[i]->IOburst;
+    newP->waitingQ = readyQ[i]->waitingQ;
+    add_clonereadyQ(newP);
+  }
+}
 
 //arrival time을 기준으로 정렬해서 ready queue에 넣어준다.
-void merge(proPointer list[], int p, int q, int r){
+//type는 arrival time으로 정렬하는 것인지, IOburst_remain으로 정렬하는지 결정한다.
+//arrival time: 0, IOburst_remain: 1.
+void merge(proPointer list[], int p, int q, int r, int type){
   int n1 = q - p + 1;
   int n2 = r - q ;
  // printf("n1: %d, n2: %d\n", n1, n2);
@@ -193,7 +233,10 @@ void merge(proPointer list[], int p, int q, int r){
   }
  // printf("L insert til n1 - 1\n");
   proPointer dummy1 = (proPointer)malloc(sizeof(struct process));
-  dummy1 -> arrival = INF;
+  if(type == 0)
+    dummy1 -> arrival = INF;
+  else
+    dummy1 -> IOburst_remain = INF;
   L[n1] = dummy1;
  // printf("dummy interted\n");
   for(j = 0; j < n2; j++){
@@ -201,38 +244,68 @@ void merge(proPointer list[], int p, int q, int r){
   }
  // printf("R insert til n2 -1 \n");
   proPointer dummy2 = (proPointer)malloc(sizeof(struct process));
-  dummy2 -> arrival = INF;
+  if(type == 0)
+    dummy2 -> arrival = INF;
+  else
+    dummy2 -> IOburst_remain = INF;
   R[n2] = dummy2;
  // printf("dummy inserted\n");
  // printf("L,R init good\n");
   i = 0; j = 0;
   for(int k = p; k <= r; k++){
-    if(L[i]->arrival <= R[j]->arrival){
-      list[k] = L[i];
-      i++;
+    if(type == 0){
+      if(L[i]->arrival <= R[j]->arrival){
+        list[k] = L[i];
+        i++;
+      }
+      else{
+        list[k] = R[j];
+        j++;
+      }
     }
-    else{
-      list[k] = R[j];
-      j++;
+
+    if(type == 1){
+      if(L[i]->IOburst_remain <= R[j]->IOburst_remain){
+        list[k] = L[i];
+        i++;
+      }
+      else{
+        list[k] = R[j];
+        j++;
+      }
     }
+
   }
  // printf("merge %d, %d, %d well\n", p, q, r);
 }//end merge
 
-void mergesort(proPointer list[], int p, int r){
-  if(p < r){
-//	  printf("p: %d, r: %d\n", p, r);
-    int q = (p+r)/2;
-    mergesort(list, p, q);
-    mergesort(list, q+1, r);
-  //  printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
-    merge(list, p, q, r);
+void mergesort(proPointer list[], int p, int r, int type){
+  if(type == 0){
+    if(p < r){
+  //	  printf("p: %d, r: %d\n", p, r);
+      int q = (p+r)/2;
+      mergesort(list, p, q, 0);
+      mergesort(list, q+1, r, 0);
+    //  printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
+      merge(list, p, q, r, 0);
+    }
+  }
+
+  if(type == 1){
+    if(p < r){
+  //	  printf("p: %d, r: %d\n", p, r);
+      int q = (p+r)/2;
+      mergesort(list, p, q, 1);
+      mergesort(list, q+1, r, 1);
+    //  printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
+      merge(list, p, q, r, 1);
+    }
   }
 }
 
 void job2ready(){
 	//printQ_job();
-  mergesort(jobQ, jQ_front+1, jQ_rear);
+  mergesort_arrival(jobQ, jQ_front+1, jQ_rear, 0);
   //printQ_job();
   init_readyQ();
   //printf("jQ front %d, rear %d\n", jQ_front, jQ_rear);
@@ -246,6 +319,57 @@ void job2ready(){
   }
   //printf("ready front %d rear %d\n", rQ_front, rQ_rear);
   //printQ_ready();
+}
+
+//arrival time을 기준으로 정렬해서 ready queue에 넣어준다.
+void merge_when(IOPointer list[], int p, int q, int r){
+  int n1 = q - p + 1;
+  int n2 = r - q ;
+ // printf("n1: %d, n2: %d\n", n1, n2);
+  IOPointer L[n1 + 1];
+  IOPointer R[n1 + 1];
+ // printf("created L and R\n");
+  int i, j;
+  for(i = 0; i < n1; i++){
+    L[i] = list[p + i];
+  }
+ // printf("L insert til n1 - 1\n");
+  IOPointer dummy1 = (IOPointer)malloc(sizeof(struct IO));
+  dummy1 -> when = INF;
+  L[n1] = dummy1;
+ // printf("dummy interted\n");
+  for(j = 0; j < n2; j++){
+    R[j] = list[q + 1 + j];
+  }
+ // printf("R insert til n2 -1 \n");
+  IOPointer dummy2 = (IOPointer)malloc(sizeof(struct IO));
+  dummy2 -> when = INF;
+  R[n2] = dummy2;
+ // printf("dummy inserted\n");
+ // printf("L,R init good\n");
+  i = 0; j = 0;
+  for(int k = p; k <= r; k++){
+    if(L[i]->when <= R[j]->when){
+      list[k] = L[i];
+      i++;
+    }
+    else{
+      list[k] = R[j];
+      j++;
+    }
+  }
+ // printf("merge %d, %d, %d well\n", p, q, r);
+}//end merge
+
+void mergesort_when(IOPointer list[], int p, int r){
+  if(p < r){
+//	  printf("p: %d, r: %d\n", p, r);
+    int q = (p+r)/2;
+    mergesort_when(list, p, q);
+    mergesort_when(list, q+1, r);
+  //  printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
+    merge_when(list, p, q, r);
+  }
 }
 
 /*
@@ -276,6 +400,10 @@ void create_processes(int num_process, int num_IO){
     newP->waitingTime = 0;
     newP->turnaroundTime = 0;
     newP->responseTime = 0;
+    newP->waitingQ = 0;
+    newP->IOburst = 0;
+    newP->IOburst_remain = 0;
+    newP->IO = NULL;
 
     //job queue에 넣어준다. 순서는 pid 오름차순.
     add_jobQ(newP);
@@ -287,17 +415,23 @@ void create_processes(int num_process, int num_IO){
       newIO->IOburst = rand() % 10 + 1; //IO burst time 1~10
       // 1 <= when < CPUburst 이어야한다.
       newIO->when = rand() % (jobQ[newIO->pid - 1]->CPUburst - 1) + 1;
+      newIO->next = NULL;
       add_ioQ(newIO);
-      printf("pid: %d, IOburst: %d, when %d\n", newIO->pid, newIO->IOburst, newIO->when);
-  //   if(j != 0){
-  //    for(int k = 0; k < j; k++){
-  //       해당 프로세스가 같은 시간에 다른 IO burst 있는지 확인하고 있으면, 다시 선택.
-  //      if(ioQ[k]->pid == whichP && ioQ[k]->when == when) continue;
-	// printf("IO same place\n");
-	// add_ioQ(newIO);
-  //      count++;
-  //     }
+
+      //프로세스 상세에 가장 먼저 일어나는 IO를 표시해준다.
+      if(jobQ[newIO->pid - 1] == NULL){
+        jobQ[newIO->pid - 1]->IO = newIO;
+        jobQ[newIO->pid - 1]->IObusrt = newIO->IOburst;
+        jobQ[newIO->pid - 1]->IObusrt_remain = newIO->IOburst;
+      }else if(jobQ[newIO->pid - 1]->IO->when > newIO->when){
+        jobQ[newIO->pid - 1]->IO = newIO;
+        jobQ[newIO->pid - 1]->IObusrt = newIO->IOburst;
+        jobQ[newIO->pid - 1]->IObusrt_remain = newIO->IOburst;
+      }
+      //printf("pid: %d, IOburst: %d, when %d\n", newIO->pid, newIO->IOburst, newIO->when);
      }
+     //io를 when 오름차순으로 정렬한다.
+     mergesort_when(ioQ, ioQ_front+1, ioQ_rear);
      for(int i = 0; i < (ioQ_rear - ioQ_front); i++){
        printf("ioQ: ");
        printf("p%d , IOburst %d, when %d\n", ioQ[i]->pid, ioQ[i]->IOburst, ioQ[i]->when);
@@ -311,7 +445,7 @@ void create_processes(int num_process, int num_IO){
       }
     }
   }
-
+//큐의 front, rear index 넣으면 해당 큐가 비었는지 알려준다.
   int isEmpty(int front, int rear){
     if(front == rear)
       return 1; //true;
@@ -319,33 +453,42 @@ void create_processes(int num_process, int num_IO){
       return 0;//false;
   }
 
-//선입선출
-void FCFS(){
-  proPointer FCFSrQ[rQ_rear - rQ_front];
-  int FCFSrQ_front = -1;
-  int FCFSrQ_rear = -1;
-  int nowTime = 0;
-  int totalTime = 0;
-  //FCFS용 레디큐를 clone.
-  proPointer newP = (proPointer)malloc(sizeof(struct process));
-  for(int i = 0 ; i <= rQ_rear; i++){
-    newP->pid = readyQ[i]->pid;
-    newP->CPUburst = readyQ[i]->CPUburst;
-    newP->CPUburst_remain = readyQ[i]->CPUburst_remain;
-    newP->priority = readyQ[i]->priority;
-    newP->arrival = readyQ[i]->arrival;
-    newP->waitingTime = readyQ[i]->waitingTime;
-    newP->turnaroundTime = readyQ[i]->turnaroundTime;
-    newP->responseTime = readyQ[i]->responseTime;
-    FCFSrQ[++FCFSrQ_rear] = newP;  
+//waiting queue에서 얼마나 기다리고 있는지 매 타임 +1 해주고,
+//waitingQ time이 IOburst와 같아지면 내보낸다.
+  void waiting(int nowTime){
+    for(int i = ioQ_front + 1; i <= ioQ_rear; i++){
+      waitQ[i]->waitingQ++;
+      if(waitQ[i]->waitingQ == waitQ[i]->IOburst){
+        add_clonereadyQ(poll_waitQ());
+        mergesort(waitQ, wQ_front + 1, wQ_rear, 1);
+      }
+    }
   }
+
+//선입선출
+void fcfs(){
+  //레디큐를 복사한다. //현재 arrival time 오름차순 정렬되어있다.
+  clonereadyQ();
+
+//wait queue 초기화
+  init_waitQ();
+
+  //현재 시간 나타내는 변수
+  int nowTime = 0;
 
   //레디큐는 도착시간 순으로 정렬되어있다.
   do{
-    newP = FCFSrQ[++FCFSrQ_front];
+    newP = poll_clonereadyQ;
 
     do{
       nowTime++;
+      if(newP->IO->when == nowTime){
+        IOPointer nowIO = (IOPointer)malloc(sizeof(struct IO));
+        nowIO = poll_ioQ();
+        newP->IOburst = nowIO->IOburst;
+        add_waitQ(newP);
+        mergesort(waitQ, wQ_front+1, wQ_rear, 1);
+      }
       newP->CPUburst_remain--;
       printf("p%d ", newP->pid);
       wait(FCFSrQ, FCFSrQ_front, FCFSrQ_rear, newP->pid);
