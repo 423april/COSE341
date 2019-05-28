@@ -219,7 +219,7 @@ void printQ_ready(){
 }
 
 void printQ_cloneready(){
-  printf("\nclone readyQ: ");
+  printf("\nclone readyQ: \n");
   for(int i = crQ_front+1; i <= crQ_rear; i++){
     printf("p%d ", clonereadyQ[i]->pid);
     printf("CPUburst %d, ", clonereadyQ[i]->CPUburst);
@@ -655,10 +655,10 @@ void FCFS_alg(int num_IO){
       newP = poll_clonereadyQ();
       //printf("\n new process polled! p%d\n", newP->pid);
       //printf("clone ready queue: ");
-      for(int i = crQ_front+1; i <= crQ_rear; i++){
-        printf("p%d ", clonereadyQ[i]->pid);
-      }
-      printf("\n");
+      // for(int i = crQ_front+1; i <= crQ_rear; i++){
+      //   printf("p%d ", clonereadyQ[i]->pid);
+      // }
+      // printf("\n");
     }
 
     do{
