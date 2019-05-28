@@ -322,7 +322,7 @@ void job2ready(){
   }
   //printf("ready front %d rear %d\n", rQ_front, rQ_rear);
 
-  printQ_ready();
+  //printQ_ready();
 }
 
 //arrival time을 기준으로 정렬해서 ready queue에 넣어준다.
