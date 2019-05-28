@@ -492,6 +492,7 @@ void FCFS_alg(){
     newP = poll_clonereadyQ();
 
     do{
+      //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다. 
       if(nowTime < newP->arrival){
         printf("bb ");
       }
@@ -521,7 +522,7 @@ void FCFS_alg(){
             add_waitQ(newP);
             mergesort(waitQ, wQ_front+1, wQ_rear, 1);
             free(newP);
-	    newP = (proPointer)malloc(sizeof(struct process));
+	           newP = (proPointer)malloc(sizeof(struct process));
             newP = poll_clonereadyQ();
             continue;
           }
@@ -534,6 +535,11 @@ void FCFS_alg(){
     printf("p%d at CPU\n", newP->pid);
   }while(isEmpty(crQ_front, crQ_rear));
 }
+
+// void simulate(){
+//   int nowTime = 0;
+//
+// }
 
 int main(int argc, char **argv){
   int num_process, num_IO;
