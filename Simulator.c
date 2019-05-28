@@ -527,15 +527,15 @@ void create_processes(int num_process, int num_IO){
       // 1 <= when < CPUburst 이어야한다.
       newIO->when = rand() % (jobQ[newIO->pid - 1]->CPUburst - 1) + 1;
       //중복제거의 노력
-      for(int i = 1; i < j; i++){
-        if(newIO->pid == ioQ[i]->pid && newIO->when == ioQ[i]->when){
-          newIO->pid = rand() % num_process + 1;
-          newIO->when = rand() % (jobQ[newIO->pid - 1]->CPUburst - 1) + 1;
-        }
+     // for(int i = 1; i < j; i++){
+     //   if(newIO->pid == ioQ[i]->pid && newIO->when == ioQ[i]->when){
+     //     newIO->pid = rand() % num_process + 1;
+     //     newIO->when = rand() % (jobQ[newIO->pid - 1]->CPUburst - 1) + 1;
+     //   }
 
       add_ioQ(newIO);
       printf("pid: %d, IOburst: %d, when %d\n", newIO->pid, newIO->IOburst, newIO->when);
-      }
+    //  }
       //프로세스 상세에 가장 먼저 일어나는 IO를 표시해준다.
       // int num = 0;
       // for(int i = 0; i < num_IO; i++){
