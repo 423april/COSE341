@@ -705,12 +705,12 @@ void FCFS_alg(int num_IO){
               mergesort(waitQ, wQ_front+1, wQ_rear, 1);
             if(!isEmpty(crQ_front, crQ_rear)){
               newP = poll_clonereadyQ();
-              //printf("after waitQ process: p%d\n", newP->pid);
-              //printf("clone ready queue: ");
-              // for(int i = crQ_front+1; i <= crQ_rear; i++){
-              //   printf("p%d ", clonereadyQ[i]->pid);
-              // }
-              //printf("\n");
+              printf("after waitQ process: p%d\n", newP->pid);
+              printf("clone ready queue: ");
+              for(int i = crQ_front+1; i <= crQ_rear; i++){
+                printf("p%d ", clonereadyQ[i]->pid);
+              }
+              printf("\n");
             }else{
               //printf("next is blank\n");
               newP = NULL;
