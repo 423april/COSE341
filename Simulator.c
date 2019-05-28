@@ -524,9 +524,10 @@ void FCFS_alg(){
   }
   int tT[rQ_rear - rQ_front];
   int rT[rQ_rear - rQ_front];
-
+  printf("inited arrays for times\n");
   //현재 시간 나타내는 변수
   int nowTime = 0;
+  printf("inited timer\n");
 
   //printf("at readyQ: %d\n", crQ_rear - crQ_front);
 
