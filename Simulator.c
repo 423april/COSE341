@@ -6,13 +6,6 @@
 #define MAX_IO_NUM 60
 #define INF 1000000
 
-#define FCFS 1
-#define SJF 2
-#define SJFPRE 3 //SJF preemptive
-#define PRI 4 //Priority non-preemptive
-#define RR 5
-#define PRIPRE 6 //Priority preemptive
-
 typedef struct IO* IOPointer;
 typedef struct IO{
   int pid;
@@ -35,8 +28,7 @@ typedef struct process{
   int waitingTime;
   int turnaroundTime;
   int responseTime;
-  //waiting queue에서 기다린 시간
-  int waitingQ;
+
 }process;
 
 //job queue를 최대 프로세스 개수만큼 선언
@@ -247,7 +239,6 @@ void clone_readyQ(){
     newP->turnaroundTime = readyQ[i]->turnaroundTime;
     newP->responseTime = readyQ[i]->responseTime;
     newP->IOburst = readyQ[i]->IOburst;
-    newP->waitingQ = readyQ[i]->waitingQ;
     add_clonereadyQ(newP);
   }
   for(int i= crQ_front+1; i <= crQ_rear; i++){
@@ -520,7 +511,6 @@ void create_processes(int num_process, int num_IO){
     newP->waitingTime = 0;
     newP->turnaroundTime = 0;
     newP->responseTime = 0;
-    newP->waitingQ = 0;
     newP->IOburst = 0;
     newP->IOburst_remain = 0;
     newP->IO = NULL;
@@ -572,21 +562,23 @@ void create_processes(int num_process, int num_IO){
       return 0;//false;
   }
 
-//waiting queue에서 얼마나 기다리고 있는지 매 타임 +1 해주고,
-//waitingQ time이 IOburst와 같아지면 내보낸다.
+//IO busrt 얼마나 했는지 매 타임  -1 해주고,
+//IOburst_remain == 0 되면 내보내준다.
   void waiting(int nowTime, int type){
     if(!isEmpty(wQ_front, wQ_rear)){
       for(int i = wQ_front + 1; i <= wQ_rear; i++){
-        waitQ[i]->waitingQ++;
-        if(waitQ[i]->waitingQ == waitQ[i]->IOburst){
-          proPointer newP = (proPointer)malloc(sizeof(struct process));
-          newP = poll_waitQ();
-          add_clonereadyQ(newP);
+        waitQ[i]->IOburst_remain--;
+        if(waitQ[i]->IOburst_remain == 0){
+          //proPointer newP = (proPointer)malloc(sizeof(struct process));
+          //newP = poll_waitQ();
+          //waiting queue는 남아있는 IOburst time 오름차순으로 정렬한다.
+          mergesort(waitQ, wQ_front+1, wQ_rear, 1);
+          add_clonereadyQ(poll_waitQ());
           switch(type){
-            case 2:
+            case 2: //CPUburst_remain
               mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
               break;
-            case 3:
+            case 3://priority
               mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
               break;
             default:
@@ -641,13 +633,11 @@ void FCFS_alg(){
         }
 
         //현재 시간이 IO가 일어나야 한다면 waitQ에 해당 프로세스를 넣는다.
-        if(newP->IO != NULL){
+        if(newP->IO != NULL && !isEmpty(ioQ_front, ioQ_rear)){
           for(int i = ioQ_front+1; i <= ioQ_rear; i++){
             if(ioQ[i]->pid == newP->pid){
               if(newP->CPUburst - newP->CPUburst_remain == ioQ[i]->when){
-                IOPointer nowIO = (IOPointer)malloc(sizeof(struct IO));
-                nowIO = poll_ioQ();
-                newP->IOburst = nowIO->IOburst;
+                newP->IOburst = ioQ[i]->IOburst;
                 add_waitQ(newP);
                 mergesort(waitQ, wQ_front+1, wQ_rear, 1);
                 newP = poll_clonereadyQ();
