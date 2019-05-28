@@ -477,10 +477,10 @@ void create_processes(int num_process, int num_IO){
      }
   }
   //한 프로세스를 실행하는 동안 다른 프로세스들의 waiting time을 +1 해주는 함수
-  void wait(proPointer list[], int front, int rear, int pid){
-    for(int i = front+1; i <= rear; i++){
+  void wait(int pid){
+    for(int i = crQ_front+1; i <= crQ_rear; i++){
       if(i != pid-1){
-        list[i]->waitingTime++;
+        clonereadyQ[i]->waitingTime++;
       }
     }
   }
