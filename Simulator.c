@@ -707,7 +707,7 @@ void FCFS_alg(int num_IO){
 
       }/////else
       nowTime++;
-    }while(newP->CPUburst_remain > 0 || !isEmpty(wQ_front, wQ_rear));
+    }while(newP == NULL || newP->CPUburst_remain > 0);
     //add_terminatedQ(newP);
     wT[newP->pid - 1] = newP->waitingTime;
     tT[newP->pid - 1] = newP->turnaroundTime;
