@@ -274,8 +274,9 @@ void clone_jobQ(){
     newP->responseTime = cjobQ[i]->responseTime;
     newP->IOburst = cjobQ[i]->IOburst;
     add_cjobQ(newP);
+    printf("%d ", cjobQ[i]->pid);
   }
-  printf("%d ", cjobQ[i]->pid);
+
 }
 
 //알고리즘 여러개 돌릴때 같은 데이터 써야하므로 기존 레디큐를 복사해서 사용한다.
