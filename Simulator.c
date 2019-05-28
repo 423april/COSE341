@@ -188,6 +188,14 @@ void printQ_job(){
   }
 }
 
+void printQ_ready(){
+  printf("\nreadyQ: ");
+  for(int i = 0; i < (rQ_rear - rQ_front); i++){
+    printf("p%d ", readyQ[i]->pid);
+  }
+  printf("\n");
+}
+
 void printQ_cloneready(){
   printf("\nclone readyQ: ");
   for(int i = 0; i < (crQ_rear - crQ_front); i++){
@@ -199,7 +207,7 @@ void printQ_cloneready(){
 //알고리즘 여러개 돌릴때 같은 데이터 써야하므로 기존 레디큐를 복사해서 사용한다.
 void clone_readyQ(){
   init_clonereadyQ();
-  for(int i = 0; i <= rQ_rear; i++){
+  for(int i = rQ_front+1; i <= rQ_rear; i++){
     proPointer newP = (proPointer)malloc(sizeof(struct process));
     newP->pid = readyQ[i]->pid;
     newP->CPUburst = readyQ[i]->CPUburst;
@@ -323,7 +331,7 @@ void job2ready(){
   }
   //printf("ready front %d rear %d\n", rQ_front, rQ_rear);
 
-  //printQ_ready();
+  printQ_ready();
 }
 
 //arrival time을 기준으로 정렬해서 ready queue에 넣어준다.
