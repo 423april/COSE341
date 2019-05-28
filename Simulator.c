@@ -479,7 +479,7 @@ void create_processes(int num_process, int num_IO){
   //한 프로세스를 실행하는 동안 다른 프로세스들의 waiting time을 +1 해주는 함수
   void wait(int pid){
     for(int i = crQ_front+1; i <= crQ_rear; i++){
-      if(i != pid-1){
+      if(clonereadyQ[i]->pid != pid){
         clonereadyQ[i]->waitingTime++;
       }
     }
@@ -538,7 +538,7 @@ void FCFS_alg(){
         //해당 프로세스의 CPUburst_remain -1해준다.
         newP->CPUburst_remain--;
         //다른 프로세스들 웨이팅 타임 더해준다.
-        wait(clonereadyQ, crQ_front, crQ_rear, newP->pid);
+        wait(newP->pid);
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
         waiting(nowTime);
         //실행 마치면 turnaroundTime 계산한다.
