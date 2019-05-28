@@ -655,7 +655,7 @@ void FCFS_alg(int num_IO){
     tT[newP->pid - 1] = newP->turnaroundTime;
     rT[newP->pid - 1] = newP->responseTime;
     free(newP);
-  }while(!isEmpty(crQ_front, crQ_rear));
+  }while(!isEmpty(crQ_front, crQ_rear) && !isEmpty(wQ_front, wQ_rear));
   printf("\n");
   //evaluation
   int num = rQ_rear - rQ_front;
