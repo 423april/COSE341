@@ -966,8 +966,8 @@ void PRESJF_alg(int num_IO){
   //현재 시간 나타내는 변수
   int nowTime = 0;
 
-  proPointer inP = NULL;
-  proPointer newP = NULL;
+  proPointer inP;
+  proPointer newP;
 
   do{
     //지금 들어온 프로세스의 remain time이 현재 수행중인 프로세스의 remain time보다 작으면 preempt.
