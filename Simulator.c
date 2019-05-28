@@ -547,7 +547,7 @@ void create_processes(int num_process, int num_IO){
       //중복제거의 노력
      for(int i = 1; i < j; i++){
        if(newIO->pid == ioQ[i]->pid && newIO->when == ioQ[i]->when){
-         newIO->pid = newIO->pid % num_process + 2;
+         newIO->pid = (newIO->pid + 1) % num_process + 1;
        }
      }
 
@@ -599,7 +599,7 @@ void create_processes(int num_process, int num_IO){
           else
             mergesort(clonereadyQ, crQ_front+1, crQ_rear, type);
           printf("clone ready queue: ");
-          for(int i = crQ_front+1; i < crQ_rear; i++){
+          for(int i = crQ_front+1; i <= crQ_rear; i++){
             printf("p%d ", clonereadyQ[i]->pid);
           }
           printf("\n");
