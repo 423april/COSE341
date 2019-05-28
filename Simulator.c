@@ -570,11 +570,11 @@ void create_processes(int num_process, int num_IO){
       for(int i = wQ_front + 1; i <= wQ_rear; i++){
         waitQ[i]->IOburst_remain--;
         if(waitQ[i]->IOburst_remain == 0){
-          //proPointer newP = (proPointer)malloc(sizeof(struct process));
-          //newP = poll_waitQ();
+          proPointer newP = (proPointer)malloc(sizeof(struct process));
+          newP = poll_waitQ();
           //waiting queue는 남아있는 IOburst time 오름차순으로 정렬한다.
           mergesort(waitQ, wQ_front+1, wQ_rear, 1);
-          add_clonereadyQ(poll_waitQ());
+          add_clonereadyQ(newP);
           //해당 우선순위에 부합하게 오름차순 정렬한다. arrival time은 넣은 그대로가 순서가 되므로
           //따로 정렬해주지 않는다.
           if(type == 0) return;
