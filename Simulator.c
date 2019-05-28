@@ -738,8 +738,8 @@ void SJF_alg(int num_IO){
   printf("\n**************start non-preemptive SJF algorithm:**************\n");
 
   //job queue는 arrival 오름차순으로 정렬
-  clone_jobQ();
-  mergesort(cjobQ, cjQ_front+1, cjQ_rear, 0);
+  //clone_jobQ();
+  mergesort(jobQ, jQ_front+1, jQ_rear, 0);
 
 //레디큐 init
   init_clonereadyQ();
@@ -756,8 +756,8 @@ void SJF_alg(int num_IO){
   proPointer newP;
 
   do{
-    if(cjobQ[cjQ_front+1]->arrival == nowTime){
-      newP = poll_cjobQ();
+    if(jobQ[jQ_front+1]->arrival == nowTime){
+      newP = poll_jobQ();
       add_clonereadyQ(newP);
       mergesort(clonereadyQ, crQ_front+1, crQ_rear, 3);
     }
@@ -834,8 +834,8 @@ void SJF_alg(int num_IO){
 
       }/////else
       nowTime++;
-      if(cjobQ[cjQ_front+1]->arrival == nowTime){
-        newP = poll_cjobQ();
+      if(jobQ[jQ_front+1]->arrival == nowTime){
+        newP = poll_jobQ();
         add_clonereadyQ(newP);
         mergesort(clonereadyQ, crQ_front+1, crQ_rear, 3);
       }
