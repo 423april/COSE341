@@ -642,14 +642,18 @@ void FCFS_alg(){
 
         //현재 시간이 IO가 일어나야 한다면 waitQ에 해당 프로세스를 넣는다.
         if(newP->IO != NULL){
-          if(newP->IO->when == newP->CPUburst - newP->CPUburst_remain){
-            IOPointer nowIO = (IOPointer)malloc(sizeof(struct IO));
-            nowIO = poll_ioQ();
-            newP->IOburst = nowIO->IOburst;
-            add_waitQ(newP);
-            mergesort(waitQ, wQ_front+1, wQ_rear, 1);
-            newP = poll_clonereadyQ();
-            continue;
+          for(int i = ioQ_front+1; i <= ioQ_rear; i++){
+            if(ioQ[i]->pid == newP->pid){
+              if(newP->CPUburst - newP->CPUburst_remain == ioQ[i]->when){
+                IOPointer nowIO = (IOPointer)malloc(sizeof(struct IO));
+                nowIO = poll_ioQ();
+                newP->IOburst = nowIO->IOburst;
+                add_waitQ(newP);
+                mergesort(waitQ, wQ_front+1, wQ_rear, 1);
+                newP = poll_clonereadyQ();
+                continue;
+              }
+            }
           }
         }
 
@@ -729,14 +733,18 @@ void SJF_alg(){
 
         //현재 시간이 IO가 일어나야 한다면 waitQ에 해당 프로세스를 넣는다.
         if(newP->IO != NULL){
-          if(newP->IO->when == newP->CPUburst - newP->CPUburst_remain){
-            IOPointer nowIO = (IOPointer)malloc(sizeof(struct IO));
-            nowIO = poll_ioQ();
-            newP->IOburst = nowIO->IOburst;
-            add_waitQ(newP);
-            mergesort(waitQ, wQ_front+1, wQ_rear, 1);
-            newP = poll_clonereadyQ();
-            continue;
+          for(int i = ioQ_front+1; i <= ioQ_rear; i++){
+            if(ioQ[i]->pid == newP->pid){
+              if(newP->CPUburst - newP->CPUburst_remain == ioQ[i]->when){
+                IOPointer nowIO = (IOPointer)malloc(sizeof(struct IO));
+                nowIO = poll_ioQ();
+                newP->IOburst = nowIO->IOburst;
+                add_waitQ(newP);
+                mergesort(waitQ, wQ_front+1, wQ_rear, 1);
+                newP = poll_clonereadyQ();
+                continue;
+              }
+            }
           }
         }
 
