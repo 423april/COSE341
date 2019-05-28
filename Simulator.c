@@ -95,7 +95,7 @@ void add_cjobQ(proPointer newP){
   if(cjQ_rear == MAX_PROCESS_NUM - 1)
     printf("cjobQ is FULL");
   else
-    cjobQ[++jQ_rear] = newP;
+    cjobQ[++cjQ_rear] = newP;
 }
 //cjob queue dequeue
 proPointer poll_cjobQ(){
