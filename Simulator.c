@@ -723,16 +723,18 @@ void SJF_alg(int num_IO){
 
         //현재 시간이 IO가 일어나야 한다면 waitQ에 해당 프로세스를 넣는다.
         for(int i = 0; i < num_IO; i++){
-          if(newP->IO[i] != NULL){
-            if(ioQ[i]->pid == newP->pid){
-              if(newP->CPUburst - newP->CPUburst_remain == ioQ[i]->when){
-                newP->IOburst = ioQ[i]->IOburst;
-                add_waitQ(newP);
-                //IOburst_remain 순으로 정렬.
-                mergesort(waitQ, wQ_front+1, wQ_rear, 1);
-                newP = poll_clonereadyQ();
-                break;
-              }
+          if(ioQ[i]->pid == newP->pid){
+            if(ioQ[i]->when == newP->CPUburst - newP->CPUburst_remain){
+              newP->IOburst = ioQ[i]->IOburst;
+              newP->IOburst_remain = ioQ[i]->IOburst;
+              add_waitQ(newP);
+              printf("waitP: p%d, IOburst remain: %d\n", newP->pid, newP->IOburst_remain);
+              //IOburst_remain 순으로 정렬.
+              mergesort(waitQ, wQ_front+1, wQ_rear, 1);
+             // free(newP);
+             // proPointer newP = (proPointer)malloc(sizeof(struct process));
+              newP = poll_clonereadyQ();
+              break;
             }
           }
         }
