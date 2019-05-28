@@ -224,6 +224,7 @@ void printQ_cloneready(){
   for(int i = crQ_front+1; i <= crQ_rear; i++){
     printf("p%d ", clonereadyQ[i]->pid);
     printf("CPUburst %d, ", clonereadyQ[i]->CPUburst);
+    printf("cpu remain %d, ", clonereadyQ[i]->CPUburst_remain);
     printf("arrival %d, ", clonereadyQ[i]->arrival);
     printf("priority %d\n", clonereadyQ[i]->priority);
   }
@@ -743,15 +744,15 @@ void FCFS_alg(int num_IO){
 void SJF_alg(int num_IO){
   printf("start non-preemptive SJF algorithm: \n");
 
-//레디큐를 CPUburst_remain 오름차순으로 정렬한다.
-  mergesort(readyQ, rQ_front+1, rQ_rear, 2);
-  //레디큐를 복사한다. //현재 arrival time 오름차순 정렬되어있다.
+  //레디큐를 복사한다.
   clone_readyQ();
+
+  //레디큐를 CPUburst_remain 오름차순으로 정렬한다.
+    mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
 
 //wait queue 초기화
   init_waitQ();
-//terminated queue 초기화
-  //init_terminatedQ();
+
   int wT[rQ_rear - rQ_front];
   int tT[rQ_rear - rQ_front];
   int rT[rQ_rear - rQ_front];
