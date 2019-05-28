@@ -631,6 +631,11 @@ void FCFS_alg(int num_IO){
   do{
     newP = poll_clonereadyQ();
     printf("\n new process polled! p%d\n", newP->pid);
+    printf("clone ready queue: ");
+    for(int i = crQ_front+1; i <= crQ_rear; i++){
+      printf("p%d ", clonereadyQ[i]->pid);
+    }
+    printf("\n");
     do{
 
       //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
@@ -677,6 +682,11 @@ void FCFS_alg(int num_IO){
              // proPointer newP = (proPointer)malloc(sizeof(struct process));
             //  clone_process(newP, poll_clonereadyQ());
             newP = poll_clonereadyQ();
+            printf("clone ready queue: ");
+            for(int i = crQ_front+1; i <= crQ_rear; i++){
+              printf("p%d ", clonereadyQ[i]->pid);
+            }
+            printf("\n");
               break;
             }
           }
