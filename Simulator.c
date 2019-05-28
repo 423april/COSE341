@@ -24,7 +24,7 @@ typedef struct process{
   int priority;
   int CPUburst_remain;
   int IOburst_remain;
-  IOPointer IO;
+  IOPointer IO[MAX_IO_NUM];
   int waitingTime;
   int turnaroundTime;
   int responseTime;
@@ -513,7 +513,7 @@ void create_processes(int num_process, int num_IO){
     newP->responseTime = 0;
     newP->IOburst = 0;
     newP->IOburst_remain = 0;
-    newP->IO = NULL;
+    newP->IO[0] = NULL;
 
     //job queue에 넣어준다. 순서는 pid 오름차순.
     add_jobQ(newP);
@@ -528,22 +528,19 @@ void create_processes(int num_process, int num_IO){
       add_ioQ(newIO);
       printf("pid: %d, IOburst: %d, when %d\n", newIO->pid, newIO->IOburst, newIO->when);
       //프로세스 상세에 가장 먼저 일어나는 IO를 표시해준다.
-      if(jobQ[newIO->pid - 1]->IO == NULL){
-        jobQ[newIO->pid - 1]->IO = newIO;
-        jobQ[newIO->pid - 1]->IOburst = newIO->IOburst;
-        jobQ[newIO->pid - 1]->IOburst_remain = newIO->IOburst;
-      }else if(jobQ[newIO->pid - 1]->IO->when > newIO->when){
-        jobQ[newIO->pid - 1]->IO = newIO;
-        jobQ[newIO->pid - 1]->IOburst = newIO->IOburst;
-        jobQ[newIO->pid - 1]->IOburst_remain = newIO->IOburst;
+      int num = 0;
+      for(int i = 0; i < num_IO; i++){
+        if(jobQ[newIO->pid - 1]->IO[i] == NULL){
+          jobQ[newIO->pid - 1]->IO[i] = newIO;
+          jobQ[newIO->pid - 1]->IOburst = newIO->IOburst;
+          jobQ[newIO->pid - 1]->IOburst_remain = newIO->IOburst;
+          num = i;
+          break;
+        }
       }
+      mergesort_when(jobQ[newIO->pid - 1]->IO, 0, num);
+
       printf("IO assigned\n");
-     }
-     //io를 when 오름차순으로 정렬한다.
-     mergesort_when(ioQ, ioQ_front+1, ioQ_rear);
-     for(int i = 0; i < (ioQ_rear - ioQ_front); i++){
-       printf("ioQ: ");
-       printf("p%d , IOburst %d, when %d\n", ioQ[i]->pid, ioQ[i]->IOburst, ioQ[i]->when);
      }
   }
   //한 프로세스를 실행하는 동안 다른 프로세스들의 waiting time을 +1 해주는 함수
@@ -585,7 +582,7 @@ void create_processes(int num_process, int num_IO){
   }
 
 //선입선출
-void FCFS_alg(){
+void FCFS_alg(int num_IO){
   printf("start FCFS algorithm: \n");
   //레디큐를 복사한다. //현재 arrival time 오름차순 정렬되어있다.
   clone_readyQ();
@@ -628,15 +625,16 @@ void FCFS_alg(){
         }
 
         //현재 시간이 IO가 일어나야 한다면 waitQ에 해당 프로세스를 넣는다.
-        if(newP->IO != NULL && !isEmpty(ioQ_front, ioQ_rear)){
-          for(int i = ioQ_front+1; i <= ioQ_rear; i++){
+        for(int i = 0; i < num_IO; i++){
+          if(newP->IO[i] != NULL){
             if(ioQ[i]->pid == newP->pid){
               if(newP->CPUburst - newP->CPUburst_remain == ioQ[i]->when){
                 newP->IOburst = ioQ[i]->IOburst;
                 add_waitQ(newP);
+                //IOburst_remain 순으로 정렬.
                 mergesort(waitQ, wQ_front+1, wQ_rear, 1);
                 newP = poll_clonereadyQ();
-                continue;
+                break;
               }
             }
           }
@@ -717,17 +715,16 @@ void SJF_alg(){
         }
 
         //현재 시간이 IO가 일어나야 한다면 waitQ에 해당 프로세스를 넣는다.
-        if(newP->IO != NULL){
-          for(int i = ioQ_front+1; i <= ioQ_rear; i++){
+        for(int i = 0; i < num_IO; i++){
+          if(newP->IO[i] != NULL){
             if(ioQ[i]->pid == newP->pid){
               if(newP->CPUburst - newP->CPUburst_remain == ioQ[i]->when){
-                IOPointer nowIO = (IOPointer)malloc(sizeof(struct IO));
-                nowIO = poll_ioQ();
-                newP->IOburst = nowIO->IOburst;
+                newP->IOburst = ioQ[i]->IOburst;
                 add_waitQ(newP);
+                //IOburst_remain 순으로 정렬.
                 mergesort(waitQ, wQ_front+1, wQ_rear, 1);
                 newP = poll_clonereadyQ();
-                continue;
+                break;
               }
             }
           }
