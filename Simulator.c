@@ -791,12 +791,13 @@ void SJF_alg(int num_IO){
   int nowTime = 0;
 
   proPointer newP = NULL;
-
+  proPointer jobP = NULL;
   do{
     //새로 프로세스가 도착할때마다 레디큐에 넣어주고 CPUburst_remain 오름차순으로 정렬한다.
     if(!isEmpty(cjQ_front, cjQ_rear)){
       if(cjobQ[cjQ_front+1]->arrival == nowTime){
-        add_clonereadyQ(poll_cjobQ());
+        jobP = poll_cjobQ();
+        add_clonereadyQ(jobP);
         mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
       }
     }
