@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <time.h>
 
@@ -539,7 +540,8 @@ void create_processes(int num_process, int num_IO){
         }
       }
       mergesort_when(jobQ[newIO->pid - 1]->IO, 0, num);
-
+	for(int k = 0; k < num; k++){
+		printf("IO: index: %d, IOburst: %d, when: %d\n",k, jobQ[newIO->pid - 1]->IO[k]->IOburst, jobQ[newIO->pid - 1]->IO[k]->when);}
       printf("IO assigned\n");
      }
   }
