@@ -589,7 +589,7 @@ void create_processes(int num_process, int num_IO){
           mergesort(waitQ, wQ_front+1, wQ_rear, 1);
           add_clonereadyQ(newP);
           printf("clone ready queue: ");
-          for(int i = crQ_front+1; i < crQ_rear; i++){
+          for(int i = crQ_front+1; i <= crQ_rear; i++){
             printf("p%d ", clonereadyQ[i]->pid);
           }
           printf("\n");
