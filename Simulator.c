@@ -635,7 +635,7 @@ void FCFS_alg(int num_IO){
               if(newP->CPUburst - newP->CPUburst_remain == ioQ[i]->when){
                 proPointer waitP = (proPointer)malloc(sizeof(struct process));
                 waitP->IOburst = ioQ[i]->IOburst;
-                waitP->IOburst_remain = ioQ[i]->IOburst_remain;
+                waitP->IOburst_remain = ioQ[i]->IOburst;
                 add_waitQ(waitP);
                 //IOburst_remain 순으로 정렬.
                 mergesort(waitQ, wQ_front+1, wQ_rear, 1);
