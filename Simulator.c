@@ -478,7 +478,7 @@ void create_processes(int num_process, int num_IO){
           printf("pid: %d\n", newP->pid);
           printf("CPUburst_remain: %d\n", newP->CPUburst_remain);
           printf("updated arrival: %d\n", newP->arrival);
-          add_clonereadyQ(poll_waitQ());
+          add_clonereadyQ(newP);
           printQ_cloneready();
         }
       }
