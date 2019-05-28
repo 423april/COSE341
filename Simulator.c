@@ -533,7 +533,6 @@ void FCFS_alg(){
   proPointer newP = (proPointer)malloc(sizeof(struct process));
   do{
     newP = poll_clonereadyQ();
-    printf("pid: %d\n", newP->pid);
 
     do{
       //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
