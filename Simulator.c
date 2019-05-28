@@ -651,7 +651,7 @@ void FCFS_alg(int num_IO){
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
         waiting(nowTime, 0);
       }else if(nowTime < newP->arrival){
-        printf("bb ");
+        //printf("bb ");
         //다른 프로세스들 웨이팅 타임 더해준다.
         wait(newP->pid);
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
