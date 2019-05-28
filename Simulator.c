@@ -234,7 +234,7 @@ void clone_readyQ(){
     newP->priority = readyQ[i]->priority;
     newP->CPUburst_remain = readyQ[i]->CPUburst_remain;
     newP->IOburst_remain = readyQ[i]->IOburst_remain;
-    newP->IO = readyQ[i]->IO;
+    newP->IO = readyQ[i]->&IO;
     newP->waitingTime = readyQ[i]->waitingTime;
     newP->turnaroundTime = readyQ[i]->turnaroundTime;
     newP->responseTime = readyQ[i]->responseTime;
@@ -671,7 +671,7 @@ void FCFS_alg(int num_IO){
 
 //선입선출 없는 SJF 알고리즘.
 //CPU_remain이 가장 작은 것부터 실행
-void SJF_alg(){
+void SJF_alg(int num_IO){
   printf("\nstart non-preemptive SJF algorithm: \n");
 //레디큐를 CPUburst_remain 오름차순으로 정렬한다.
   mergesort(readyQ, rQ_front+1, rQ_rear, 2);
@@ -772,8 +772,8 @@ int main(int argc, char **argv){
 
   create_processes(num_process, num_IO);
   job2ready();
-  FCFS_alg();
-  SJF_alg();
+  FCFS_alg(num_IO);
+  SJF_alg(num_IO);
 
   return 0;
 }
