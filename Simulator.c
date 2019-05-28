@@ -19,8 +19,6 @@ typedef struct IO{
   int IOburst;
 //해당 프로세스의 CPUburst_remain 이 얼마일때 IO interrupt 될 것인지.
   int when;
-  //해당 프로세스에서 다음 IObusrt 있다면 그것을 가리킨다.
-  IOPointer next;
 }IO;
 
 //프로세스 구조체
@@ -415,9 +413,8 @@ void create_processes(int num_process, int num_IO){
       newIO->IOburst = rand() % 10 + 1; //IO burst time 1~10
       // 1 <= when < CPUburst 이어야한다.
       newIO->when = rand() % (jobQ[newIO->pid - 1]->CPUburst - 1) + 1;
-      newIO->next = NULL;
       add_ioQ(newIO);
-
+      printf("pid: %d, IOburst: %d, when %d\n", newIO->pid, newIO->IOburst, newIO->when);
       //프로세스 상세에 가장 먼저 일어나는 IO를 표시해준다.
       if(jobQ[newIO->pid - 1] == NULL){
         jobQ[newIO->pid - 1]->IO = newIO;
@@ -428,7 +425,7 @@ void create_processes(int num_process, int num_IO){
         jobQ[newIO->pid - 1]->IOburst = newIO->IOburst;
         jobQ[newIO->pid - 1]->IOburst_remain = newIO->IOburst;
       }
-      //printf("pid: %d, IOburst: %d, when %d\n", newIO->pid, newIO->IOburst, newIO->when);
+      printf("IO assigned\n");
      }
      //io를 when 오름차순으로 정렬한다.
      mergesort_when(ioQ, ioQ_front+1, ioQ_rear);
