@@ -715,9 +715,9 @@ void FCFS_alg(int num_IO){
               newP = NULL;
               printf("NULL\n");
             }
-            break;
             }
           }
+          break;
         }
 
       }/////else
