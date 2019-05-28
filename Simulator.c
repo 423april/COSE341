@@ -501,9 +501,10 @@ void FCFS_alg(){
 
   //레디큐는 도착시간 순으로 정렬되어있다.
   do{
+    printQ_cloneready();
     proPointer newP = (proPointer)malloc(sizeof(struct process));
     newP = poll_clonereadyQ();
-    printQ_cloneready();
+
     //printf("p%d at CPU\n", newP->pid);
     //printf("at readyQ: %d\n", crQ_rear - crQ_front);
     do{
