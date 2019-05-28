@@ -629,9 +629,8 @@ void FCFS_alg(int num_IO){
   //newP = poll_clonereadyQ();
   //printf("\n new process polled! p%d\n", newP->pid);
   proPointer newP;
-  newP->arrival = -1;
+
   do{
-    printf("crQ empty: %d\n", isEmpty(crQ_front, crQ_rear));
     if(!isEmpty(crQ_front, crQ_rear)){
       newP = poll_clonereadyQ();
       printf("\n new process polled! p%d\n", newP->pid);
@@ -645,14 +644,20 @@ void FCFS_alg(int num_IO){
     do{
 
       //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
-      if(nowTime < newP->arrival || isEmpty(crQ_front, crQ_rear)){
+      if(isEmpty(crQ_front, crQ_rear)){
         printf("bb ");
-
+        //다른 프로세스들 웨이팅 타임 더해준다.
+        wait(newP->pid);
+        //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
+        waiting(nowTime, 0);
+      }else if(nowTime < newP->arrival){
+        printf("bb ");
         //다른 프로세스들 웨이팅 타임 더해준다.
         wait(newP->pid);
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
         waiting(nowTime, 0);
       }
+
       else{
         printf("p%d ", newP->pid);
         //해당 프로세스의 CPUburst_remain -1해준다.
