@@ -485,10 +485,10 @@ void FCFS_alg(){
   //현재 시간 나타내는 변수
   int nowTime = 0;
 
-  proPointer newP = (proPointer)malloc(sizeof(struct process));
 
   //레디큐는 도착시간 순으로 정렬되어있다.
   do{
+    proPointer newP = (proPointer)malloc(sizeof(struct process));
     newP = poll_clonereadyQ();
 
     do{
