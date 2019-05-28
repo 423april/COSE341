@@ -502,7 +502,6 @@ void create_processes(int num_process, int num_IO){
           proPointer newP = (proPointer)malloc(sizeof(struct process));
           newP = poll_waitQ();
           add_clonereadyQ(newP);
-          printQ_cloneready();
         }
       }
     }
@@ -519,15 +518,10 @@ void FCFS_alg(){
 //terminated queue 초기화
   //init_terminatedQ();
   int wT[rQ_rear - rQ_front];
-  for(int i = 0; i < rQ_rear - rQ_front; i++){
-    wT[i] = 0;
-  }
   int tT[rQ_rear - rQ_front];
   int rT[rQ_rear - rQ_front];
-  printf("inited arrays for times\n");
   //현재 시간 나타내는 변수
   int nowTime = 0;
-  printf("inited timer\n");
 
   //레디큐는 도착시간 순으로 정렬되어있다.
   proPointer newP = (proPointer)malloc(sizeof(struct process));
