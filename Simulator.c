@@ -245,7 +245,7 @@ void clone_jobQ(){
     newP->turnaroundTime = jobQ[i]->turnaroundTime;
     newP->responseTime = jobQ[i]->responseTime;
     add_cjobQ(newP);
-    printf("%d ", cjobQ[i]->pid);
+    printf("%d ", newP->pid);
   }
 
 }
@@ -741,6 +741,7 @@ void SJF_alg(int num_IO){
   mergesort(jobQ, jQ_front+1, jQ_rear, 0);
   printQ_job();
   clone_jobQ();
+
 
 //레디큐 init
   init_clonereadyQ();
