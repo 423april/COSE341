@@ -585,7 +585,7 @@ void FCFS_alg(){
   int sumtT = 0;
   int sumrT = 0;
   double avgwT, avgtT, avgrT;
-  for(int i = tQ_front + 1; i < tQ_rear; i++){
+  for(int i = tQ_front + 1; i <= tQ_rear; i++){
     printf("pid: %d, waiting time: %d, turnaround time: %d, response time: %d\n",
       terminatedQ[i]->pid, terminatedQ[i]->waitingTime, terminatedQ[i]->turnaroundTime, terminatedQ[i]->responseTime);
       sumwT += terminatedQ[i]->waitingTime;
