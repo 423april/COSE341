@@ -698,6 +698,7 @@ void FCFS_alg(int num_IO){
             }else{
               printf("next is blank\n");
               newP = NULL;
+              printf("NULL\n");
             }
             break;
             }
