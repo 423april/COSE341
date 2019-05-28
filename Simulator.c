@@ -491,8 +491,8 @@ void FCFS_alg(){
   do{
     proPointer newP = (proPointer)malloc(sizeof(struct process));
     newP = poll_clonereadyQ();
-    printf("p%d at CPU\n", newP->pid);
-    printf("at readyQ: %d\n", crQ_rear - crQ_front);
+    //printf("p%d at CPU\n", newP->pid);
+    //printf("at readyQ: %d\n", crQ_rear - crQ_front);
     do{
       //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
       if(nowTime < newP->arrival){
@@ -536,8 +536,8 @@ void FCFS_alg(){
       nowTime++;
     }while(newP->CPUburst_remain > 0);
     free(newP);
-    printf("\nfinished one segment, start next\n");
-    printf("p%d at CPU\n", newP->pid);
+    //printf("\nfinished one segment, start next\n");
+    //printf("p%d at CPU\n", newP->pid);
   }while(!isEmpty(crQ_front, crQ_rear));
 }
 
