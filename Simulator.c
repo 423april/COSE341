@@ -198,7 +198,7 @@ void printQ_ready(){
 
 void printQ_cloneready(){
   printf("\nclone readyQ: ");
-  for(int i = 0; i < (crQ_rear - crQ_front); i++){
+  for(int i = crQ_front+1; i <= crQ_rear; i++){
     printf("p%d ", clonereadyQ[i]->pid);
   }
   printf("\n");
