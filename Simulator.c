@@ -754,12 +754,13 @@ void SJF_alg(int num_IO){
   int nowTime = 0;
 
   proPointer newP;
+  proPointer inP;
 
   do{
     if(jobQ[jQ_front+1]->arrival == nowTime){
-      newP = poll_jobQ();
-      add_clonereadyQ(newP);
-      mergesort(clonereadyQ, crQ_front+1, crQ_rear, 3);
+      inP = poll_jobQ();
+      add_clonereadyQ(inP);
+      mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
     }
 
     if(!isEmpty(crQ_front, crQ_rear)){
@@ -778,9 +779,11 @@ void SJF_alg(int num_IO){
       if(newP == NULL || nowTime < newP->arrival){
         printf("bb ");
         //다른 프로세스들 웨이팅 타임 더해준다.
-        wait(newP->pid);
+        if(!isEmpty(crQ_front, crQ_rear));
+          wait(newP->pid);
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
-        waiting(nowTime, 2);
+        if(!isEmpty(wQ_front, wQ_rear));
+          waiting(nowTime, 0);
       }
 
       else{
@@ -789,9 +792,11 @@ void SJF_alg(int num_IO){
         newP->CPUburst_remain--;
 
         //다른 프로세스들 웨이팅 타임 더해준다.
-        wait(newP->pid);
+        if(!isEmpty(crQ_front, crQ_rear));
+          wait(newP->pid);
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
-        waiting(nowTime, 2);
+        if(!isEmpty(wQ_front, wQ_rear));
+          waiting(nowTime, 0);
 
 
         //실행 마치면 turnaroundTime 계산한다.
@@ -835,9 +840,9 @@ void SJF_alg(int num_IO){
       }/////else
       nowTime++;
       if(jobQ[jQ_front+1]->arrival == nowTime){
-        newP = poll_jobQ();
-        add_clonereadyQ(newP);
-        mergesort(clonereadyQ, crQ_front+1, crQ_rear, 3);
+        inP = poll_jobQ();
+        add_clonereadyQ(inP);
+        mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
       }
     }while(newP == NULL || newP->CPUburst_remain > 0);
     wT[newP->pid - 1] = newP->waitingTime;
