@@ -629,6 +629,7 @@ void FCFS_alg(int num_IO){
   //newP = poll_clonereadyQ();
   //printf("\n new process polled! p%d\n", newP->pid);
   proPointer newP;
+  newP->arrival = -1;
   do{
     if(!isEmpty(crQ_front, crQ_rear)){
       newP = poll_clonereadyQ();
