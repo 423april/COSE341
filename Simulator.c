@@ -538,7 +538,7 @@ void FCFS_alg(){
     free(newP);
     printf("\nfinished one segment, start next\n");
     printf("p%d at CPU\n", newP->pid);
-  }while(isEmpty(crQ_front, crQ_rear));
+  }while(!isEmpty(crQ_front, crQ_rear));
 }
 
 // void simulate(){
