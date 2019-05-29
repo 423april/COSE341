@@ -757,8 +757,8 @@ void SJF_alg(int num_IO){
   //현재 시간 나타내는 변수
   int nowTime = 0;
 
-  proPointer newP;
-  proPointer inP;
+  proPointer newP = NULL;
+  proPointer inP = NULL;
 
   do{
     if(!isEmpty(cjQ_front, cjQ_rear) && cjobQ[cjQ_front+1]->arrival == nowTime){
