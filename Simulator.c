@@ -739,11 +739,11 @@ void SJF_alg(int num_IO){
   //job queue는 arrival 오름차순으로 정렬
   mergesort(jobQ, jQ_front+1, jQ_rear, 0);
   clone_jobQ();
-  // printf("%d, %d", cjQ_front, cjQ_rear);
-  // for(int i = cjQ_front+1; i <= cjQ_rear; i++){
-  //   printf("%d ", cjobQ[i]->pid);
-  // }
-  // printf("\n");
+  printf("%d, %d", cjQ_front, cjQ_rear);
+  for(int i = cjQ_front+1; i <= cjQ_rear; i++){
+    printf("%d ", cjobQ[i]->pid);
+  }
+  printf("\n");
 
 //레디큐 init
   init_clonereadyQ();
