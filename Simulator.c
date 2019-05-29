@@ -232,7 +232,7 @@ void printQ_cloneready(){
 
 void clone_jobQ(){
   init_cjobQ();
-  for(int i = cjQ_front+1; i <= cjQ_rear; i++){
+  for(int i = jQ_front+1; i <= jQ_rear; i++){
     proPointer newP = (proPointer)malloc(sizeof(struct process));
     newP->pid = jobQ[i]->pid;
     newP->CPUburst = jobQ[i]->CPUburst;
