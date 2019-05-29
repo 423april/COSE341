@@ -761,7 +761,7 @@ void SJF_alg(int num_IO){
   proPointer inP;
 
   do{
-    if(cjobQ[cjQ_front+1]->arrival == nowTime){
+    if(!isEmpty(cjQ_front, cjQ_rear) && cjobQ[cjQ_front+1]->arrival == nowTime){
       inP = poll_cjobQ();
       add_clonereadyQ(inP);
       mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
