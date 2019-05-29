@@ -632,7 +632,7 @@ void FCFS_alg(int num_IO){
   printf("\n******************start FCFS algorithm:*********************\n");
   //레디큐를 복사한다. //현재 arrival time 오름차순 정렬되어있다.
   clone_readyQ();
-
+  
 //wait queue 초기화
   init_waitQ();
 
@@ -643,7 +643,7 @@ void FCFS_alg(int num_IO){
   int nowTime = 0;
 
   //레디큐는 도착시간 순으로 정렬되어있다.
-  proPointer newP;
+  proPointer newP = NULL;
 
   do{
     if(!isEmpty(crQ_front, crQ_rear)){
