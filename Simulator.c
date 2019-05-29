@@ -851,7 +851,7 @@ void SJF_alg(int num_IO){
         add_clonereadyQ(inP);
         mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
       }
-    }while(newP == NULL || newP->CPUburst_remain > 0);
+    }while(newP->pid == -1 || newP->CPUburst_remain > 0);
     wT[newP->pid - 1] = newP->waitingTime;
     tT[newP->pid - 1] = newP->turnaroundTime;
     rT[newP->pid - 1] = newP->responseTime;
