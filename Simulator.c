@@ -698,21 +698,21 @@ void FCFS_alg(int num_IO){
               newP->IOburst = ioQ[i]->IOburst;
               newP->IOburst_remain = ioQ[i]->IOburst;
               add_waitQ(newP);
-              printf("waitP: p%d, IOburst remain: %d\n", newP->pid, newP->IOburst_remain);
+              //printf("waitP: p%d, IOburst remain: %d\n", newP->pid, newP->IOburst_remain);
               //IOburst_remain 순으로 정렬.
               mergesort(waitQ, wQ_front+1, wQ_rear, 1);
             if(!isEmpty(crQ_front, crQ_rear)){
               newP = poll_clonereadyQ();
-              printf("after waitQ process: p%d\n", newP->pid);
-              printf("clone ready queue: ");
-              for(int i = crQ_front+1; i <= crQ_rear; i++){
-                printf("p%d ", clonereadyQ[i]->pid);
-              }
-              printf("\n");
+              //printf("after waitQ process: p%d\n", newP->pid);
+              //printf("clone ready queue: ");
+              // for(int i = crQ_front+1; i <= crQ_rear; i++){
+              //   printf("p%d ", clonereadyQ[i]->pid);
+              // }
+              // printf("\n");
             }else{
-              printf("next is blank\n");
+              //printf("next is blank\n");
               newP = NULL;
-              printf("NULL\n");
+              //printf("NULL\n");
             }
             }
           }
