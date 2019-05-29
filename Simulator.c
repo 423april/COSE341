@@ -760,6 +760,7 @@ void SJF_alg(int num_IO){
   proPointer dummy = (proPointer)malloc(sizeof(struct process));
   dummy->pid = -1;
   proPointer newP = dummy;
+  printf("%d ", newP->pid);
   proPointer inP;
 
   do{
