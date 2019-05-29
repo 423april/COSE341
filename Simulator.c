@@ -757,9 +757,7 @@ void SJF_alg(int num_IO){
   //현재 시간 나타내는 변수
   int nowTime = 0;
 
-  proPointer dummy = (proPointer)malloc(sizeof(struct process));
-  dummy->pid = -1;
-  proPointer newP = dummy;
+  proPointer newP;
   printf("%d ", newP->pid);
   proPointer inP;
 
@@ -786,7 +784,7 @@ void SJF_alg(int num_IO){
     do{
 
       //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
-      if(newP->pid == -1){
+      if(newP == NULL || newP->arrival < nowTime){
         printf("bb ");
         //다른 프로세스들 웨이팅 타임 더해준다.
         if(!isEmpty(crQ_front, crQ_rear));
@@ -854,7 +852,7 @@ void SJF_alg(int num_IO){
         add_clonereadyQ(inP);
         mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
       }
-    }while(newP->pid == -1 || newP->CPUburst_remain > 0);
+    }while(newP==NULL || newP->CPUburst_remain > 0);
     wT[newP->pid - 1] = newP->waitingTime;
     tT[newP->pid - 1] = newP->turnaroundTime;
     rT[newP->pid - 1] = newP->responseTime;
