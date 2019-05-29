@@ -53,6 +53,8 @@ int cjQ_front, cjQ_rear;
 proPointer clonereadyQ[MAX_PROCESS_NUM];
 int crQ_front, crQ_rear;
 
+int eval[6];
+
 //job queue 초기화
 void init_jobQ(){
   jQ_front = -1;
@@ -607,7 +609,7 @@ void create_processes(int num_process, int num_IO){
     }
   }
 
-  void evaluation(int wT[], int tT[], int rT[]){
+  void evaluation(int wT[], int tT[], int rT[], int alg){
     //evaluation
     int num = rQ_rear - rQ_front;
     int sumwT = 0;
@@ -627,12 +629,13 @@ void create_processes(int num_process, int num_IO){
     printf("avgwT: %f, avgtT: %f, avgrT: %f\n", avgwT, avgtT, avgrT);
   }
 
+
 //선입선출
 void FCFS_alg(int num_IO){
   printf("\n******************start FCFS algorithm:*********************\n");
   //레디큐를 복사한다. //현재 arrival time 오름차순 정렬되어있다.
   clone_readyQ();
-  
+
 //wait queue 초기화
   init_waitQ();
 
@@ -728,7 +731,7 @@ void FCFS_alg(int num_IO){
     newP = NULL;
   }while(!isEmpty(crQ_front, crQ_rear) || !isEmpty(wQ_front, wQ_rear));
   printf("\n");
-  evaluation(wT, tT, rT);
+  evaluation(wT, tT, rT, 0);
 }
 
 //preemption 없는 SJF 알고리즘.
@@ -739,11 +742,11 @@ void SJF_alg(int num_IO){
   //job queue는 arrival 오름차순으로 정렬
   mergesort(jobQ, jQ_front+1, jQ_rear, 0);
   clone_jobQ();
-  printf("%d, %d", cjQ_front, cjQ_rear);
-  for(int i = cjQ_front+1; i <= cjQ_rear; i++){
-    printf("%d ", cjobQ[i]->pid);
-  }
-  printf("\n");
+  // printf("%d, %d", cjQ_front, cjQ_rear);
+  // for(int i = cjQ_front+1; i <= cjQ_rear; i++){
+  //   printf("%d ", cjobQ[i]->pid);
+  // }
+  // printf("\n");
 
 //레디큐 init
   init_clonereadyQ();
@@ -859,7 +862,7 @@ void SJF_alg(int num_IO){
     newP = NULL;
   }while(!isEmpty(crQ_front, crQ_rear) || !isEmpty(wQ_front, wQ_rear));
   printf("\n");
-  evaluation(wT, tT, rT);
+  evaluation(wT, tT, rT, 1);
 }
 
 //preemption 없는 priority 알고리즘.
@@ -904,7 +907,7 @@ void PRI_alg(int num_IO){
     do{
 
       //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
-      if(newP == NULL || nowTime < newP->arrival){
+      if(nowTime < newP->arrival || newP == NULL){
         printf("bb ");
         //다른 프로세스들 웨이팅 타임 더해준다.
         wait(newP->pid);
@@ -975,7 +978,7 @@ void PRI_alg(int num_IO){
     newP = NULL;
   }while(!isEmpty(crQ_front, crQ_rear) || !isEmpty(wQ_front, wQ_rear));
   printf("\n");
-  evaluation(wT, tT, rT);
+  evaluation(wT, tT, rT, 2);
 }
 
 //preemption 있는 SJF 알고리즘.
@@ -1112,7 +1115,7 @@ void PRESJF_alg(int num_IO){
   }while(!isEmpty(crQ_front, crQ_rear) || !isEmpty(wQ_front, wQ_rear));
   printf("\n");
 
-  evaluation(wT, tT, rT);
+  evaluation(wT, tT, rT, 3);
 }
 
 //preemption 있는 Priority 알고리즘.
@@ -1245,7 +1248,7 @@ void PREPRI_alg(int num_IO){
   }while(!isEmpty(crQ_front, crQ_rear) || !isEmpty(wQ_front, wQ_rear));
   printf("\n");
 
-  evaluation(wT, tT, rT);
+  evaluation(wT, tT, rT, 4);
 }
 
 //Round Robin 알고리즘.
@@ -1379,7 +1382,7 @@ void RR_alg(int num_IO, int tq){
   }while(!isEmpty(crQ_front, crQ_rear) || !isEmpty(wQ_front, wQ_rear));
   printf("\n");
 
-  evaluation(wT, tT, rT);
+  evaluation(wT, tT, rT, 5);
 }
 
 
