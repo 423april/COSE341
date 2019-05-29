@@ -758,7 +758,7 @@ void SJF_alg(int num_IO){
   int nowTime = 0;
 
   proPointer newP = NULL;
-  proPointer inP = NULL;
+  proPointer inP;
 
   do{
     if(!isEmpty(cjQ_front, cjQ_rear) && cjobQ[cjQ_front+1]->arrival == nowTime){
@@ -781,7 +781,7 @@ void SJF_alg(int num_IO){
     do{
 
       //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
-      if(isEmpty(crQ_front, crQ_rear)){
+      if(*newP == NULL){
         printf("bb ");
         //다른 프로세스들 웨이팅 타임 더해준다.
         if(!isEmpty(crQ_front, crQ_rear));
