@@ -87,7 +87,7 @@ int main(int argc, char **argv){
     proPointer newP = (proPointer)malloc(sizeof(struct process));
     newP->pid = i+1;
     add_Q(jobQ, newP);
-
+    printf("front: %d, rear: %d\n", jobQ.front, jobQ.rear);
     for(int j = jobQ.front; j <= jobQ.rear; j++){
       printf("p%d ", jobQ.q[j]->pid);
     }
