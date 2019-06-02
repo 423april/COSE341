@@ -669,7 +669,7 @@ void FCFS_alg(int num_IO){
         if(jobQ[jQ_front+1]->arrival == nowTime){
           inP = poll_jobQ();
           add_readyQ(inP);
-          printf("%d\n",inP->pid);
+          printf("t %d, %d\n",nowTime, inP->pid);
         }
       }
 
