@@ -36,7 +36,7 @@ typedef struct queue{
   int rear;
 }queue;
 
-queue init_Q(queue Q){
+void init_Q(queue Q){
   Q.front = -1;
   Q.rear = -1;
   for(int i = 0; i < MAX_PROCESS_NUM; i++){
@@ -80,7 +80,7 @@ void create_processes(int num_process, int num_IO){
   srand( (unsigned)time(NULL) );
 
   //job queue 전역으로 초기화
-  job = init_Q(job);
+  init_Q(job);
 
   for(int i = 0; i < num_process; i++){
     proPointer newP = (proPointer)malloc(sizeof(struct process));
