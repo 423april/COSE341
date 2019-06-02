@@ -676,11 +676,8 @@ void FCFS_alg(int num_IO){
       if(newP == NULL && isEmpty(rQ_front, rQ_rear) && isEmpty(wQ_front, wQ_rear){
         printf("bb ");
       }
-      else if(newP == NULL && isEmpty(rQ_front, rQ_rear) && !isEmpty(wQ_front, wQ_rear){
+      if(ewP == NULL && isEmpty(rQ_front, rQ_rear) && !isEmpty(wQ_front, wQ_rear){
         printf("bb ");
-        //다른 프로세스들 웨이팅 타임 더해준다.
-        if(!isEmpty(crQ_front, crQ_rear));
-        wait(newP->pid);
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
         if(!isEmpty(wQ_front, wQ_rear));
         waiting(nowTime, 0);
@@ -717,7 +714,7 @@ void FCFS_alg(int num_IO){
               //printf("waitP: p%d, IOburst remain: %d\n", newP->pid, newP->IOburst_remain);
               //IOburst_remain 순으로 정렬.
               mergesort(waitQ, wQ_front+1, wQ_rear, 1);
-            if(!isEmpty(crQ_front, crQ_rear)){
+            if(!isEmpty(rQ_front, rQ_rear)){
               newP = poll_readyQ();
               //printf("after waitQ process: p%d\n", newP->pid);
               //printf("clone ready queue: ");
