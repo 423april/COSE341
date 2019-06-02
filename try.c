@@ -88,7 +88,7 @@ int main(int argc, char **argv){
 
   for(int i = 0; i < 5; i++){
     proPointer oldP;
-    printf("p%d ", jobQ.q[jobQ.front + 1]);
+    printf("p%d ", jobQ.q[jobQ.front + 1]->pid);
     oldP = poll_Q(jobQ);
     printf("oldP: %d\n", oldP->pid);
   }
