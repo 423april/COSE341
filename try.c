@@ -96,6 +96,15 @@ void create_processes(int num_process, int num_IO){
   }
 }
 
+void printQ(queue Q){
+  for(int i = Q.front+1; i <= Q.rear; i++){
+    printf("pid: %d ", Q.q[i]->pid);
+    printf("CPUburst: %d, ", Q.q[i]->CPUburst);
+    printf("arrival: %d, ", Q.q[i]->arrival);
+    printf("priority: %d\n", Q.q[i]->priority);
+  }
+}
+
 queue cloneQ(queue oldQ, queue newQ){
   newQ = init_Q(newQ);
   for(int i = oldQ.front+1; i <= oldQ.rear; i++){
@@ -115,15 +124,6 @@ queue cloneQ(queue oldQ, queue newQ){
     newQ = add_Q(newQ, newP);
   }
   printQ(newQ);
-}
-
-void printQ(queue Q){
-  for(int i = Q.front+1; i <= Q.rear; i++){
-    printf("pid: %d ", Q.q[i]->pid);
-    printf("CPUburst: %d, ", Q.q[i]->CPUburst);
-    printf("arrival: %d, ", Q.q[i]->arrival);
-    printf("priority: %d\n", Q.q[i]->priority);
-  }
 }
 
 int main(int argc, char **argv){
