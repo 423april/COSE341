@@ -387,6 +387,7 @@ void FCFS_alg(int num_IO){
   printf("\n******************start FCFS algorithm:*********************\n");
   //jobQ를 arrival time 오름차순으로 정렬
   mergesort(job.q, job.front+1, job.rear, 0);
+  printQ(job);
   //readyQ 초기화
   init_Q(ready);
 //wait queue 초기화
@@ -416,11 +417,11 @@ void FCFS_alg(int num_IO){
     do{
       //프로세스 도착 안함.
       if(newP == NULL && isEmpty(ready.front, ready.rear) && isEmpty(wait.front, wait.rear)){
-        printf("bb ");
+        //printf("bb ");
       }
       //레디큐 비어있고, 프로세스 다 웨이팅큐에 있음.
       else if(newP == NULL && isEmpty(ready.front, ready.rear) && !isEmpty(wait.front, wait.rear)){
-        printf("bb ");
+        //printf("bb ");
         waiting(nowTime, -1);
       }
       else{
@@ -494,6 +495,7 @@ int main(int argc, char **argv){
   scanf("%d", &num_IO);
 
   create_processes(num_process, num_IO);
+  printQ(job);
   FCFS_alg(num_IO);
 
 }
