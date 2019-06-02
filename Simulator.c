@@ -1419,6 +1419,7 @@ int main(int argc, char **argv){
 
   if(!isEmpty(jQ_front, jQ_rear)){
     if(jobQ[jQ_front+1]->arrival == 0){
+      proPointer inP;
       inP = poll_jobQ();
       add_readyQ(inP);
     }
