@@ -123,7 +123,7 @@ queue cloneQ(queue oldQ, queue newQ){
     //job queue에 넣어준다. 순서는 pid 오름차순.
     newQ = add_Q(newQ, newP);
   }
-  printQ(newQ);
+  //printQ(newQ);
 }
 
 //arrival time을 기준으로 정렬해서 ready queue에 넣어준다.
@@ -305,12 +305,13 @@ int main(int argc, char **argv){
   scanf("%d", &num_IO);
 
   create_processes(num_process, num_IO);
+  printQ(job_global);
   queue clone_jobQ;
   clone_jobQ = cloneQ(job_global, clone_jobQ);
   printQ(clone_jobQ);
 
-  /*clone_jobQ = */mergesort(clone_jobQ, clone_jobQ.front+1, clone_jobQ.rear, 0);
-  printQ(clone_jobQ);
+  /*clone_jobQ = *///mergesort(clone_jobQ, clone_jobQ.front+1, clone_jobQ.rear, 0);
+  //printQ(clone_jobQ);
   //clone_jobQ = mergesort(clone_jobQ, clone_jobQ.front+1, clone_jobQ.rear, 2);
   //printQ(clone_jobQ);
   //clone_jobQ = mergesort(clone_jobQ, clone_jobQ.front+1, clone_jobQ.rear, 3);
