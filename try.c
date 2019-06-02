@@ -42,7 +42,7 @@ void init_Q(queue Q){
   for(int i = 0; i < MAX_PROCESS_NUM; i++){
     Q.q[i] = NULL;
   }
-  return Q;
+  //return Q;
 }
 
 void add_Q(queue Q, proPointer newP){
@@ -57,7 +57,7 @@ void add_Q(queue Q, proPointer newP){
 proPointer poll_Q(queue Q){
   if(Q.front == Q.rear){
     printf("Q is empty");
-    return;
+    return NULL;
   }
   else{
     return Q.q[++Q.front];
