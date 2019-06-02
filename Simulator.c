@@ -672,7 +672,7 @@ void FCFS_alg(int num_IO){
         }
       }
 
-      if(newP == NULL && !isEmpty(rQ_front, rQ_rear)){
+      if(!isEmpty(rQ_front, rQ_rear)){
         newP = poll_readyQ();
       }
 
