@@ -125,6 +125,174 @@ void printQ(queue Q){
   }
 }
 
+//arrival time을 기준으로 정렬해서 ready queue에 넣어준다.
+//type는 arrival time으로 정렬하는 것인지, IOburst_remain으로 정렬하는지 결정한다.
+//arrival time: 0, IOburst_remain: 1, CPUburst_remain: 2, priority: 3
+void merge(proPointer list[], int p, int q, int r, int type){
+  int n1 = q - p + 1;
+  int n2 = r - q ;
+ // printf("n1: %d, n2: %d\n", n1, n2);
+  proPointer L[n1 + 1];
+  proPointer R[n1 + 1];
+ // printf("created L and R\n");
+  int i, j;
+  for(i = 0; i < n1; i++){
+    L[i] = list[p + i];
+  }
+ // printf("L insert til n1 - 1\n");
+  proPointer dummy1 = (proPointer)malloc(sizeof(struct process));
+  switch (type) {
+    case 0:
+      dummy1 -> arrival = INF;
+      break;
+    case 1:
+      dummy1 -> IOburst_remain = INF;
+      break;
+    case 2:
+      dummy1 -> CPUburst_remain = INF;
+      break;
+    case 3:
+      dummy1 -> priority = INF;
+      break;
+    default:
+      printf("merge: unknown type received\n");
+      break;
+  }
+  L[n1] = dummy1;
+ // printf("dummy interted\n");
+  for(j = 0; j < n2; j++){
+    R[j] = list[q + 1 + j];
+  }
+ // printf("R insert til n2 -1 \n");
+  proPointer dummy2 = (proPointer)malloc(sizeof(struct process));
+  switch (type) {
+    case 0:
+      dummy2 -> arrival = INF;
+      break;
+    case 1:
+      dummy2 -> IOburst_remain = INF;
+      break;
+    case 2:
+      dummy2 -> CPUburst_remain = INF;
+      break;
+    case 3:
+      dummy2 -> priority = INF;
+      break;
+    default:
+      printf("merge: unknown type received\n");
+      break;
+  }
+  R[n2] = dummy2;
+
+  i = 0; j = 0;
+  for(int k = p; k <= r; k++){
+    switch(type){
+      case 0:
+      if(L[i]->arrival <= R[j]->arrival){
+        list[k] = L[i];
+        i++;
+      }
+      else{
+        list[k] = R[j];
+        j++;
+      }
+      break;
+
+      case 1:
+      if(L[i]->IOburst_remain <= R[j]->IOburst_remain){
+        list[k] = L[i];
+        i++;
+      }
+      else{
+        list[k] = R[j];
+        j++;
+      }
+      break;
+
+      case 2:
+      if(L[i]->CPUburst_remain <= R[j]->CPUburst_remain){
+        list[k] = L[i];
+        i++;
+      }
+      else{
+        list[k] = R[j];
+        j++;
+      }
+      break;
+
+      case 3:
+      if(L[i]->priority <= R[j]->priority){
+        list[k] = L[i];
+        i++;
+      }
+      else{
+        list[k] = R[j];
+        j++;
+      }
+      break;
+
+      default:
+      printf("unknown type\n");
+      break;
+    }
+
+  }
+  free(dummy1);
+  free(dummy2);
+}//end merge
+
+void mergesort(proPointer list[], int p, int r, int type){
+  switch(type){
+    case 0:
+    if(p < r){
+  //	  printf("p: %d, r: %d\n", p, r);
+      int q = (p+r)/2;
+      mergesort(list, p, q, 0);
+      mergesort(list, q+1, r, 0);
+    //  printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
+      merge(list, p, q, r, 0);
+    }
+    break;
+
+    case 1:
+    if(p < r){
+  //	  printf("p: %d, r: %d\n", p, r);
+      int q = (p+r)/2;
+      mergesort(list, p, q, 1);
+      mergesort(list, q+1, r, 1);
+    //  printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
+      merge(list, p, q, r, 1);
+    }
+    break;
+
+    case 2:
+    if(p < r){
+  //	  printf("p: %d, r: %d\n", p, r);
+      int q = (p+r)/2;
+      mergesort(list, p, q, 2);
+      mergesort(list, q+1, r, 2);
+    //  printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
+      merge(list, p, q, r, 2);
+    }
+    break;
+
+    case 3:
+    if(p < r){
+  //	  printf("p: %d, r: %d\n", p, r);
+      int q = (p+r)/2;
+      mergesort(list, p, q, 3);
+      mergesort(list, q+1, r, 3);
+    //  printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
+      merge(list, p, q, r, 3);
+    }
+    break;
+
+    default:
+    printf("mergesort: unknown type\n");
+    break;
+  }
+}
+
 int main(int argc, char **argv){
   int num_process, num_IO;
   printf("Welcome to CPU Scheduling Simulator!\n");
@@ -134,6 +302,8 @@ int main(int argc, char **argv){
   scanf("%d", &num_IO);
 
   create_processes(num_process, num_IO);
+  printQ(job_global);
+  mergesort(job_global.q, job_global.front+1, job_global.rear, 0);
   printQ(job_global);
 
 }
