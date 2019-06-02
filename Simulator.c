@@ -671,8 +671,10 @@ void FCFS_alg(int num_IO){
           add_readyQ(inP);
         }
       }
-      printf("%d, %d\n", rQ_front, rQ_rear);
-      printf("%d, %d\n",wQ_front, wQ_rear);
+
+      if(newP == NULL && !isEmpty(rQ_front, rQ_rear)){
+        newP = poll_readyQ();
+      }
 
       //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
       if(isEmpty(rQ_front, rQ_rear) && isEmpty(wQ_front, wQ_rear)){
