@@ -381,8 +381,9 @@ void merge(proPointer list[], int p, int q, int r, int type){
       printf("unknown type\n");
       break;
     }
-
   }
+  free(dummy1);
+  free(dummy2);
 }//end merge
 
 void mergesort(proPointer list[], int p, int r, int type){
@@ -633,10 +634,11 @@ void create_processes(int num_process, int num_IO){
 //선입선출
 void FCFS_alg(int num_IO){
   printf("\n******************start FCFS algorithm:*********************\n");
-  //레디큐를 복사한다. //현재 arrival time 오름차순 정렬되어있다.
-  clone_readyQ();
-
-//wait queue 초기화
+//jobQ arrival time 정렬
+  mergesort(jobQ, jQ_front, jQ_rear, 0);
+  printQ_job();
+//ready, wait queue 초기화
+  init_readyQ();
   init_waitQ();
 
   int wT[rQ_rear - rQ_front];
