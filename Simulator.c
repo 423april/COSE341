@@ -635,7 +635,7 @@ void create_processes(int num_process, int num_IO){
 void FCFS_alg(int num_IO){
   printf("\n******************start FCFS algorithm:*********************\n");
 //jobQ arrival time 정렬
-  mergesort(jobQ, jQ_front, jQ_rear, 0);
+  mergesort(jobQ, jQ_front+1, jQ_rear, 0);
   printQ_job();
 //ready, wait queue 초기화
   init_readyQ();
@@ -1401,6 +1401,7 @@ int main(int argc, char **argv){
   scanf("%d", &tq);
 
   create_processes(num_process, num_IO);
+  mergesort(jobQ, jQ_front+1, jQ_rear, 0);
   //job2ready();
   FCFS_alg(num_IO);
   //SJF_alg(num_IO);
