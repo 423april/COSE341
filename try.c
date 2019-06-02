@@ -129,7 +129,7 @@ queue cloneQ(queue oldQ, queue newQ){
 //arrival time을 기준으로 정렬해서 ready queue에 넣어준다.
 //type는 arrival time으로 정렬하는 것인지, IOburst_remain으로 정렬하는지 결정한다.
 //arrival time: 0, IOburst_remain: 1, CPUburst_remain: 2, priority: 3
-queue merge(queue Q, int p, int q, int r, int type){
+void merge(queue Q, int p, int q, int r, int type){
   int n1 = q - p + 1;
   int n2 = r - q ;
  // printf("n1: %d, n2: %d\n", n1, n2);
@@ -237,19 +237,21 @@ queue merge(queue Q, int p, int q, int r, int type){
       break;
     }
   }
-  return Q;
+  free(dummy1);
+  free(dummy2);
+  //return Q;
 }//end merge
 
-queue mergesort(queue Q, int p, int r, int type){
+void mergesort(queue Q, int p, int r, int type){
   switch(type){
     case 0:
     if(p < r){
   //	  printf("p: %d, r: %d\n", p, r);
       int q = (p+r)/2;
-      Q = mergesort(Q, p, q, 0);
-      Q = mergesort(Q, q+1, r, 0);
+      /*Q = */mergesort(Q, p, q, 0);
+      /*Q = */mergesort(Q, q+1, r, 0);
     //  printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
-      Q = merge(Q, p, q, r, 0);
+      /*Q = */merge(Q, p, q, r, 0);
     }
     break;
 
@@ -306,7 +308,7 @@ int main(int argc, char **argv){
   queue clone_jobQ;
   clone_jobQ = cloneQ(job_global, clone_jobQ);
 
-  clone_jobQ = mergesort(clone_jobQ, clone_jobQ.front+1, clone_jobQ.rear, 0);
+  /*clone_jobQ = */mergesort(clone_jobQ, clone_jobQ.front+1, clone_jobQ.rear, 0);
   printQ(clone_jobQ);
   //clone_jobQ = mergesort(clone_jobQ, clone_jobQ.front+1, clone_jobQ.rear, 2);
   //printQ(clone_jobQ);
