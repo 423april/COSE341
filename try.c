@@ -292,7 +292,7 @@ void mergesort(queue Q, int p, int r, int type){
     printf("mergesort: unknown type\n");
     break;
   }
-  return Q;
+  //return Q;
 }
 
 
