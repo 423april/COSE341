@@ -129,7 +129,7 @@ queue cloneQ(queue oldQ, queue newQ){
 //arrival time을 기준으로 정렬해서 ready queue에 넣어준다.
 //type는 arrival time으로 정렬하는 것인지, IOburst_remain으로 정렬하는지 결정한다.
 //arrival time: 0, IOburst_remain: 1, CPUburst_remain: 2, priority: 3
-proPointer* merge(proPointer list[], int p, int q, int r, int type){
+queue merge(queue Q, int p, int q, int r, int type){
   int n1 = q - p + 1;
   int n2 = r - q ;
  // printf("n1: %d, n2: %d\n", n1, n2);
@@ -138,7 +138,7 @@ proPointer* merge(proPointer list[], int p, int q, int r, int type){
  // printf("created L and R\n");
   int i, j;
   for(i = 0; i < n1; i++){
-    L[i] = list[p + i];
+    L[i] = Q.q[p + i];
   }
  // printf("L insert til n1 - 1\n");
   proPointer dummy1 = (proPointer)malloc(sizeof(struct process));
@@ -162,7 +162,7 @@ proPointer* merge(proPointer list[], int p, int q, int r, int type){
   L[n1] = dummy1;
  // printf("dummy interted\n");
   for(j = 0; j < n2; j++){
-    R[j] = list[q + 1 + j];
+    R[j] = Q.q[q + 1 + j];
   }
  // printf("R insert til n2 -1 \n");
   proPointer dummy2 = (proPointer)malloc(sizeof(struct process));
@@ -190,44 +190,44 @@ proPointer* merge(proPointer list[], int p, int q, int r, int type){
     switch(type){
       case 0:
       if(L[i]->arrival <= R[j]->arrival){
-        list[k] = L[i];
+        Q.q[k] = L[i];
         i++;
       }
       else{
-        list[k] = R[j];
+        Q.q[k] = R[j];
         j++;
       }
       break;
 
       case 1:
       if(L[i]->IOburst_remain <= R[j]->IOburst_remain){
-        list[k] = L[i];
+        Q.q[k] = L[i];
         i++;
       }
       else{
-        list[k] = R[j];
+        Q.q[k] = R[j];
         j++;
       }
       break;
 
       case 2:
       if(L[i]->CPUburst_remain <= R[j]->CPUburst_remain){
-        list[k] = L[i];
+        Q.q[k] = L[i];
         i++;
       }
       else{
-        list[k] = R[j];
+        Q.q[k] = R[j];
         j++;
       }
       break;
 
       case 3:
       if(L[i]->priority <= R[j]->priority){
-        list[k] = L[i];
+        Q.q[k] = L[i];
         i++;
       }
       else{
-        list[k] = R[j];
+        Q.q[k] = R[j];
         j++;
       }
       break;
@@ -237,7 +237,7 @@ proPointer* merge(proPointer list[], int p, int q, int r, int type){
       break;
     }
   }
-  return list;
+  return Q;
 }//end merge
 
 queue mergesort(queue Q, int p, int r, int type){
@@ -249,7 +249,7 @@ queue mergesort(queue Q, int p, int r, int type){
       Q = mergesort(Q, p, q, 0);
       Q = mergesort(Q, q+1, r, 0);
     //  printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
-      Q.q = merge(Q.q, p, q, r, 0);
+      Q = merge(Q, p, q, r, 0);
     }
     break;
 
