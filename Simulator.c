@@ -676,7 +676,7 @@ void FCFS_alg(int num_IO){
       if(newP == NULL && isEmpty(rQ_front, rQ_rear) && isEmpty(wQ_front, wQ_rear)){
         printf("bb ");
       }
-      if(ewP == NULL && isEmpty(rQ_front, rQ_rear) && !isEmpty(wQ_front, wQ_rear)){
+      if(newP == NULL && isEmpty(rQ_front, rQ_rear) && !isEmpty(wQ_front, wQ_rear)){
         printf("bb ");
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
         if(!isEmpty(wQ_front, wQ_rear));
