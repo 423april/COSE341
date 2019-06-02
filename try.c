@@ -44,14 +44,14 @@ queue init_Q(queue Q){
   return Q;
 }
 
-void add_Q(queue Q, proPointer newP){
+queue add_Q(queue Q, proPointer newP){
   if(Q.rear == MAX_PROCESS_NUM - 1){
     printf("Q is full");
-    //return queue;
+    return queue;
   }
   else{
     Q.q[++Q.rear] = newP;
-    //return queue;
+    return queue;
   }
 }
 
@@ -86,7 +86,7 @@ int main(int argc, char **argv){
   for(int i = 0; i < 5; i++){
     proPointer newP = (proPointer)malloc(sizeof(struct process));
     newP->pid = i+1;
-    add_Q(jobQ, newP);
+    jobQ = add_Q(jobQ, newP);
     printf("front: %d, rear: %d\n", jobQ.front, jobQ.rear);
     for(int j = jobQ.front; j <= jobQ.rear; j++){
       printf("p%d ", jobQ.q[j]->pid);
