@@ -496,6 +496,6 @@ int main(int argc, char **argv){
 
   create_processes(num_process, num_IO);
   printQ(job);
-  FCFS_alg(num_IO);
+  //FCFS_alg(num_IO);
 
 }
