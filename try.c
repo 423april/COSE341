@@ -240,16 +240,16 @@ proPointer* merge(proPointer list[], int p, int q, int r, int type){
   return list;
 }//end merge
 
-proPointer* mergesort(proPointer list[], int p, int r, int type){
+queue mergesort(queue Q, int p, int q, int type){
   switch(type){
     case 0:
     if(p < r){
   //	  printf("p: %d, r: %d\n", p, r);
       int q = (p+r)/2;
-      mergesort(list, p, q, 0);
-      mergesort(list, q+1, r, 0);
+      mergesort(Q, p, q, 0);
+      mergesort(Q, q+1, r, 0);
     //  printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
-      merge(list, p, q, r, 0);
+      merge(Q.q, p, q, r, 0);
     }
     break;
 
@@ -257,10 +257,10 @@ proPointer* mergesort(proPointer list[], int p, int r, int type){
     if(p < r){
   //	  printf("p: %d, r: %d\n", p, r);
       int q = (p+r)/2;
-      mergesort(list, p, q, 1);
-      mergesort(list, q+1, r, 1);
+      mergesort(Q, p, q, 1);
+      mergesort(Q, q+1, r, 1);
     //  printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
-      merge(list, p, q, r, 1);
+      merge(Q.q, p, q, r, 1);
     }
     break;
 
@@ -268,10 +268,10 @@ proPointer* mergesort(proPointer list[], int p, int r, int type){
     if(p < r){
   //	  printf("p: %d, r: %d\n", p, r);
       int q = (p+r)/2;
-      mergesort(list, p, q, 2);
-      mergesort(list, q+1, r, 2);
+      mergesort(Q, p, q, 2);
+      mergesort(Q, q+1, r, 2);
     //  printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
-      merge(list, p, q, r, 2);
+      merge(Q.q, p, q, r, 2);
     }
     break;
 
@@ -279,10 +279,10 @@ proPointer* mergesort(proPointer list[], int p, int r, int type){
     if(p < r){
   //	  printf("p: %d, r: %d\n", p, r);
       int q = (p+r)/2;
-      mergesort(list, p, q, 3);
-      mergesort(list, q+1, r, 3);
+      mergesort(Q, p, q, 3);
+      mergesort(Q, q+1, r, 3);
     //  printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
-      merge(list, p, q, r, 3);
+      merge(Q.q, p, q, r, 3);
     }
     break;
 
@@ -290,7 +290,7 @@ proPointer* mergesort(proPointer list[], int p, int r, int type){
     printf("mergesort: unknown type\n");
     break;
   }
-  return list;
+  return Q;
 }
 
 
