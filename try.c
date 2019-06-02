@@ -100,6 +100,7 @@ void create_processes(int num_process, int num_IO){
     //job queue에 넣어준다. 순서는 pid 오름차순.
     add_Q(job, newP);
   }
+  printQ(job);
   for(int j = 0; j < num_IO; j++){
     IOPointer newIO = (IOPointer)malloc(sizeof(struct IO));
       newIO->pid = rand() % num_process + 1;
