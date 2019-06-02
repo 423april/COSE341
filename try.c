@@ -36,21 +36,23 @@ typedef struct queue{
   int rear;
 }queue;
 
-void init_Q(queue Q){
+queue init_Q(queue Q){
   Q.front = -1;
   Q.rear = -1;
   for(int i = 0; i < MAX_PROCESS_NUM; i++){
     Q.q[i] = NULL;
   }
-  //return Q;
+  return Q;
 }
 
-void add_Q(queue Q, proPointer newP){
+queue add_Q(queue Q, proPointer newP){
   if(Q.rear == MAX_PROCESS_NUM - 1){
     printf("Q is full");
+    return Q;
   }
   else{
     Q.q[++Q.rear] = newP;
+    return Q;
   }
 }
 
