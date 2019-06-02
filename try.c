@@ -305,6 +305,10 @@ int main(int argc, char **argv){
   create_processes(num_process, num_IO);
   queue clone_jobQ;
   clone_jobQ = cloneQ(job_global, clone_jobQ);
-
-  
+  clone_jobQ = mergesort(clone_jobQ.q, clone_jobQ.front+1, clone_jobQ.rear, 0);
+  printQ(clone_jobQ);
+  clone_jobQ = mergesort(clone_jobQ.q, clone_jobQ.front+1, clone_jobQ.rear, 2);
+  printQ(clone_jobQ);
+  clone_jobQ = mergesort(clone_jobQ.q, clone_jobQ.front+1, clone_jobQ.rear, 3);
+  printQ(clone_jobQ);
 }
