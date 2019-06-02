@@ -677,7 +677,7 @@ void FCFS_alg(int num_IO){
         }
       }
 
-      if(newP == NULL) printf("null ");
+      //if(newP == NULL) printf("null ");
       if(isEmpty(rQ_front, rQ_rear) != 1) printf("ready is not empty");
       if(isEmpty(wQ_front, wQ_rear) != 1) printf("wait is not empty");
       //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
