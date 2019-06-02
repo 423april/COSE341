@@ -55,11 +55,16 @@ queue add_Q(queue Q, proPointer newP){
   }
 }
 
-proPointer poll_Q(queue Q){
-  if(Q.front == Q.rear)
+queue poll_Q(queue Q){
+  if(Q.front == Q.rear){
     printf("Q is empty");
-  else
-    return Q.q[++Q.front];
+    return Q;
+  }
+  else{
+    proPointer pop;
+    pop = Q.q[++Q.front];
+    return Q;
+  }
 }
 
 // void create_processes(int num_process, int num_IO){
@@ -97,7 +102,8 @@ int main(int argc, char **argv){
   for(int i = 0; i < 5; i++){
     proPointer oldP;
     printf("p%d ", jobQ.q[jobQ.front + 1]->pid);
-    oldP = poll_Q(jobQ);
+    jobQ = poll_Q(jobQ);
+    oldP = jobQ.q[jobQ.front];
     printf("oldP: %d\n", oldP->pid);
 
     printf("front: %d, rear: %d\n", jobQ.front, jobQ.rear);
