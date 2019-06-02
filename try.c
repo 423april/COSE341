@@ -47,11 +47,11 @@ queue init_Q(queue Q){
 queue add_Q(queue Q, proPointer newP){
   if(Q.rear == MAX_PROCESS_NUM - 1){
     printf("Q is full");
-    return queue;
+    return Q;
   }
   else{
     Q.q[++Q.rear] = newP;
-    return queue;
+    return Q;
   }
 }
 
