@@ -80,11 +80,16 @@ int main(int argc, char **argv){
   queue jobQ;
   jobQ = init_Q(jobQ);
 
-  // for(int i = 0; i < 5; i++){
-  //   proPointer newP = (proPointer)malloc(sizeof(struct process));
-  //   newP->pid = i+1;
-  //   add_Q(jobQ, newP);
-  // }
+  for(int i = 0; i < 5; i++){
+    proPointer newP = (proPointer)malloc(sizeof(struct process));
+    newP->pid = i+1;
+    add_Q(jobQ, newP);
+
+    for(int j = jobQ.front; j <= jobQ.rear; j++){
+      printf("p%d ", jobQ.q[j]->pid);
+    }
+    printf("\n");
+  }
   //
   // for(int i = 0; i < 5; i++){
   //   proPointer oldP;
