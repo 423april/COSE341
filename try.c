@@ -96,6 +96,27 @@ void create_processes(int num_process, int num_IO){
   }
 }
 
+queue cloneQ(queue oldQ, queue newQ){
+  newQ = init_Q(newQ);
+  for(int i = oldQ.front+1; i <= oldQ.rear; i++){
+    proPointer newP = (proPointer)malloc(sizeof(struct process));
+    newP->pid = oldQ.q[i]->pid;
+    newP->CPUburst = oldQ.q[i]->CPUburst;
+    newP->IOburst = oldQ.q[i]->IOburst;
+    newP->arrival = oldQ.q[i]->arrival;
+    newP->priority = oldQ.q[i]->priority;
+    newP->CPUburst_remain = oldQ.q[i]->CPUburst_remain;
+    newP->IOburst_remain = oldQ.q[i]->IOburst_remain;
+    newP->waitingTime = oldQ.q[i]->waitingTime;
+    newP->turnaroundTime = oldQ.q[i]->turnaroundTime;
+    newP->responseTime = oldQ.q[i]->responseTime;
+
+    //job queue에 넣어준다. 순서는 pid 오름차순.
+    newQ = add_Q(newQ, newP);
+  }
+  printQ(newQ);
+}
+
 void printQ(queue Q){
   for(int i = Q.front+1; i <= Q.rear; i++){
     printf("pid: %d ", Q.q[i]->pid);
@@ -115,4 +136,7 @@ int main(int argc, char **argv){
 
   create_processes(num_process, num_IO);
   printQ(job_global);
+
+  queue clone_jobQ;
+  clone_jobQ = cloneQ(job_global, clone_jobQ);
 }
