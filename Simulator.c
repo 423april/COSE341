@@ -651,17 +651,18 @@ void FCFS_alg(int num_IO){
   proPointer inP = NULL;
   proPointer newP = NULL;
 
+  if(inP == NULL && newP == NULL) printf("inP and newP are NULL\n");
   do{
 
     if(!isEmpty(rQ_front, rQ_rear)){
-      //printf("%d %d %d\n", crQ_front, crQ_rear, isEmpty(crQ_front, crQ_rear));
+      printf("%d %d %d\n", crQ_front, crQ_rear, isEmpty(crQ_front, crQ_rear));
       newP = poll_readyQ();
-      //printf("\n new process polled! p%d\n", newP->pid);
-      //printf("clone ready queue: ");
-      // for(int i = crQ_front+1; i <= crQ_rear; i++){
-      //   printf("p%d ", clonereadyQ[i]->pid);
-      // }
-      // printf("\n");
+      printf("\n new process polled! p%d\n", newP->pid);
+      printf("clone ready queue: ");
+      for(int i = crQ_front+1; i <= crQ_rear; i++){
+        printf("p%d ", clonereadyQ[i]->pid);
+      }
+      printf("\n");
     }
 
     do{
