@@ -650,6 +650,8 @@ void FCFS_alg(int num_IO){
   //레디큐는 도착시간 순으로 정렬되어있다.
   proPointer inP = NULL;
   proPointer newP = NULL;
+  if(inP == NULL)
+    printf("null is ok");
 
   do{
 
