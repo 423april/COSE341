@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define MAX_PROCESS_NUM 30
 #define MAX_IO_NUM 60
@@ -61,18 +62,48 @@ queue poll_Q(queue Q){
     return Q;
   }
   else{
-    proPointer pop;
-    pop = Q.q[++Q.front];
+    //proPointer pop;
+    /*pop = Q.q[*/++Q.front/*]*/;
     return Q;
   }
 }
 
-// void create_processes(int num_process, int num_IO){
-//   //난수 생성
-//   srand( (unsigned)time(NULL) );
-//
-//
-// }
+queue job_global;
+//IOPointer io_global[MAX_IO_NUM];
+
+void create_processes(int num_process, int num_IO){
+  //난수 생성
+  srand( (unsigned)time(NULL) );
+
+  //job queue 전역으로 초기화
+  job_global = init_Q(job_global);
+
+  for(int i = 0; i < num_process; i++){
+    proPointer newP = (proPointer)malloc(sizeof(struct process));
+    newP->pid = i+1;
+    newP->CPUburst = rand() % 25 + 2; //CPU burst time 2 ~ 26
+    newP->IOburst = 0;
+    newP->arrival = rand() % (num_process + 10);
+    newP->priority = rand() % num_process + 1;
+    newP->CPUburst_remain = newP -> CPUburst;
+    newP->IOburst_remain = 0;
+    newP->waitingTime = 0;
+    newP->turnaroundTime = 0;
+    newP->responseTime = 0;
+
+    //job queue에 넣어준다. 순서는 pid 오름차순.
+    job_global = add_Q(job_global, newP);
+  }
+}
+
+void printQ(queue Q){
+  for(int i = Q.front+1; i <= Q.rear; i++){
+    printf("pid: %d ", Q.q[i]->pid);
+    printf("CPUburst: %d, ", Q.q[i]->CPUburst);
+    printf("arrival: %d, ", Q.q[i]->arrival);
+    printf("priority: %d\n", Q.q[i]->priority);
+  }
+}
 
 int main(int argc, char **argv){
   int num_process, num_IO;
@@ -82,34 +113,6 @@ int main(int argc, char **argv){
   printf("Type IO number: ");
   scanf("%d", &num_IO);
 
-  queue jobQ;
-  jobQ = init_Q(jobQ);
-
-  printf("%d ", jobQ.front);
-  printf("%d \n", jobQ.rear);
-
-  for(int i = 0; i < 5; i++){
-    proPointer newP = (proPointer)malloc(sizeof(struct process));
-    newP->pid = i+1;
-    jobQ = add_Q(jobQ, newP);
-    printf("front: %d, rear: %d\n", jobQ.front, jobQ.rear);
-    for(int j = jobQ.front+1; j <= jobQ.rear; j++){
-      printf("p%d ", jobQ.q[j]->pid);
-    }
-    printf("\n");
-  }
-
-  for(int i = 0; i < 5; i++){
-    proPointer oldP;
-    printf("p%d ", jobQ.q[jobQ.front + 1]->pid);
-    jobQ = poll_Q(jobQ);
-    oldP = jobQ.q[jobQ.front];
-    printf("oldP: %d\n", oldP->pid);
-
-    printf("front: %d, rear: %d\n", jobQ.front, jobQ.rear);
-    for(int j = jobQ.front+1; j <= jobQ.rear; j++){
-      printf("p%d ", jobQ.q[j]->pid);
-    }
-    printf("\n");
-  }
+  create_processes(num_process, num_IO);
+  printQ(job_global);
 }
