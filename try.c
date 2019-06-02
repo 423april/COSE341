@@ -240,7 +240,7 @@ proPointer* merge(proPointer list[], int p, int q, int r, int type){
   return list;
 }//end merge
 
-queue mergesort(queue Q, int p, int q, int type){
+queue mergesort(queue Q, int p, int r, int type){
   switch(type){
     case 0:
     if(p < r){
@@ -305,10 +305,10 @@ int main(int argc, char **argv){
   create_processes(num_process, num_IO);
   queue clone_jobQ;
   clone_jobQ = cloneQ(job_global, clone_jobQ);
-  clone_jobQ.q = mergesort(clone_jobQ.q, clone_jobQ.front+1, clone_jobQ.rear, 0);
+  clone_jobQ.q = mergesort(clone_jobQ, clone_jobQ.front+1, clone_jobQ.rear, 0);
   printQ(clone_jobQ);
-  clone_jobQ.q = mergesort(clone_jobQ.q, clone_jobQ.front+1, clone_jobQ.rear, 2);
+  clone_jobQ.q = mergesort(clone_jobQ, clone_jobQ.front+1, clone_jobQ.rear, 2);
   printQ(clone_jobQ);
-  clone_jobQ.q = mergesort(clone_jobQ.q, clone_jobQ.front+1, clone_jobQ.rear, 3);
+  clone_jobQ.q = mergesort(clone_jobQ, clone_jobQ.front+1, clone_jobQ.rear, 3);
   printQ(clone_jobQ);
 }
