@@ -787,7 +787,7 @@ void SJF_alg(int num_IO){
     do{
 
       //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
-      if(newP == NULL || newP->arrival < nowTime){
+      if(newP == NULL){
         printf("bb ");
         //다른 프로세스들 웨이팅 타임 더해준다.
         if(!isEmpty(crQ_front, crQ_rear));
@@ -855,7 +855,7 @@ void SJF_alg(int num_IO){
         add_clonereadyQ(inP);
         mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
       }
-    }while(newP==NULL || newP->CPUburst_remain > 0);
+    }while( newP->CPUburst_remain > 0 || newP == NULL);
     wT[newP->pid - 1] = newP->waitingTime;
     tT[newP->pid - 1] = newP->turnaroundTime;
     rT[newP->pid - 1] = newP->responseTime;
@@ -1399,13 +1399,13 @@ int main(int argc, char **argv){
   scanf("%d", &tq);
 
   create_processes(num_process, num_IO);
-  job2ready();
+  //job2ready();
   FCFS_alg(num_IO);
-  SJF_alg(num_IO);
-  PRI_alg(num_IO);
-  PRESJF_alg(num_IO);
-  PREPRI_alg(num_IO);
-  RR_alg(num_IO, tq);
+  //SJF_alg(num_IO);
+  //PRI_alg(num_IO);
+  //PRESJF_alg(num_IO);
+  //PREPRI_alg(num_IO);
+  //RR_alg(num_IO, tq);
 
   return 0;
 }
