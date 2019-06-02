@@ -93,11 +93,17 @@ int main(int argc, char **argv){
     }
     printf("\n");
   }
-  //
-  // for(int i = 0; i < 5; i++){
-  //   proPointer oldP;
-  //   printf("p%d ", jobQ.q[jobQ.front + 1]->pid);
-  //   oldP = poll_Q(jobQ);
-  //   printf("oldP: %d\n", oldP->pid);
-  // }
+
+  for(int i = 0; i < 5; i++){
+    proPointer oldP;
+    printf("p%d ", jobQ.q[jobQ.front + 1]->pid);
+    oldP = poll_Q(jobQ);
+    printf("oldP: %d\n", oldP->pid);
+
+    printf("front: %d, rear: %d\n", jobQ.front, jobQ.rear);
+    for(int j = jobQ.front+1; j <= jobQ.rear; j++){
+      printf("p%d ", jobQ.q[j]->pid);
+    }
+    printf("\n");
+  }
 }
