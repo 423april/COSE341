@@ -106,7 +106,7 @@ void printQ(queue Q){
 }
 
 queue cloneQ(queue oldQ, queue newQ){
-  newQ = init_Q(newQ);
+  //newQ = init_Q(newQ);
   for(int i = oldQ.front+1; i <= oldQ.rear; i++){
     proPointer newP = (proPointer)malloc(sizeof(struct process));
     newP->pid = oldQ.q[i]->pid;
@@ -307,6 +307,7 @@ int main(int argc, char **argv){
   create_processes(num_process, num_IO);
   printQ(job_global);
   queue clone_jobQ;
+  init_Q(clone_jobQ);
   clone_jobQ = cloneQ(job_global, clone_jobQ);
   printQ(clone_jobQ);
 
