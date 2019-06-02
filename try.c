@@ -246,10 +246,10 @@ queue mergesort(queue Q, int p, int r, int type){
     if(p < r){
   //	  printf("p: %d, r: %d\n", p, r);
       int q = (p+r)/2;
-      mergesort(Q, p, q, 0);
-      mergesort(Q, q+1, r, 0);
+      Q = mergesort(Q, p, q, 0);
+      Q = mergesort(Q, q+1, r, 0);
     //  printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
-      merge(Q.q, p, q, r, 0);
+      Q.q = merge(Q.q, p, q, r, 0);
     }
     break;
 
@@ -305,10 +305,11 @@ int main(int argc, char **argv){
   create_processes(num_process, num_IO);
   queue clone_jobQ;
   clone_jobQ = cloneQ(job_global, clone_jobQ);
+
   clone_jobQ = mergesort(clone_jobQ, clone_jobQ.front+1, clone_jobQ.rear, 0);
   printQ(clone_jobQ);
-  clone_jobQ = mergesort(clone_jobQ, clone_jobQ.front+1, clone_jobQ.rear, 2);
-  printQ(clone_jobQ);
-  clone_jobQ = mergesort(clone_jobQ, clone_jobQ.front+1, clone_jobQ.rear, 3);
-  printQ(clone_jobQ);
+  //clone_jobQ = mergesort(clone_jobQ, clone_jobQ.front+1, clone_jobQ.rear, 2);
+  //printQ(clone_jobQ);
+  //clone_jobQ = mergesort(clone_jobQ, clone_jobQ.front+1, clone_jobQ.rear, 3);
+  //printQ(clone_jobQ);
 }
