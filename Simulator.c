@@ -669,9 +669,10 @@ void FCFS_alg(int num_IO){
         if(jobQ[jQ_front+1]->arrival == nowTime){
           inP = poll_jobQ();
           add_readyQ(inP);
-          printf("t %d, %d\n",nowTime, readyQ[rQ_front+1]->pid);
         }
       }
+      printf("%d, %d\n", rQ_front, rQ_rear);
+      printf("%d, %d\n",wQ_front, wQ_rear);
 
       //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
       if(isEmpty(rQ_front, rQ_rear) && isEmpty(wQ_front, wQ_rear)){
