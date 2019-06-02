@@ -260,7 +260,7 @@ queue mergesort(queue Q, int p, int r, int type){
       mergesort(Q, p, q, 1);
       mergesort(Q, q+1, r, 1);
     //  printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
-      merge(Q.q, p, q, r, 1);
+      merge(Q, p, q, r, 1);
     }
     break;
 
@@ -271,7 +271,7 @@ queue mergesort(queue Q, int p, int r, int type){
       mergesort(Q, p, q, 2);
       mergesort(Q, q+1, r, 2);
     //  printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
-      merge(Q.q, p, q, r, 2);
+      merge(Q, p, q, r, 2);
     }
     break;
 
@@ -282,7 +282,7 @@ queue mergesort(queue Q, int p, int r, int type){
       mergesort(Q, p, q, 3);
       mergesort(Q, q+1, r, 3);
     //  printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
-      merge(Q.q, p, q, r, 3);
+      merge(Q, p, q, r, 3);
     }
     break;
 
