@@ -48,11 +48,9 @@ queue init_Q(queue Q){
 void add_Q(queue Q, proPointer newP){
   if(Q.rear == MAX_PROCESS_NUM - 1){
     printf("Q is full");
-    return Q;
   }
   else{
     Q.q[++Q.rear] = newP;
-    return Q;
   }
 }
 
@@ -105,7 +103,7 @@ void create_processes(int num_process, int num_IO){
       newIO->pid = rand() % num_process + 1;
       newIO->IOburst = rand() % 10 + 1; //IO burst time 1~10
       // 1 <= when < CPUburst 이어야한다.
-      newIO->when = rand() % (jobQ[newIO->pid - 1]->CPUburst - 1) + 1;
+      newIO->when = rand() % (job[newIO->pid - 1]->CPUburst - 1) + 1;
       //중복제거의 노력
      for(int i = 1; i < j; i++){
        if(newIO->pid == ioQ[i]->pid && newIO->when == ioQ[i]->when){
@@ -113,7 +111,7 @@ void create_processes(int num_process, int num_IO){
        }
      }
 
-      add_ioQ(newIO);
+     ioQ[i] = newIO;
       printf("pid: %d, IOburst: %d, when %d\n", newIO->pid, newIO->IOburst, newIO->when);
      }
       printf("IO assigned\n");
@@ -366,12 +364,12 @@ void waiting(int nowTime, int type){
 
 void evaluation(int wT[], int tT[], int rT[], int alg){
   //evaluation
-  int num = rQ_rear - rQ_front;
+  int num = ready.rear - ready.front;
   int sumwT = 0;
   int sumtT = 0;
   int sumrT = 0;
   double avgwT, avgtT, avgrT;
-  for(int i = 0; i < rQ_rear - rQ_front; i++){
+  for(int i = 0; i < ready.rear - ready.front; i++){
     printf("pid: %d, waiting time: %d, turnaround time: %d, response time: %d\n",
       i+1, wT[i], tT[i], rT[i]);
       sumwT += wT[i];
@@ -406,7 +404,7 @@ void FCFS_alg(int num_IO){
 
   do{
     if(!isEmpty(job.front, job.rear)){
-      if(job.q[job.front+1] == nowTime){
+      if(job.q[job.front+1]->arrival == nowTime){
         inP = job.q[++job.front];
         add_Q(ready, inP);
       }
@@ -496,6 +494,6 @@ int main(int argc, char **argv){
   scanf("%d", &num_IO);
 
   create_processes(num_process, num_IO);
-  FCFS(num_IO);
+  FCFS_alg(num_IO);
 
 }
