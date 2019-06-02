@@ -103,7 +103,7 @@ void create_processes(int num_process, int num_IO){
       newIO->pid = rand() % num_process + 1;
       newIO->IOburst = rand() % 10 + 1; //IO burst time 1~10
       // 1 <= when < CPUburst 이어야한다.
-      newIO->when = rand() % (job[newIO->pid - 1]->CPUburst - 1) + 1;
+      newIO->when = rand() % (job.q[newIO->pid - 1]->CPUburst - 1) + 1;
       //중복제거의 노력
      for(int i = 1; i < j; i++){
        if(newIO->pid == ioQ[i]->pid && newIO->when == ioQ[i]->when){
@@ -111,7 +111,7 @@ void create_processes(int num_process, int num_IO){
        }
      }
 
-     ioQ[i] = newIO;
+     ioQ[j] = newIO;
       printf("pid: %d, IOburst: %d, when %d\n", newIO->pid, newIO->IOburst, newIO->when);
      }
       printf("IO assigned\n");
