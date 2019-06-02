@@ -650,8 +650,6 @@ void FCFS_alg(int num_IO){
   //레디큐는 도착시간 순으로 정렬되어있다.
   proPointer inP = NULL;
   proPointer newP = NULL;
-  if(inP == NULL)
-    printf("null is ok");
 
   do{
 
@@ -672,7 +670,7 @@ void FCFS_alg(int num_IO){
           inP = poll_jobQ();
           add_readyQ(inP);
           printf("%d\n", inP->pid);
-          if(newP == NULL){
+          if(newP == NULL && !isEmpty(rQ_front, rQ_rear)){
             newP = poll_readyQ();
             printf("%d\n", newP->pid);
           }
@@ -681,10 +679,10 @@ void FCFS_alg(int num_IO){
 
 
       //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
-      if(isEmpty(rQ_front, rQ_rear) && isEmpty(wQ_front, wQ_rear)){
+      if(isEmpty(rQ_front, rQ_rear) && isEmpty(wQ_front, wQ_rear) || newP == NULL){
         printf("bb ");
       }
-      if(isEmpty(rQ_front, rQ_rear) && !isEmpty(wQ_front, wQ_rear)){
+      if(isEmpty(rQ_front, rQ_rear) && !isEmpty(wQ_front, wQ_rear) || newP == NULL){
         printf("bb ");
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
         if(!isEmpty(wQ_front, wQ_rear));
