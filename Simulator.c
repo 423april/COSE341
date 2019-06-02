@@ -1410,12 +1410,19 @@ int main(int argc, char **argv){
 
   create_processes(num_process, num_IO);
   //job2ready();
-  FCFS_alg(num_IO);
+  //FCFS_alg(num_IO);
   //SJF_alg(num_IO);
   //PRI_alg(num_IO);
   //PRESJF_alg(num_IO);
   //PREPRI_alg(num_IO);
   //RR_alg(num_IO, tq);
+
+  if(!isEmpty(jQ_front, jQ_rear)){
+    if(jobQ[jQ_front+1]->arrival == 0){
+      inP = poll_jobQ();
+      add_readyQ(inP);
+    }
+  }
 
   return 0;
 }
