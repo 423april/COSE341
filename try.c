@@ -81,14 +81,14 @@ int main(int argc, char **argv){
   jobQ = init_Q(jobQ);
 
   printf("%d ", jobQ.front);
-  printf("%d ", jobQ.rear);
+  printf("%d \n", jobQ.rear);
 
   for(int i = 0; i < 5; i++){
     proPointer newP = (proPointer)malloc(sizeof(struct process));
     newP->pid = i+1;
     jobQ = add_Q(jobQ, newP);
     printf("front: %d, rear: %d\n", jobQ.front, jobQ.rear);
-    for(int j = jobQ.front; j <= jobQ.rear; j++){
+    for(int j = jobQ.front+1; j <= jobQ.rear; j++){
       printf("p%d ", jobQ.q[j]->pid);
     }
     printf("\n");
