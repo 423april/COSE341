@@ -651,7 +651,6 @@ void FCFS_alg(int num_IO){
   proPointer inP = NULL;
   proPointer newP = NULL;
 
-  if(inP == NULL && newP == NULL) printf("inP and newP are NULL\n");
   do{
 
     if(!isEmpty(rQ_front, rQ_rear)){
@@ -664,8 +663,9 @@ void FCFS_alg(int num_IO){
       }
       printf("\n");
     }
-
+    else printf("ready is empty\n");
     do{
+      printf("%d, %d\n", jQ_front, jQ_rear);
       if(!isEmpty(jQ_front, jQ_rear)){
         if(jobQ[jQ_front+1]->arrival == nowTime){
           inP = poll_jobQ();
