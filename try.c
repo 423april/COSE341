@@ -71,6 +71,14 @@ queue reset_Q(queue Q, int num_process){
   Q.rear = num_process-1;
   return Q;
 }
+void printQ(queue Q){
+  for(int i = Q.front+1; i <= Q.rear; i++){
+    printf("pid: %d ", Q.q[i]->pid);
+    printf("CPUburst: %d, ", Q.q[i]->CPUburst);
+    printf("arrival: %d, ", Q.q[i]->arrival);
+    printf("priority: %d\n", Q.q[i]->priority);
+  }
+}
 
 queue job;
 queue ready;
@@ -140,14 +148,7 @@ void create_processes(int num_process, int num_IO){
 //   }
 // }
 
-void printQ(queue Q){
-  for(int i = Q.front+1; i <= Q.rear; i++){
-    printf("pid: %d ", Q.q[i]->pid);
-    printf("CPUburst: %d, ", Q.q[i]->CPUburst);
-    printf("arrival: %d, ", Q.q[i]->arrival);
-    printf("priority: %d\n", Q.q[i]->priority);
-  }
-}
+
 
 //arrival time을 기준으로 정렬해서 ready queue에 넣어준다.
 //type는 arrival time으로 정렬하는 것인지, IOburst_remain으로 정렬하는지 결정한다.
