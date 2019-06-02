@@ -641,9 +641,9 @@ void FCFS_alg(int num_IO){
   init_readyQ();
   init_waitQ();
 
-  int wT[rQ_rear - rQ_front];
-  int tT[rQ_rear - rQ_front];
-  int rT[rQ_rear - rQ_front];
+  int wT[jQ_rear - jQ_front];
+  int tT[jQ_rear - jQ_front];
+  int rT[jQ_rear - jQ_front];
   //현재 시간 나타내는 변수
   int nowTime = 0;
 
