@@ -670,7 +670,7 @@ void FCFS_alg(int num_IO){
           inP = poll_jobQ();
           add_readyQ(inP);
           printf("%d\n", inP->pid);
-          if(newP == NULL && !isEmpty(rQ_front, rQ_rear)){
+          if(newP == NULL && isEmpty(rQ_front, rQ_rear) != 1){
             newP = poll_readyQ();
             printf("%d\n", newP->pid);
           }
@@ -682,7 +682,7 @@ void FCFS_alg(int num_IO){
       if(isEmpty(rQ_front, rQ_rear) && isEmpty(wQ_front, wQ_rear) || newP == NULL){
         printf("bb ");
       }
-      if(isEmpty(rQ_front, rQ_rear) && !isEmpty(wQ_front, wQ_rear) || newP == NULL){
+      else if(isEmpty(rQ_front, rQ_rear) && !isEmpty(wQ_front, wQ_rear) || newP == NULL){
         printf("bb ");
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
         if(!isEmpty(wQ_front, wQ_rear));
