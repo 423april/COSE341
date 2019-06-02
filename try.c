@@ -497,6 +497,7 @@ int main(int argc, char **argv){
   scanf("%d", &num_IO);
 
   create_processes(num_process, num_IO);
+  printf("front: %d, rear: %d\n",job.front, job.rear );
   printQ(job);
   //FCFS_alg(num_IO);
 
