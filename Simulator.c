@@ -656,17 +656,8 @@ void FCFS_alg(int num_IO){
   do{
     //레디큐가 비어있지 않다면, cpu에서 실행할 프로세스를 레디큐에서 가져온다.
     if(!isEmpty(rQ_front, rQ_rear)){
-      //printf("%d %d %d\n", crQ_front, crQ_rear, isEmpty(crQ_front, crQ_rear));
       newP = poll_readyQ();
-      //printf("\n new process polled! p%d\n", newP->pid);
-      //printf("clone ready queue: ");
-      //for(int i = crQ_front+1; i <= crQ_rear; i++){
-        //printf("p%d ", clonereadyQ[i]->pid);
-        //}
-        //printf("\n");
       }
-    do{
-      printQ_ready();
       //아직 도착한 프로세스가 없을때, bb를 출력한다.
       if(newP == NULL && isEmpty(wQ_front, wQ_rear) ){
         printf("bb ");
@@ -678,69 +669,66 @@ void FCFS_alg(int num_IO){
         if(!isEmpty(wQ_front, wQ_rear));
         waiting(nowTime, 0);
       }
+    do{
+      if(newP != NULL){
+        printQ_ready();
+          printf("p%d ", newP->pid);
+          //해당 프로세스의 CPUburst_remain -1해준다.
+          newP->CPUburst_remain--;
+          printf("\ncpu burst remain: %d\n", newP->CPUburst_remain);
 
-      else{
-        printf("p%d ", newP->pid);
-        //해당 프로세스의 CPUburst_remain -1해준다.
-        newP->CPUburst_remain--;
-        printf("\ncpu burst remain: %d\n", newP->CPUburst_remain);
+          //다른 프로세스들 웨이팅 타임 더해준다.
+          wait(newP->pid);
+          //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
+          waiting(nowTime, 0);
 
-        //다른 프로세스들 웨이팅 타임 더해준다.
-        wait(newP->pid);
-        //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
-        waiting(nowTime, 0);
-
-
-        //실행 마치면 turnaroundTime 계산한다.
-        if(newP->CPUburst_remain == 0){
-          newP->turnaroundTime = nowTime - newP->arrival + 1;
-        }
-        //처음 response 했을때까지 레디큐에서 기다린 시간.
-        if(newP->CPUburst == newP->CPUburst_remain+1){
-          newP->responseTime = nowTime - newP->arrival;
-        }
-
-
-        //현재 시간이 IO가 일어나야 한다면 waitQ에 해당 프로세스를 넣는다.
-        for(int i = 0; i < num_IO; i++){
-          if(ioQ[i]->pid == newP->pid){
-            if(ioQ[i]->when == newP->CPUburst - newP->CPUburst_remain){
-              newP->IOburst = ioQ[i]->IOburst;
-              newP->IOburst_remain = ioQ[i]->IOburst;
-              add_waitQ(newP);
-              //printf("waitP: p%d, IOburst remain: %d\n", newP->pid, newP->IOburst_remain);
-              //IOburst_remain 순으로 정렬.
-              mergesort(waitQ, wQ_front+1, wQ_rear, 1);
-            if(!isEmpty(rQ_front, rQ_rear)){
-              newP = poll_readyQ();
-              //printf("after waitQ process: p%d\n", newP->pid);
-              //printf("clone ready queue: ");
-              // for(int i = crQ_front+1; i <= crQ_rear; i++){
-              //   printf("p%d ", clonereadyQ[i]->pid);
-              // }
-              // printf("\n");
-            }else{
-              //printf("next is blank\n");
-              newP = NULL;
-              //printf("NULL\n");
-            }
-            }
+          //실행 마치면 turnaroundTime 계산한다.
+          if(newP->CPUburst_remain == 0){
+            newP->turnaroundTime = nowTime - newP->arrival + 1;
           }
-          break;
-        }
+          //처음 response 했을때까지 레디큐에서 기다린 시간.
+          if(newP->CPUburst == newP->CPUburst_remain+1){
+            newP->responseTime = nowTime - newP->arrival;
+          }
 
-      }/////else
+
+          //현재 시간이 IO가 일어나야 한다면 waitQ에 해당 프로세스를 넣는다.
+          for(int i = 0; i < num_IO; i++){
+            if(ioQ[i]->pid == newP->pid){
+              if(ioQ[i]->when == newP->CPUburst - newP->CPUburst_remain){
+                newP->IOburst = ioQ[i]->IOburst;
+                newP->IOburst_remain = ioQ[i]->IOburst;
+                add_waitQ(newP);
+                //printf("waitP: p%d, IOburst remain: %d\n", newP->pid, newP->IOburst_remain);
+                //IOburst_remain 순으로 정렬.
+                mergesort(waitQ, wQ_front+1, wQ_rear, 1);
+              if(!isEmpty(rQ_front, rQ_rear)){
+                newP = poll_readyQ();
+                //printf("after waitQ process: p%d\n", newP->pid);
+                //printf("clone ready queue: ");
+                // for(int i = crQ_front+1; i <= crQ_rear; i++){
+                //   printf("p%d ", clonereadyQ[i]->pid);
+                // }
+                // printf("\n");
+              }else{
+                //printf("next is blank\n");
+                newP = NULL;
+                //printf("NULL\n");
+              }
+              }
+            }
+            break;
+          }
+      }
       nowTime++;
       //job queue가 비어있지 않다면, 해당 시간에 도착하는 프로세스를 레디큐로 옮겨준다.
-      if(isEmpty(jQ_front, jQ_rear) != 1){
+      if(!isEmpty(jQ_front, jQ_rear)){
         if(jobQ[jQ_front+1]->arrival == nowTime){
-          //inP = poll_jobQ();
           add_readyQ(poll_jobQ());
-          //printf("%d\n", inP->pid);
         }
       }
-
-    }while(newP == NULL || newP->CPUburst_remain > 0);
+      if(newP == NULL) break;
+    }while(newP->CPUburst_remain > 0);
     wT[newP->pid - 1] = newP->waitingTime;
     tT[newP->pid - 1] = newP->turnaroundTime;
     rT[newP->pid - 1] = newP->responseTime;
