@@ -674,7 +674,7 @@ void FCFS_alg(int num_process, int num_IO){
 
       //random IO. 5% 확률로 IO 발생.
       if(runP->CPUburst_remain != 0 && runP->CPUburst != runP->CPUburst_remain && rand() % 100 >= 95){
-        runP->IOburst = rand() % 10 + 1 //IOburst는 1~10;
+        runP->IOburst = rand() % 10 + 1; //IOburst는 1~10;
         runP->IOburst_remain = runP->IOburst;
         add_waitQ(runP);
         mergesort(waitQ, wQ_front+1, wQ_rear, 1);
