@@ -654,7 +654,17 @@ void FCFS_alg(int num_IO){
   if(jobQ[0]->arrival == 0) add_readyQ(poll_jobQ());
 
   do{
-
+    //레디큐가 비어있지 않다면, cpu에서 실행할 프로세스를 레디큐에서 가져온다.
+    if(!isEmpty(rQ_front, rQ_rear)){
+      //printf("%d %d %d\n", crQ_front, crQ_rear, isEmpty(crQ_front, crQ_rear));
+      newP = poll_readyQ();
+      //printf("\n new process polled! p%d\n", newP->pid);
+      //printf("clone ready queue: ");
+      //for(int i = crQ_front+1; i <= crQ_rear; i++){
+        //printf("p%d ", clonereadyQ[i]->pid);
+        //}
+        //printf("\n");
+      }
     do{
       printQ_ready();
       //아직 도착한 프로세스가 없을때, bb를 출력한다.
@@ -729,18 +739,6 @@ void FCFS_alg(int num_IO){
           //printf("%d\n", inP->pid);
         }
       }
-
-      //레디큐가 비어있지 않다면, cpu에서 실행할 프로세스를 레디큐에서 가져온다.
-      if(!isEmpty(rQ_front, rQ_rear)){
-        //printf("%d %d %d\n", crQ_front, crQ_rear, isEmpty(crQ_front, crQ_rear));
-        newP = poll_readyQ();
-        //printf("\n new process polled! p%d\n", newP->pid);
-        //printf("clone ready queue: ");
-        //for(int i = crQ_front+1; i <= crQ_rear; i++){
-          //printf("p%d ", clonereadyQ[i]->pid);
-          //}
-          //printf("\n");
-        }
 
     }while(newP == NULL || newP->CPUburst_remain > 0);
     wT[newP->pid - 1] = newP->waitingTime;
