@@ -655,13 +655,16 @@ void FCFS_alg(int num_process, int num_IO){
     if(!isEmpty(jQ_front, jQ_rear)){
       if(jobQ[jQ_front+1]->arrival == nowTime){
         add_readyQ(poll_jobQ());
+        printf("jobQ\n");
         printQ_job();
+        printf("readyQ\n");
         printQ_ready();
       }
     }
     //레디큐가 비어있지 않다면, cpu에서 실행할 프로세스를 레디큐에서 가져온다.
     if(!isEmpty(rQ_front, rQ_rear)){
       runP = poll_readyQ();
+      printf("readyQ\n");
       printQ_ready();
       }
     //아직 도착한 프로세스가 없을때, bb를 출력한다.
