@@ -669,6 +669,10 @@ void FCFS_alg(int num_process, int num_IO){
       runP->CPUburst_remain--;
       wait(runP->pid);
       waiting(nowTime, 0);
+      if(runP->CPUburst_remain == 0){
+        check++;
+        runP = NULL;
+      }
     }
 
   }
