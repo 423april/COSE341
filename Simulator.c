@@ -641,20 +641,20 @@ void FCFS_alg(int num_process, int num_IO){
   proPointer runP = NULL;
 
   for(nowTime = 0; check < num_process; nowTime++){
-    if(!isEmpty(jQ_front, jQ_rear)){
+    if(isEmpty(jQ_front, jQ_rear) != 1){
       while(jobQ[jQ_front+1]->arrival == nowTime)
         add_readyQ(poll_jobQ());
-        printQ_ready();
+      printQ_ready();
     }
 
-    if(!isEmpty(rQ_front, rQ_rear) && runP == NULL){
+    if(isEmpty(rQ_front, rQ_rear)!=1 && runP == NULL){
       runP = poll_readyQ();
     }
 
     if(runP==NULL && isEmpty(wQ_front, wQ_rear)){
     printf("bb ");
     }
-    else if(runP==NULL && !isEmpty(wQ_front, wQ_rear)){
+    else if(runP==NULL && isEmpty(wQ_front, wQ_rear)!=1){
       printf("bb ");
       waiting(0);
     }
@@ -675,7 +675,7 @@ void FCFS_alg(int num_process, int num_IO){
         printf("\n<IO interrupt!>p%d, IOburst: %d, CPUburst_remain: %d\n", runP->pid, runP->IOburst, runP->CPUburst_remain);
         add_waitQ(runP);
         mergesort(waitQ, wQ_front+1, wQ_rear, 1);
-        if(!isEmpty(rQ_front, rQ_rear)) runP = poll_readyQ();
+        if(isEmpty(rQ_front, rQ_rear)!=1) runP = poll_readyQ();
         else runP = NULL;
       }
     }/////else
