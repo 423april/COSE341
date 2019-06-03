@@ -673,6 +673,24 @@ void FCFS_alg(int num_process, int num_IO){
         check++;
         runP = NULL;
       }
+
+      //현재 시간이 IO가 일어나야 한다면 waitQ에 해당 프로세스를 넣는다.
+      for(int i = 0; i < num_IO; i++){
+        if(ioQ[i]->pid == runP->pid){
+          if(ioQ[i]->when == runP->CPUburst - runP->CPUburst_remain){
+            runP->IOburst = ioQ[i]->IOburst;
+            runP->IOburst_remain = ioQ[i]->IOburst;
+            add_waitQ(runP);
+            mergesort(waitQ, wQ_front+1, wQ_rear, 1);
+          if(!isEmpty(rQ_front, rQ_rear)){
+            runP = poll_readyQ();
+          }else{
+            runP = NULL;
+          }
+          }
+        }
+        break;
+      }
     }
 
   }
