@@ -652,18 +652,18 @@ void FCFS_alg(int num_process, int num_IO){
   proPointer runP = NULL;
 
   for(nowTime = 0; check < num_process; nowTime++){
-    if(!isEmpty(jQ_front, jQ_rear) && jobQ[jQ_front+1]->arrival == nowTime){
-      add_readyQ(poll_jobQ());
+    if(!isEmpty(jQ_front, jQ_rear)){
+      while(jobQ[jQ_front+1]->arrival == nowTime)
+        add_readyQ(poll_jobQ());
     }
     if(!isEmpty(rQ_front, rQ_rear) && runP == NULL){
       runP = poll_readyQ();
     }
     if(runP == NULL && isEmpty(wQ_front, wQ_rear)){
-    //printf("bb ");
-    if(nowTime % 10000000 == 0) printf("stuck");
+    printf("bb ");
     }
     else if(runP == NULL && !isEmpty(wQ_front, wQ_rear)){
-      //printf("bb ");
+      printf("bb ");
       waiting(nowTime, 0);
     }
     else{
@@ -672,13 +672,14 @@ void FCFS_alg(int num_process, int num_IO){
       wait(runP->pid);
       waiting(nowTime, 0);
 
-      //random IO. 90% 확률로 IO 발생.
-      if(runP->CPUburst_remain != 0 && runP->CPUburst != runP->CPUburst_remain && rand() % 100 <= 95){
+      //random IO. 95% 확률로 IO 발생.
+      if(runP->CPUburst_remain > 0 && runP->CPUburst > runP->CPUburst_remain && rand() % 100 <= 95){
         runP->IOburst = rand() % 10 + 1; //IOburst는 1~10;
         runP->IOburst_remain = runP->IOburst;
         add_waitQ(runP);
         mergesort(waitQ, wQ_front+1, wQ_rear, 1);
-        runP = NULL;
+        if(isEmpty(rQ_front, rQ_rear)) runP = poll_readyQ();
+        else runP = NULL;
       }
 
       if(runP != NULL && runP->CPUburst_remain == 0){
