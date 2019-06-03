@@ -659,7 +659,7 @@ void FCFS_alg(int num_process, int num_IO){
     }
     if(!isEmpty(rQ_front, rQ_rear)) printf("readyQ is not empty\n");
     if(runP == NULL) printf("runP is null\n");
-    
+
     if(!isEmpty(rQ_front, rQ_rear) && runP == NULL){
       runP = poll_readyQ();
     }
@@ -691,7 +691,7 @@ void FCFS_alg(int num_process, int num_IO){
         printf("\n<IO interrupt!>p%d, IOburst: %d, CPUburst_remain: %d\n", runP->pid, runP->IOburst, runP->CPUburst_remain);
         add_waitQ(runP);
         mergesort(waitQ, wQ_front+1, wQ_rear, 1);
-        if(isEmpty(rQ_front, rQ_rear)) runP = poll_readyQ();
+        if(!isEmpty(rQ_front, rQ_rear)) runP = poll_readyQ();
         else runP = NULL;
       }
     }/////else
