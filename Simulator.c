@@ -657,21 +657,24 @@ void FCFS_alg(int num_process, int num_IO){
         add_readyQ(poll_jobQ());
         printQ_ready();
     }
-    if(!isEmpty(rQ_front, rQ_rear) && runP){
+    if(!isEmpty(rQ_front, rQ_rear)) printf("readyQ is not empty\n");
+    if(runP == NULL) printf("runP is null\n");
+    
+    if(!isEmpty(rQ_front, rQ_rear) && runP == NULL){
       runP = poll_readyQ();
     }
 
-    if(runP) printf("not null\n");
-    if(!runP) printf("null\n");
+    if(runP != NULL) printf("not null\n");
+    if(runP == NULL) printf("null\n");
 
-    if(runP && isEmpty(wQ_front, wQ_rear)){
+    if(runP==NULL && isEmpty(wQ_front, wQ_rear)){
     printf("bb ");
     }
-    else if(runP && !isEmpty(wQ_front, wQ_rear)){
+    else if(runP==NULL && !isEmpty(wQ_front, wQ_rear)){
       printf("bb ");
       waiting(nowTime, 0);
     }
-    else if(!runP){
+    else if(runP != NULL){
       printf("p%d ", runP->pid);
       runP->CPUburst_remain--;
       wait(runP->pid);
@@ -682,7 +685,7 @@ void FCFS_alg(int num_process, int num_IO){
           runP = NULL;
         }
       //random IO. 95% 확률로 IO 발생.
-      if(!runP && runP->CPUburst_remain > 0 && runP->CPUburst > runP->CPUburst_remain && rand() % 100 <= 95){
+      if(runP != NULL && runP->CPUburst_remain > 0 && runP->CPUburst > runP->CPUburst_remain && rand() % 100 <= 95){
         runP->IOburst = rand() % 10 + 1; //IOburst는 1~10;
         runP->IOburst_remain = runP->IOburst;
         printf("\n<IO interrupt!>p%d, IOburst: %d, CPUburst_remain: %d\n", runP->pid, runP->IOburst, runP->CPUburst_remain);
