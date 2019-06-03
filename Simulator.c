@@ -585,11 +585,10 @@ void create_processes(int num_process, int num_IO){
       for(int i = wQ_front + 1; i <= wQ_rear; i++){
         waitQ[i]->IOburst_remain--;
         if(waitQ[i]->IOburst_remain == 0){
-          proPointer newP = poll_waitQ();
 	         //printf("waiting exit: p%d, CPU remain: %d\n", newP->pid, newP->CPUburst_remain);
           //waiting queue는 남아있는 IOburst time 오름차순으로 정렬한다.
+          add_readyQ(poll_waitQ());
           mergesort(waitQ, wQ_front+1, wQ_rear, 1);
-          add_readyQ(newP);
           // printf("clone ready queue: ");
           // for(int i = crQ_front+1; i <= crQ_rear; i++){
           //   printf("p%d ", clonereadyQ[i]->pid);
@@ -685,8 +684,6 @@ void FCFS_alg(int num_process, int num_IO){
         check++;
         runP = NULL;
       }
-
-
     }/////else
   }/////for process
 }/////FCFS_alg
