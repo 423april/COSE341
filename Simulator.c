@@ -729,9 +729,11 @@ void FCFS_alg(int num_IO){
       }
       if(newP == NULL) break;
     }while(newP->CPUburst_remain > 0);
-    wT[newP->pid - 1] = newP->waitingTime;
-    tT[newP->pid - 1] = newP->turnaroundTime;
-    rT[newP->pid - 1] = newP->responseTime;
+    if(newP != NULL){
+      wT[newP->pid - 1] = newP->waitingTime;
+      tT[newP->pid - 1] = newP->turnaroundTime;
+      rT[newP->pid - 1] = newP->responseTime;
+    }
     newP = NULL;
   }while(!isEmpty(rQ_front, rQ_rear) || !isEmpty(wQ_front, wQ_rear));
   printf("\n");
