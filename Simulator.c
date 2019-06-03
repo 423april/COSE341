@@ -666,11 +666,11 @@ void FCFS_alg(int num_IO){
     else printf("ready is empty\n");
     do{
       //printf("%d, %d\n", jQ_front, jQ_rear);
-      if(!isEmpty(jQ_front, jQ_rear)){
+      if(isEmpty(jQ_front, jQ_rear) != 1){
         if(jobQ[jQ_front+1]->arrival == nowTime){
-          inP = poll_jobQ();
-          add_readyQ(inP);
-          printf("%d\n", inP->pid);
+          //inP = poll_jobQ();
+          add_readyQ(poll_jobQ());
+          //printf("%d\n", inP->pid);
           if(newP == NULL && isEmpty(rQ_front, rQ_rear) != 1){
             newP = poll_readyQ();
             printf("%d\n", newP->pid);
