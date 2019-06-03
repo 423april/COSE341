@@ -211,7 +211,7 @@ void printQ_job(){
 
 void printQ_ready(){
   printf("\nreadyQ: ");
-  for(int i = 0; i < (rQ_rear - rQ_front); i++){
+  for(int i = rQ_front+1; i <= rQ_rear; i++){
     printf("p%d ", readyQ[i]->pid);
     printf("CPUburst %d, ", readyQ[i]->CPUburst);
     printf("arrival %d, ", readyQ[i]->arrival);
@@ -580,30 +580,19 @@ void create_processes(int num_process, int num_IO){
 
 //IO busrt 얼마나 했는지 매 타임  -1 해주고,
 //IOburst_remain == 0 되면 내보내준다.
-  void waiting(int nowTime, int type){
+  void waiting(int type){
     if(!isEmpty(wQ_front, wQ_rear)){
       for(int i = wQ_front + 1; i <= wQ_rear; i++){
         waitQ[i]->IOburst_remain--;
         if(waitQ[i]->IOburst_remain == 0){
-	         //printf("waiting exit: p%d, CPU remain: %d\n", newP->pid, newP->CPUburst_remain);
           //waiting queue는 남아있는 IOburst time 오름차순으로 정렬한다.
           add_readyQ(poll_waitQ());
           mergesort(waitQ, wQ_front+1, wQ_rear, 1);
-          // printf("clone ready queue: ");
-          // for(int i = crQ_front+1; i <= crQ_rear; i++){
-          //   printf("p%d ", clonereadyQ[i]->pid);
-          // }
-          // printf("\n");
           //해당 우선순위에 부합하게 오름차순 정렬한다.
           //arrival time은 넣은 그대로가 순서가 되므로 따로 정렬해주지 않는다.
           if(type == 0) return;
           else
             mergesort(readyQ, rQ_front+1, rQ_rear, type);
-          // printf("clone ready queue: ");
-          // for(int i = crQ_front+1; i <= crQ_rear; i++){
-          //   printf("p%d ", clonereadyQ[i]->pid);
-          // }
-          // printf("\n");
         }
       }
     }
