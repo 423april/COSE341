@@ -743,7 +743,7 @@ void FCFS_alg(int num_IO){
 
       }/////else
       nowTime++;
-    }while(newP->CPUburst_remain > 0 || newP == NULL);
+    }while(newP == NULL || newP->CPUburst_remain > 0);
     wT[newP->pid - 1] = newP->waitingTime;
     tT[newP->pid - 1] = newP->turnaroundTime;
     rT[newP->pid - 1] = newP->responseTime;
