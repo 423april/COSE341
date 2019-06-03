@@ -633,6 +633,8 @@ void create_processes(int num_process, int num_IO){
 //선입선출
 void FCFS_alg(int num_process, int num_IO){
   printf("\n********************start FCFS algorithm********************\n");
+  //난수 생성
+  srand( (unsigned)time(NULL) );
   //jobQ arrival time 정렬
   mergesort(jobQ, jQ_front+1, jQ_rear, 0);
   printQ_job();
@@ -669,31 +671,24 @@ void FCFS_alg(int num_process, int num_IO){
       runP->CPUburst_remain--;
       wait(runP->pid);
       waiting(nowTime, 0);
-      if(runP->CPUburst_remain == 0){
+
+      //random IO. 5% 확률로 IO 발생.
+      if(runP->CPUburst_remain != 0 && runP->CPUburst != runP->CPUburst_remain && rand() % 100 >= 95){
+        runP->IOburst = rand() % 10 + 1 //IOburst는 1~10;
+        runP->IOburst_remain = runP->IOburst;
+        add_waitQ(runP);
+        mergesort(waitQ, wQ_front+1, wQ_rear, 1);
+        runP = NULL;
+      }
+
+      else if(runP->CPUburst_remain == 0){
         check++;
         runP = NULL;
       }
 
-      //현재 시간이 IO가 일어나야 한다면 waitQ에 해당 프로세스를 넣는다.
-      for(int i = 0; i < num_IO; i++){
-        if(ioQ[i]->pid == runP->pid){
-          if(ioQ[i]->when == runP->CPUburst - runP->CPUburst_remain){
-            runP->IOburst = ioQ[i]->IOburst;
-            runP->IOburst_remain = ioQ[i]->IOburst;
-            add_waitQ(runP);
-            mergesort(waitQ, wQ_front+1, wQ_rear, 1);
-          if(!isEmpty(rQ_front, rQ_rear)){
-            runP = poll_readyQ();
-          }else{
-            runP = NULL;
-          }
-          }
-        }
-        break;
-      }
-    }
 
-  }
+    }/////else
+  }/////for process
 }/////FCFS_alg
 
 
