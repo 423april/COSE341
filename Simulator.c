@@ -666,7 +666,7 @@ void FCFS_alg(int num_process, int num_IO){
       printf("bb ");
       waiting(nowTime, 0);
     }
-    else{
+    else if(runP != NULL){
       printf("p%d ", runP->pid);
       runP->CPUburst_remain--;
       wait(runP->pid);
@@ -680,7 +680,7 @@ void FCFS_alg(int num_process, int num_IO){
       if(runP!= NULL && runP->CPUburst_remain > 0 && runP->CPUburst > runP->CPUburst_remain && rand() % 100 <= 95){
         runP->IOburst = rand() % 10 + 1; //IOburst는 1~10;
         runP->IOburst_remain = runP->IOburst;
-        printf("\np%d, IOburst: %d, CPUburst_remain: %d\n", runP->pid, runP->IOburst, runP->CPUburst_remain);
+        printf("\n<IO interrupt!>p%d, IOburst: %d, CPUburst_remain: %d\n", runP->pid, runP->IOburst, runP->CPUburst_remain);
         add_waitQ(runP);
         mergesort(waitQ, wQ_front+1, wQ_rear, 1);
         if(isEmpty(rQ_front, rQ_rear)) runP = poll_readyQ();
