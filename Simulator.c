@@ -660,7 +660,7 @@ void FCFS_alg(int num_process, int num_IO){
     }
     if(runP == NULL && isEmpty(wQ_front, wQ_rear)){
     //printf("bb ");
-    if(nowTime % 100 == 0) printf("stuck");
+    if(nowTime % 10000000 == 0) printf("stuck");
     }
     else if(runP == NULL && !isEmpty(wQ_front, wQ_rear)){
       //printf("bb ");
