@@ -671,11 +671,9 @@ void FCFS_alg(int num_IO){
       }
     do{
       if(newP != NULL){
-        printQ_ready();
           printf("p%d ", newP->pid);
           //해당 프로세스의 CPUburst_remain -1해준다.
           newP->CPUburst_remain--;
-          printf("\ncpu burst remain: %d\n", newP->CPUburst_remain);
 
           //다른 프로세스들 웨이팅 타임 더해준다.
           wait(newP->pid);
@@ -699,21 +697,11 @@ void FCFS_alg(int num_IO){
                 newP->IOburst = ioQ[i]->IOburst;
                 newP->IOburst_remain = ioQ[i]->IOburst;
                 add_waitQ(newP);
-                //printf("waitP: p%d, IOburst remain: %d\n", newP->pid, newP->IOburst_remain);
-                //IOburst_remain 순으로 정렬.
                 mergesort(waitQ, wQ_front+1, wQ_rear, 1);
               if(!isEmpty(rQ_front, rQ_rear)){
                 newP = poll_readyQ();
-                //printf("after waitQ process: p%d\n", newP->pid);
-                //printf("clone ready queue: ");
-                // for(int i = crQ_front+1; i <= crQ_rear; i++){
-                //   printf("p%d ", clonereadyQ[i]->pid);
-                // }
-                // printf("\n");
               }else{
-                //printf("next is blank\n");
                 newP = NULL;
-                //printf("NULL\n");
               }
               }
             }
