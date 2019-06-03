@@ -708,7 +708,10 @@ void FCFS_alg(int num_process, int num_IO){
         }////for
     }/////else
     nowTime++;
-    if(runP != NULL && runP->CPUburst_remain == 0) check++;
+    if(runP != NULL && runP->CPUburst_remain == 0){
+      check++;
+      runP = NULL;
+    }
   }//////while check < num_process
 }/////FCFS_alg
 
