@@ -668,11 +668,11 @@ void FCFS_alg(int num_IO){
     do{
 
       //아직 도착한 프로세스가 없을때, bb를 출력한다.
-      if(newP == NULL && isEmpty(rQ_front, rQ_rear) && isEmpty(wQ_front, wQ_rear) ){
+      if(newP == NULL && isEmpty(wQ_front, wQ_rear) ){
         printf("bb ");
       }
       //프로세스가 모두 웨이팅큐에 가있을때 bb를 출력하고,IOburst_remain을 업데이트한다.
-      else if(newP == NULL && isEmpty(rQ_front, rQ_rear) && !isEmpty(wQ_front, wQ_rear)){
+      else if(newP == NULL && !isEmpty(wQ_front, wQ_rear)){
         printf("bb ");
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
         if(!isEmpty(wQ_front, wQ_rear));
