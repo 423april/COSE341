@@ -682,7 +682,7 @@ void FCFS_alg(int num_process, int num_IO){
         waiting(nowTime, 0);
 
         //실행 마치면 turnaroundTime 계산한다.
-        if(newP->CPUburst_remain == 0){
+        if(runP->CPUburst_remain == 0){
           runP->turnaroundTime = nowTime - runP->arrival + 1;
         }
         //처음 response 했을때까지 레디큐에서 기다린 시간.
