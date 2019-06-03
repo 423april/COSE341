@@ -673,6 +673,7 @@ void FCFS_alg(int num_IO){
         printf("p%d ", newP->pid);
         //해당 프로세스의 CPUburst_remain -1해준다.
         newP->CPUburst_remain--;
+        printf("\ncpu burst remain: %d\n", newP->CPUburst_remain);
 
         //다른 프로세스들 웨이팅 타임 더해준다.
         wait(newP->pid);
