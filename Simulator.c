@@ -651,37 +651,33 @@ void FCFS_alg(int num_IO){
   proPointer inP = NULL;
   proPointer newP = NULL;
 
+  //job queue가 비어있지 않다면, 해당 시간에 도착하는 프로세스를 레디큐로 옮겨준다.
+  if(isEmpty(jQ_front, jQ_rear) != 1){
+    if(jobQ[jQ_front+1]->arrival == nowTime){
+      //inP = poll_jobQ();
+      add_readyQ(poll_jobQ());
+      //printf("%d\n", inP->pid);
+    }
+  }
+  //레디큐가 비어있지 않다면, cpu에서 실행할 프로세스를 레디큐에서 가져온다.
+  if(!isEmpty(rQ_front, rQ_rear)){
+    //printf("%d %d %d\n", crQ_front, crQ_rear, isEmpty(crQ_front, crQ_rear));
+    newP = poll_readyQ();
+    //printf("\n new process polled! p%d\n", newP->pid);
+    //printf("clone ready queue: ");
+    //for(int i = crQ_front+1; i <= crQ_rear; i++){
+      //printf("p%d ", clonereadyQ[i]->pid);
+      //}
+      //printf("\n");
+    }
   do{
-
-
     do{
-      //printf("%d, %d\n", jQ_front, jQ_rear);
-      if(isEmpty(jQ_front, jQ_rear) != 1){
-        if(jobQ[jQ_front+1]->arrival == nowTime){
-          //inP = poll_jobQ();
-          add_readyQ(poll_jobQ());
-          //printf("%d\n", inP->pid);
-        }
-      }
 
-      if(!isEmpty(rQ_front, rQ_rear)){
-        //printf("%d %d %d\n", crQ_front, crQ_rear, isEmpty(crQ_front, crQ_rear));
-        newP = poll_readyQ();
-        //printf("\n new process polled! p%d\n", newP->pid);
-        //printf("clone ready queue: ");
-        //for(int i = crQ_front+1; i <= crQ_rear; i++){
-          //printf("p%d ", clonereadyQ[i]->pid);
-        //}
-        //printf("\n");
-      }
-
-      //if(newP == NULL) printf("null ");
-      if(isEmpty(rQ_front, rQ_rear) != 1) printf("ready is not empty");
-      if(isEmpty(wQ_front, wQ_rear) != 1) printf("wait is not empty");
-      //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
+      //아직 도착한 프로세스가 없을때, bb를 출력한다.
       if(isEmpty(rQ_front, rQ_rear) && isEmpty(wQ_front, wQ_rear) && newP == NULL){
         printf("bb ");
       }
+      //프로세스가 모두 웨이팅큐에 가있을때 bb를 출력하고,IOburst_remain을 업데이트한다.
       else if(isEmpty(rQ_front, rQ_rear) && !isEmpty(wQ_front, wQ_rear) && newP == NULL){
         printf("bb ");
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
@@ -740,6 +736,25 @@ void FCFS_alg(int num_IO){
 
       }/////else
       nowTime++;
+      //job queue가 비어있지 않다면, 해당 시간에 도착하는 프로세스를 레디큐로 옮겨준다.
+      if(isEmpty(jQ_front, jQ_rear) != 1){
+        if(jobQ[jQ_front+1]->arrival == nowTime){
+          //inP = poll_jobQ();
+          add_readyQ(poll_jobQ());
+          //printf("%d\n", inP->pid);
+        }
+      }
+      //레디큐가 비어있지 않다면, cpu에서 실행할 프로세스를 레디큐에서 가져온다.
+      if(!isEmpty(rQ_front, rQ_rear)){
+        //printf("%d %d %d\n", crQ_front, crQ_rear, isEmpty(crQ_front, crQ_rear));
+        newP = poll_readyQ();
+        //printf("\n new process polled! p%d\n", newP->pid);
+        //printf("clone ready queue: ");
+        //for(int i = crQ_front+1; i <= crQ_rear; i++){
+          //printf("p%d ", clonereadyQ[i]->pid);
+        //}
+        //printf("\n");
+      }
     }while(newP == NULL || newP->CPUburst_remain > 0);
     wT[newP->pid - 1] = newP->waitingTime;
     tT[newP->pid - 1] = newP->turnaroundTime;
