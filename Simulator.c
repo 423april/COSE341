@@ -659,10 +659,10 @@ void FCFS_alg(int num_process, int num_IO){
       runP = poll_readyQ();
     }
     if(runP == NULL && isEmpty(wQ_front, wQ_rear)){
-      printf("bb ");
+    //printf("bb ");
     }
     else if(runP == NULL && !isEmpty(wQ_front, wQ_rear)){
-      printf("bb ");
+      //printf("bb ");
       waiting(nowTime, 0);
     }
     else{
