@@ -666,7 +666,7 @@ void FCFS_alg(int num_process, int num_IO){
       printf("bb ");
       waiting(nowTime, 0);
     }
-    else if(!runP{
+    else if(!runP){
       printf("p%d ", runP->pid);
       runP->CPUburst_remain--;
       wait(runP->pid);
