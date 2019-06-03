@@ -656,13 +656,13 @@ void FCFS_alg(int num_process, int num_IO){
     }
     else if(runP==NULL && !isEmpty(wQ_front, wQ_rear)){
       printf("bb ");
-      waiting(nowTime, 0);
+      waiting(0);
     }
     else if(runP != NULL){
       printf("p%d ", runP->pid);
       runP->CPUburst_remain--;
       wait(runP->pid);
-      waiting(nowTime, 0);
+      waiting(0);
 
         if(runP->CPUburst_remain == 0){
           check++;
@@ -743,7 +743,7 @@ void SJF_alg(int num_IO){
           wait(runP->pid);
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
         if(!isEmpty(wQ_front, wQ_rear));
-          waiting(nowTime, 0);
+          waiting(0);
       }
 
       else{
@@ -756,7 +756,7 @@ void SJF_alg(int num_IO){
           wait(runP->pid);
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
         if(!isEmpty(wQ_front, wQ_rear));
-          waiting(nowTime, 0);
+          waiting(0);
 
 
         //실행 마치면 turnaroundTime 계산한다.
@@ -861,7 +861,7 @@ void PRI_alg(int num_IO){
         //다른 프로세스들 웨이팅 타임 더해준다.
         wait(runP->pid);
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
-        waiting(nowTime, 3);
+        waiting(3);
       }
 
       else{
@@ -872,7 +872,7 @@ void PRI_alg(int num_IO){
         //다른 프로세스들 웨이팅 타임 더해준다.
         wait(runP->pid);
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
-        waiting(nowTime, 3);
+        waiting(3);
 
 
         //실행 마치면 turnaroundTime 계산한다.
@@ -986,7 +986,7 @@ void PRESJF_alg(int num_IO){
           wait(runP->pid);
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
         if(!isEmpty(wQ_front, wQ_rear))
-          waiting(nowTime, 2);
+          waiting(2);
       }
 
       else{
@@ -997,7 +997,7 @@ void PRESJF_alg(int num_IO){
         //다른 프로세스들 웨이팅 타임 더해준다.
         wait(runP->pid);
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
-        waiting(nowTime, 2);
+        waiting(2);
 
 
         //실행 마치면 turnaroundTime 계산한다.
@@ -1123,7 +1123,7 @@ void PREPRI_alg(int num_IO){
           wait(runP->pid);
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
         if(!isEmpty(wQ_front, wQ_rear))
-          waiting(nowTime, 3);
+          waiting(3);
       }
 
       else{
@@ -1134,7 +1134,7 @@ void PREPRI_alg(int num_IO){
         //다른 프로세스들 웨이팅 타임 더해준다.
         wait(runP->pid);
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
-        waiting(nowTime, 3);
+        waiting(3);
 
 
         //실행 마치면 turnaroundTime 계산한다.
@@ -1257,7 +1257,7 @@ void RR_alg(int num_IO, int tq){
           wait(runP->pid);
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
         if(!isEmpty(wQ_front, wQ_rear))
-          waiting(nowTime, 0);
+          waiting(0);
       }
 
       else{
@@ -1268,7 +1268,7 @@ void RR_alg(int num_IO, int tq){
         //다른 프로세스들 웨이팅 타임 더해준다.
         wait(runP->pid);
         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
-        waiting(nowTime, 0);
+        waiting(0);
 
 
         //실행 마치면 turnaroundTime 계산한다.
