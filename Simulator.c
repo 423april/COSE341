@@ -635,6 +635,7 @@ void FCFS_alg(int num_process, int num_IO){
   printf("\n********************start FCFS algorithm********************\n");
   //jobQ arrival time 정렬
   mergesort(jobQ, jQ_front+1, jQ_rear, 0);
+  printQ_job();
   //ready, wait initialize
   init_readyQ();
   init_waitQ();
@@ -654,11 +655,14 @@ void FCFS_alg(int num_process, int num_IO){
     if(!isEmpty(jQ_front, jQ_rear)){
       if(jobQ[jQ_front+1]->arrival == nowTime){
         add_readyQ(poll_jobQ());
+        printQ_job();
+        printQ_ready();
       }
     }
     //레디큐가 비어있지 않다면, cpu에서 실행할 프로세스를 레디큐에서 가져온다.
     if(!isEmpty(rQ_front, rQ_rear)){
       runP = poll_readyQ();
+      printQ_ready();
       }
     //아직 도착한 프로세스가 없을때, bb를 출력한다.
     if(runP == NULL && isEmpty(wQ_front, wQ_rear) && isEmpty(rQ_front, rQ_rear)){
