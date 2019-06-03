@@ -655,6 +655,7 @@ void FCFS_alg(int num_process, int num_IO){
     if(!isEmpty(jQ_front, jQ_rear)){
       while(jobQ[jQ_front+1]->arrival == nowTime)
         add_readyQ(poll_jobQ());
+        printQ_ready();
     }
     if(!isEmpty(rQ_front, rQ_rear) && runP){
       runP = poll_readyQ();
