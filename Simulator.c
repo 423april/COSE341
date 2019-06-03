@@ -650,76 +650,28 @@ void FCFS_alg(int num_process, int num_IO){
   //cpu에 할당되는 프로세스
   proPointer runP = NULL;
 
-  while(check < num_process){
-    //job queue가 비어있지 않다면, 해당 시간에 도착하는 프로세스를 레디큐로 옮겨준다.
-    if(!isEmpty(jQ_front, jQ_rear)){
-      if(jobQ[jQ_front+1]->arrival == nowTime){
-        add_readyQ(poll_jobQ());
-        printf("jobQ\n");
-        printQ_job();
-        printf("readyQ\n");
-        printQ_ready();
-      }
+  for(nowTime = 0; check < num_process; nowTime++){
+    if(!isEmpty(jQ_front, jQ_rear) && jobQ[jQ_front+1]->arrival == nowTime){
+      add_readyQ(poll_jobQ());
     }
-    //레디큐가 비어있지 않다면, cpu에서 실행할 프로세스를 레디큐에서 가져온다.
-    if(!isEmpty(rQ_front, rQ_rear)){
+    if(!isEmpty(rQ_front, rQ_rear) && runP == NULL){
       runP = poll_readyQ();
-      printf("readyQ\n");
-      printQ_ready();
-      }
-    //아직 도착한 프로세스가 없을때, bb를 출력한다.
-    if(runP == NULL && isEmpty(wQ_front, wQ_rear) && isEmpty(rQ_front, rQ_rear)){
-      //printf("bb ");
     }
-    //프로세스가 모두 웨이팅큐에 가있을때 bb를 출력하고,IOburst_remain을 업데이트한다.
-    else if(runP == NULL && !isEmpty(wQ_front, wQ_rear) && isEmpty(rQ_front, rQ_rear)){
-      //printf("bb ");
-      //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
-      if(!isEmpty(wQ_front, wQ_rear));
+    if(runP == NULL && isEmpty(wQ_front, wQ_rear)){
+      printf("bb ");
+    }
+    else if(runP == NULL && !isEmpty(wQ_front, wQ_rear)){
+      printf("bb ");
       waiting(nowTime, 0);
     }
     else{
-        printf("p%d ", runP->pid);
-        //해당 프로세스의 CPUburst_remain -1해준다.
-        runP->CPUburst_remain--;
-
-        //다른 프로세스들 웨이팅 타임 더해준다.
-        wait(runP->pid);
-        //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
-        waiting(nowTime, 0);
-
-        //실행 마치면 turnaroundTime 계산한다.
-        if(runP->CPUburst_remain == 0){
-          runP->turnaroundTime = nowTime - runP->arrival + 1;
-        }
-        //처음 response 했을때까지 레디큐에서 기다린 시간.
-        if(runP->CPUburst == runP->CPUburst_remain+1){
-          runP->responseTime = nowTime - runP->arrival;
-        }
-        //현재 시간이 IO가 일어나야 한다면 waitQ에 해당 프로세스를 넣는다.
-        for(int i = 0; i < num_IO; i++){
-          if(ioQ[i]->pid == runP->pid){
-            if(ioQ[i]->when == runP->CPUburst - runP->CPUburst_remain){
-              runP->IOburst = ioQ[i]->IOburst;
-              runP->IOburst_remain = ioQ[i]->IOburst;
-              add_waitQ(runP);
-              mergesort(waitQ, wQ_front+1, wQ_rear, 1);
-            if(!isEmpty(rQ_front, rQ_rear)){
-              runP = poll_readyQ();
-            }else{
-              runP = NULL;
-            }
-            }
-          }
-          break;
-        }////for
-    }/////else
-    nowTime++;
-    if(runP != NULL && runP->CPUburst_remain == 0){
-      check++;
-      runP = NULL;
+      printf("p%d ", runP->pid);
+      runP->CPUburst_remain--;
+      wait(runP->pid);
+      waiting(nowTime, 0);
     }
-  }//////while check < num_process
+
+  }
 }/////FCFS_alg
 
 
