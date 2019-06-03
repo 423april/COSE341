@@ -681,10 +681,11 @@ void FCFS_alg(int num_process, int num_IO){
         if(isEmpty(rQ_front, rQ_rear)) runP = poll_readyQ();
         else runP = NULL;
       }
-
-      if(runP != NULL && runP->CPUburst_remain == 0){
-        check++;
-        runP = NULL;
+      if(runP != NULL){
+        if(runP->CPUburst_remain == 0){
+          check++;
+          runP = NULL;
+        }
       }
     }/////else
   }/////for process
