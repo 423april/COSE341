@@ -608,7 +608,7 @@ void SJF_alg(int num_process){
   reset_jobQ(num_process);
 }/////SJF_alg
 
-//
+
 // //preemption 없는 priority 알고리즘.
 // //CPU_remain이 가장 작은 것부터 실행
 // void PRI_alg(){
