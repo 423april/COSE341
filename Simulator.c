@@ -594,7 +594,7 @@ void SJF_alg(int num_process){
     if(runP != NULL && runP->CPUburst_remain > 0 && runP->CPUburst > runP->CPUburst_remain && rand() % 100 >= 95){
       runP->IOburst = rand() % 10 + 1; //IOburst는 1~10;
       runP->IOburst_remain = runP->IOburst;
-      printf("\n<IO interrupt!>p%d, IOburst: %d\n", runP->pid, runP->IOburst, runP->CPUburst_remain);
+      printf("\n<IO interrupt!>p%d, IOburst: %d\n", runP->pid, runP->IOburst);
       add_waitQ(runP);
       mergesort(waitQ, wQ_front+1, wQ_rear, IOREMAIN);
       if(isEmpty(rQ_front, rQ_rear)!=1) runP = poll_readyQ();
