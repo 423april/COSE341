@@ -695,7 +695,7 @@ void PRESJF_alg(int num_process){
   //jobQ arrival 정렬
   reset_jobQ(num_process);
   mergesort(jobQ, jQ_front+1, jQ_rear, ARRIVAL);
-  printQ_job();
+
   //ready, wait, termination initialize
   init_readyQ();
   init_waitQ();
