@@ -1031,8 +1031,8 @@ int main(int argc, char **argv){
   scanf("%d", &tq);
 
   create_processes(num_process);
-  //FCFS_alg(num_process);
-  SJF_alg(num_process);
+  FCFS_alg(num_process);
+  //SJF_alg(num_process);
   //PRI_alg(num_IO);
   //PRESJF_alg(num_IO);
   //PREPRI_alg(num_IO);
