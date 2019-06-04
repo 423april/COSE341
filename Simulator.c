@@ -3,8 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define MAX_PROCESS_NUM 30
-#define MAX_IO_NUM 60
+#define MAX_PROCESS_NUM 100
 #define INF 1000000
 
 typedef struct IO* IOPointer;
@@ -439,6 +438,10 @@ void create_processes(int num_process){
     //evaluation
     //termination queue를 pid순으로 정렬
     mergesort(termQ, tQ_front+1, tQ_rear, 4);
+    for(int i = tQ_front+1; i <= tQ_rear; i++){
+      printf("p%d ", termQ[i]);
+    }
+    printf("\n");
     int num = tQ_rear - tQ_front;
     int sumwT = 0;
     int sumtT = 0;
@@ -506,7 +509,7 @@ void FCFS_alg(int num_process){
 
       if(runP->CPUburst_remain+1 == runP->CPUburst) runP->responseTime = nowTime - runP->arrival;
       if(runP->CPUburst_remain == 0){
-        runP->turnaroundTime = nowTime - runP->arrival;
+        runP->turnaroundTime = nowTime - runP->arrival + 1;
         add_termQ(runP);
         check++;
         runP = NULL;
