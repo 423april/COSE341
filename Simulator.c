@@ -504,12 +504,12 @@ void FCFS_alg(int num_process){
     else if(runP != NULL){
       printf("p%d ", runP->pid);
       runP->CPUburst_remain--;
+      runP->turnaroundTime++;
       wait(runP->pid);
       waiting(0);
 
       if(runP->CPUburst_remain+1 == runP->CPUburst) runP->responseTime = nowTime - runP->arrival;
       if(runP->CPUburst_remain == 0){
-        runP->turnaroundTime = nowTime - runP->arrival;
         add_termQ(runP);
         check++;
         runP = NULL;
