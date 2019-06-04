@@ -567,6 +567,7 @@ void SJF_alg(int num_process){
     }
 
     if(isEmpty(rQ_front, rQ_rear)!=1 && runP == NULL){
+      //CPUburst_remain 낮은 순서대로 정렬. 우선순위 같으면 arrival time 순서. arrival time도 같으면 pid순서.
       mergesort(readyQ, rQ_front+1, rQ_rear, CPUREMAIN);
       runP = poll_readyQ();
     }
@@ -641,6 +642,8 @@ void PRI_alg(int num_process){
     }
 
     if(isEmpty(rQ_front, rQ_rear)!=1 && runP == NULL){
+      //우선순위 높은 순서대로 정렬. 우선순위 같으면 arrival time 순서. arrival time도 같으면 pid순서.
+      //숫자 작을수록 우선순위 높다. 
       mergesort(readyQ, rQ_front+1, rQ_rear, PRIORITY);
       runP = poll_readyQ();
     }
