@@ -603,7 +603,7 @@ void create_processes(int num_process, int num_IO){
     }
   }
 
-  void evaluation(int wT[], int tT[], int rT[], int alg){
+  void evaluation(int wT[], int tT[], int rT[]){
     //evaluation
     int num = rQ_rear - rQ_front;
     int sumwT = 0;
@@ -690,7 +690,8 @@ void FCFS_alg(int num_process, int num_IO){
     }
     }/////else
   }/////for process
-  //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌. 
+  //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
+  evaluation(wT, tT, rT);
   reset_jobQ(num_process);
 }/////FCFS_alg
 
@@ -823,7 +824,7 @@ void SJF_alg(int num_IO){
     runP = NULL;
   }while(!isEmpty(crQ_front, crQ_rear) || !isEmpty(wQ_front, wQ_rear));
   printf("\n");
-  evaluation(wT, tT, rT, 1);
+  evaluation(wT, tT, rT);
 }
 
 //preemption 없는 priority 알고리즘.
@@ -939,7 +940,7 @@ void PRI_alg(int num_IO){
     runP = NULL;
   }while(!isEmpty(crQ_front, crQ_rear) || !isEmpty(wQ_front, wQ_rear));
   printf("\n");
-  evaluation(wT, tT, rT, 2);
+  evaluation(wT, tT, rT);
 }
 
 //preemption 있는 SJF 알고리즘.
@@ -1076,7 +1077,7 @@ void PRESJF_alg(int num_IO){
   }while(!isEmpty(crQ_front, crQ_rear) || !isEmpty(wQ_front, wQ_rear));
   printf("\n");
 
-  evaluation(wT, tT, rT, 3);
+  evaluation(wT, tT, rT);
 }
 
 //preemption 있는 Priority 알고리즘.
@@ -1209,7 +1210,7 @@ void PREPRI_alg(int num_IO){
   }while(!isEmpty(crQ_front, crQ_rear) || !isEmpty(wQ_front, wQ_rear));
   printf("\n");
 
-  evaluation(wT, tT, rT, 4);
+  evaluation(wT, tT, rT);
 }
 
 //Round Robin 알고리즘.
@@ -1343,7 +1344,7 @@ void RR_alg(int num_IO, int tq){
   }while(!isEmpty(crQ_front, crQ_rear) || !isEmpty(wQ_front, wQ_rear));
   printf("\n");
 
-  evaluation(wT, tT, rT, 5);
+  evaluation(wT, tT, rT);
 }
 
 
