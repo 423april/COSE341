@@ -224,7 +224,7 @@ void merge(proPointer list[], int p, int q, int r, int type){
       dummy2 -> priority = INF;
       break;
     case 4:
-      dummy1 -> pid = INF;
+      dummy2 -> pid = INF;
       break;
     default:
       printf("merge: unknown type received\n");
