@@ -482,7 +482,7 @@ void FCFS_alg(int num_process){
   //cpu에 할당되는 프로세스
   proPointer runP = NULL;
 
-  for(nowTime = 0; check < num_process; nowTime++){
+  for(nowTime = 0; check <= num_process; nowTime++){
     if(isEmpty(jQ_front, jQ_rear) != 1){
       for(int i = jQ_front+1; i <= jQ_rear; i++){
         if(jobQ[i]->arrival == nowTime)
@@ -509,7 +509,7 @@ void FCFS_alg(int num_process){
 
       if(runP->CPUburst_remain+1 == runP->CPUburst) runP->responseTime = nowTime - runP->arrival;
       if(runP->CPUburst_remain == 0){
-        runP->turnaroundTime = nowTime - runP->arrival + 1;
+        runP->turnaroundTime = nowTime - runP->arrival;
         add_termQ(runP);
         check++;
         runP = NULL;
