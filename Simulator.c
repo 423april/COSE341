@@ -433,7 +433,7 @@ void create_processes(int num_process){
       }
     }
   }
-
+   
   void evaluation(){
     //evaluation
     //termination queue를 pid순으로 정렬
