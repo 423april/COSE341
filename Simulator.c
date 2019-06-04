@@ -439,7 +439,7 @@ void create_processes(int num_process){
     //termination queue를 pid순으로 정렬
     mergesort(termQ, tQ_front+1, tQ_rear, 4);
     for(int i = tQ_front+1; i <= tQ_rear; i++){
-      printf("p%d ", termQ[i]);
+      printf("p%d ", termQ[i]->pid);
     }
     printf("\n");
     int num = tQ_rear - tQ_front;
