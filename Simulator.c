@@ -428,7 +428,7 @@ void create_processes(int num_process){
       for(int i = wQ_front + 1; i <= wQ_rear; i++){
         waitQ[i]->IOburst_remain--;
         if(waitQ[i]->IOburst_remain == 0){
-          printf("<IO finished> p%d CPUburst_remain: %d\n", waitQ[i]->CPUburst_remain);
+          printf("<IO finished> p%d CPUburst_remain: %d\n", waitQ[i]->pid, waitQ[i]->CPUburst_remain);
           add_readyQ(poll_waitQ());
           //waiting queue는 남아있는 IOburst time 오름차순으로 정렬한다.
           mergesort(waitQ, wQ_front+1, wQ_rear, 1);
