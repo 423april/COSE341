@@ -756,7 +756,7 @@ void PRESJF_alg(int num_process){
       //현재 실행중인 프로세스와 비교해서 CPUburst_remain이 작으면 프로세스를 바꿔준다.
       waiting(CPUREMAIN);
       mergesort(readyQ, rQ_front+1, rQ_rear, CPUREMAIN);
-      if(runP != NULL && readyQ[rQ_front+1]->CPUburst_remain < runP->CPUburst_remain){
+      if(runP != NULL && isEmpty(rQ_front, rQ_rear) != 1 && readyQ[rQ_front+1]->CPUburst_remain < runP->CPUburst_remain){
         add_readyQ(runP);
         runP = poll_readyQ();
       }
