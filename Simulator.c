@@ -35,10 +35,6 @@ typedef struct process{
 proPointer jobQ[MAX_PROCESS_NUM];
 int jQ_front, jQ_rear;
 
-//IO 담아놓은 배열을 MAX_IO_NUM만큼 선언
-IOPointer ioQ[MAX_IO_NUM];
-int ioQ_front, ioQ_rear;
-
 //ready queue 배열 선언
 proPointer readyQ[MAX_PROCESS_NUM];
 int rQ_front, rQ_rear;
@@ -79,54 +75,6 @@ void reset_jobQ(int num_process){
   jQ_rear = num_process-1;
 }
 
-//cjob queue 초기화
-void init_cjobQ(){
-  cjQ_front = -1;
-  cjQ_rear = -1;
-
-  for(int i = 0; i < MAX_PROCESS_NUM; i++){
-    cjobQ[i] = NULL;
-  }
-}
-//cjob queue enqueue
-void add_cjobQ(proPointer newP){
-  if(cjQ_rear == MAX_PROCESS_NUM - 1)
-    printf("cjobQ is FULL");
-  else
-    cjobQ[++cjQ_rear] = newP;
-}
-//cjob queue dequeue
-proPointer poll_cjobQ(){
-  if(cjQ_front == cjQ_rear)
-    printf("cjobQ is EMPTY");
-  else
-    return cjobQ[++cjQ_front];
-}
-
-//IO queue 초기화
-void init_ioQ(){
-  ioQ_front = -1;
-  ioQ_rear = -1;
-
-  for(int i = 0; i < MAX_IO_NUM; i++){
-    ioQ[i] = NULL;
-  }
-}
-
-//IO queue enqueue
-void add_ioQ(IOPointer newIO){
-  if(ioQ_rear == MAX_PROCESS_NUM - 1)
-    printf("ioQ is FULL");
-  else
-    ioQ[++ioQ_rear] = newIO;
-}
-//IO queue dequeue
-IOPointer poll_ioQ(){
-  if(ioQ_front == ioQ_rear)
-    printf("ioQ is EMPTY");
-  else
-    return ioQ[++ioQ_front];
-}
 
 //ready queue 초기화
 void init_readyQ(){
@@ -219,56 +167,6 @@ void printQ_ready(){
   printf("\n");
 }
 
-void printQ_cloneready(){
-  printf("\nclone readyQ: \n");
-  for(int i = crQ_front+1; i <= crQ_rear; i++){
-    printf("p%d ", clonereadyQ[i]->pid);
-    printf("CPUburst %d, ", clonereadyQ[i]->CPUburst);
-    printf("cpu remain %d, ", clonereadyQ[i]->CPUburst_remain);
-    printf("arrival %d, ", clonereadyQ[i]->arrival);
-    printf("priority %d\n", clonereadyQ[i]->priority);
-  }
-  printf("\n");
-}
-
-void clone_jobQ(){
-  init_cjobQ();
-  for(int i = jQ_front+1; i <= jQ_rear; i++){
-    proPointer newP = (proPointer)malloc(sizeof(struct process));
-    newP->pid = jobQ[i]->pid;
-    newP->CPUburst = jobQ[i]->CPUburst;
-    newP->arrival = jobQ[i]->arrival;
-    newP->priority = jobQ[i]->priority;
-    newP->CPUburst_remain = jobQ[i]->CPUburst_remain;
-    newP->IOburst = jobQ[i]->IOburst;
-    newP->IOburst_remain = jobQ[i]->IOburst_remain;
-    newP->waitingTime = jobQ[i]->waitingTime;
-    newP->turnaroundTime = jobQ[i]->turnaroundTime;
-    newP->responseTime = jobQ[i]->responseTime;
-    add_cjobQ(newP);
-  }
-
-}
-
-//알고리즘 여러개 돌릴때 같은 데이터 써야하므로 기존 레디큐를 복사해서 사용한다.
-void clone_readyQ(){
-  init_clonereadyQ();
-  for(int i = rQ_front+1; i <= rQ_rear; i++){
-    proPointer newP = (proPointer)malloc(sizeof(struct process));
-    newP->pid = readyQ[i]->pid;
-    newP->CPUburst = readyQ[i]->CPUburst;
-    newP->arrival = readyQ[i]->arrival;
-    newP->priority = readyQ[i]->priority;
-    newP->CPUburst_remain = readyQ[i]->CPUburst_remain;
-    newP->IOburst_remain = readyQ[i]->IOburst_remain;
-    newP->waitingTime = readyQ[i]->waitingTime;
-    newP->turnaroundTime = readyQ[i]->turnaroundTime;
-    newP->responseTime = readyQ[i]->responseTime;
-    newP->IOburst = readyQ[i]->IOburst;
-    add_clonereadyQ(newP);
-  }
-  printQ_cloneready();
-}
 
 //arrival time을 기준으로 정렬해서 ready queue에 넣어준다.
 //type는 arrival time으로 정렬하는 것인지, IOburst_remain으로 정렬하는지 결정한다.
