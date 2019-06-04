@@ -450,7 +450,7 @@ void create_processes(int num_process){
     double avgrT = 0;
     for(int i = tQ_front+1; i <= tQ_rear ; i++){
       printf("pid: %d, waiting time: %d, turnaround time: %d, response time: %d\n",
-        i+1, termQ[i]waitingTime, termQ[i]->turnaroundTime, termQ[i]->responseTime);
+        i+1, termQ[i]->waitingTime, termQ[i]->turnaroundTime, termQ[i]->responseTime);
         sumwT += termQ[i]->waitingTime;
         sumtT += termQ[i]->turnaroundTime;
         sumrT += termQ[i]->responseTime;
@@ -526,7 +526,7 @@ void FCFS_alg(int num_process){
     }/////else
   }/////for process
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
-  evaluation(wT, tT, rT);
+  evaluation();
   reset_jobQ(num_process);
 }/////FCFS_alg
 
