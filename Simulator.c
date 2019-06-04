@@ -79,6 +79,11 @@ proPointer poll_jobQ(){
     return jobQ[++jQ_front];
 }
 
+void reset_jobQ(int num_process){
+  jQ_front = -1;
+  jQ_rear = num_process-1;
+}
+
 //cjob queue 초기화
 void init_cjobQ(){
   cjQ_front = -1;
@@ -646,7 +651,6 @@ void FCFS_alg(int num_process, int num_IO){
         if(jobQ[i]->arrival == nowTime)
           add_readyQ(poll_jobQ());
       }
-      printQ_ready();
     }
 
     if(isEmpty(rQ_front, rQ_rear)!=1 && runP == NULL){
@@ -666,22 +670,28 @@ void FCFS_alg(int num_process, int num_IO){
       wait(runP->pid);
       waiting(0);
 
-        if(runP->CPUburst_remain == 0){
-          check++;
-          runP = NULL;
-        }
-      //random IO. 95% 확률로 IO 발생.
-      if(runP != NULL && runP->CPUburst_remain > 0 && runP->CPUburst > runP->CPUburst_remain && rand() % 100 >= 95){
-        runP->IOburst = rand() % 10 + 1; //IOburst는 1~10;
-        runP->IOburst_remain = runP->IOburst;
-        printf("\n<IO interrupt!>p%d, IOburst: %d, CPUburst_remain: %d\n", runP->pid, runP->IOburst, runP->CPUburst_remain);
-        add_waitQ(runP);
-        mergesort(waitQ, wQ_front+1, wQ_rear, 1);
-        if(isEmpty(rQ_front, rQ_rear)!=1) runP = poll_readyQ();
-        else runP = NULL;
+      if(runP->CPUburst_remain+1 == runP->CPUburst) runP->responseTime = nowTime - runP->arrival;
+      if(runP->CPUburst_remain == 0){
+        wT[runP->pid-1] = runP->waitingTime;
+        tT[runP->pid-1] = nowTime - runP->arrival;
+        rT[runP->pid-1] = runP->responseTime;
+        check++;
+        runP = NULL;
       }
+    //random IO. 5% 확률로 IO 발생.
+    if(runP != NULL && runP->CPUburst_remain > 0 && runP->CPUburst > runP->CPUburst_remain && rand() % 100 >= 95){
+      runP->IOburst = rand() % 10 + 1; //IOburst는 1~10;
+      runP->IOburst_remain = runP->IOburst;
+      printf("\n<IO interrupt!>p%d, IOburst: %d, CPUburst_remain: %d\n", runP->pid, runP->IOburst, runP->CPUburst_remain);
+      add_waitQ(runP);
+      mergesort(waitQ, wQ_front+1, wQ_rear, 1);
+      if(isEmpty(rQ_front, rQ_rear)!=1) runP = poll_readyQ();
+      else runP = NULL;
+    }
     }/////else
   }/////for process
+  //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌. 
+  reset_jobQ(num_process);
 }/////FCFS_alg
 
 
