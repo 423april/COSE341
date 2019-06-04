@@ -379,8 +379,6 @@ void create_processes(int num_process){
 
   //job queue 초기화
   init_jobQ();
-  //io queue 초기화
-  init_ioQ();
 
   for(int i = 0; i < num_process; i++){
     proPointer newP = (proPointer)malloc(sizeof(struct process));
