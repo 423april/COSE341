@@ -605,12 +605,12 @@ void create_processes(int num_process, int num_IO){
 
   void evaluation(int wT[], int tT[], int rT[]){
     //evaluation
-    int num = rQ_rear - rQ_front;
+    int num = jQ_rear - jQ_front;
     int sumwT = 0;
     int sumtT = 0;
     int sumrT = 0;
     double avgwT, avgtT, avgrT;
-    for(int i = 0; i < rQ_rear - rQ_front; i++){
+    for(int i = 0; i < num ; i++){
       printf("pid: %d, waiting time: %d, turnaround time: %d, response time: %d\n",
         i+1, wT[i], tT[i], rT[i]);
         sumwT += wT[i];
