@@ -570,7 +570,7 @@ void SJF_alg(int num_process){
     }
 
     if(runP==NULL && isEmpty(wQ_front, wQ_rear)){
-      printf("bb ");
+      //printf("bb ");
     }
     else if(runP==NULL && isEmpty(wQ_front, wQ_rear)!=1){
       //printf("bb ");
