@@ -533,17 +533,17 @@ void FCFS_alg(int num_process){
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   printf("\n");
   evaluation();
-  reset_jobQ(num_process);
 }/////FCFS_alg
 
 
-//선입선출
+//shortest job first!! non-preemptive.
 void SJF_alg(int num_process){
   printf("\n********************start SJF algorithm********************\n");
   //난수 생성
   srand( (unsigned)time(NULL) );
-  //jobQ CPUburst_remain time 정렬
-  mergesort(jobQ, jQ_front+1, jQ_rear, CPUREMAIN);
+  //jobQ arrival 정렬
+  reset_jobQ(num_process);
+  mergesort(jobQ, jQ_front+1, jQ_rear, ARRIVAL);
   printQ_job();
   //ready, wait, termination initialize
   init_readyQ();
@@ -558,6 +558,7 @@ void SJF_alg(int num_process){
   proPointer runP = NULL;
 
   for(nowTime = 0; check < num_process; nowTime++){
+
     if(isEmpty(jQ_front, jQ_rear) != 1){
       for(int i = jQ_front+1; i <= jQ_rear; i++){
         if(jobQ[i]->arrival == nowTime)
@@ -570,10 +571,10 @@ void SJF_alg(int num_process){
     }
 
     if(runP==NULL && isEmpty(wQ_front, wQ_rear)){
-      //printf("bb ");
+      printf("bb ");
     }
     else if(runP==NULL && isEmpty(wQ_front, wQ_rear)!=1){
-      //printf("bb ");
+      printf("bb ");
       waiting(CPUREMAIN);
     }
     else if(runP != NULL){
