@@ -492,11 +492,10 @@ void FCFS_alg(int num_process){
     }
 
     if(runP==NULL && isEmpty(wQ_front, wQ_rear)){
-    printf("bb ");
+      printf("bb ");
     }
     else if(runP==NULL && isEmpty(wQ_front, wQ_rear)!=1){
       printf("bb ");
-      waiting(0);
     }
     else if(runP != NULL){
       printf("p%d ", runP->pid);
@@ -524,6 +523,7 @@ void FCFS_alg(int num_process){
     }/////else
   }/////for process
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
+  printf("\n");
   evaluation();
   reset_jobQ(num_process);
 }/////FCFS_alg
