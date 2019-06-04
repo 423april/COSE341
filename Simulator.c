@@ -719,6 +719,7 @@ void PRESJF_alg(int num_process){
       //레디큐를 CPUburst_remain 순으로 정렬한 후, 현재 실행중인 프로세스와 비교해서 CPUburst_remain이 작으면 프로세스를 바꿔준다.
       if(isEmpty(rQ_front, rQ_rear) != 1){
         mergesort(readyQ, rQ_front+1, rQ_rear, CPUREMAIN);
+        printQ_ready();
         if(readyQ[rQ_front+1]->CPUburst_remain < runP->CPUburst_remain){
           add_readyQ(runP);
           runP = poll_readyQ();
