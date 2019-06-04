@@ -570,10 +570,10 @@ void SJF_alg(int num_process){
     }
 
     if(runP==NULL && isEmpty(wQ_front, wQ_rear)){
-      //printf("bb ");
+      printf("bb ");
     }
     else if(runP==NULL && isEmpty(wQ_front, wQ_rear)!=1){
-      //printf("bb ");
+      printf("bb ");
       waiting(CPUREMAIN);
     }
     else if(runP != NULL){
@@ -590,7 +590,7 @@ void SJF_alg(int num_process){
         runP = NULL;
       }
     //random IO. 5% 확률로 IO 발생.
-    if(runP != NULL && runP->CPUburst_remain > 0 && runP->CPUburst > runP->CPUburst_remain /*&& rand() % 100 >= 95*/){
+    if(runP != NULL && runP->CPUburst_remain > 0 && runP->CPUburst > runP->CPUburst_remain && rand() % 100 >= 101){
       runP->IOburst = rand() % 10 + 1; //IOburst는 1~10;
       runP->IOburst_remain = runP->IOburst;
       printf("\n<IO interrupt!>p%d, IOburst: %d, CPUburst_remain: %d\n", runP->pid, runP->IOburst, runP->CPUburst_remain);
