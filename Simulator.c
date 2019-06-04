@@ -567,6 +567,7 @@ void SJF_alg(int num_process){
     }
 
     if(isEmpty(rQ_front, rQ_rear)!=1 && runP == NULL){
+      mergesort(readyQ, rQ_front+1, rQ_rear, CPUREMAIN);
       runP = poll_readyQ();
     }
 
@@ -640,6 +641,7 @@ void PRI_alg(int num_process){
     }
 
     if(isEmpty(rQ_front, rQ_rear)!=1 && runP == NULL){
+      mergesort(readyQ, rQ_front+1, rQ_rear, PRIORITY);
       runP = poll_readyQ();
     }
 
