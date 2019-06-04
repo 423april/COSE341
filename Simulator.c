@@ -6,6 +6,13 @@
 #define MAX_PROCESS_NUM 100
 #define INF 1000000
 
+//arrival time: 0, IOburst_remain: 1, CPUburst_remain: 2, priority: 3, pid: 4
+#define ARRIVAL 0
+#define IOREMAIN 1
+#define CPUREMAIN 2
+#define PRIORITY 3
+#define PID 4
+
 typedef struct IO* IOPointer;
 typedef struct IO{
   int pid;
@@ -426,14 +433,14 @@ void create_processes(int num_process){
           mergesort(waitQ, wQ_front+1, wQ_rear, 1);
           //해당 우선순위에 부합하게 오름차순 정렬한다.
           //arrival time은 넣은 그대로가 순서가 되므로 따로 정렬해주지 않는다.
-          if(type == 0) return;
+          if(type == ARRIVAL) return;
           else
             mergesort(readyQ, rQ_front+1, rQ_rear, type);
         }
       }
     }
   }
-   
+
   void evaluation(){
     //evaluation
     //termination queue를 pid순으로 정렬
@@ -464,7 +471,7 @@ void FCFS_alg(int num_process){
   //난수 생성
   srand( (unsigned)time(NULL) );
   //jobQ arrival time 정렬
-  mergesort(jobQ, jQ_front+1, jQ_rear, 0);
+  mergesort(jobQ, jQ_front+1, jQ_rear, ARRIVAL);
   printQ_job();
   //ready, wait initialize
   init_readyQ();
@@ -495,13 +502,13 @@ void FCFS_alg(int num_process){
     }
     else if(runP==NULL && isEmpty(wQ_front, wQ_rear)!=1){
       printf("bb ");
-      waiting(0);
+      waiting(ARRIVAL);
     }
     else if(runP != NULL){
       printf("p%d ", runP->pid);
       runP->CPUburst_remain--;
       wait(runP->pid);
-      waiting(0);
+      waiting(ARRIVAL);
 
       if(runP->CPUburst_remain+1 == runP->CPUburst) runP->responseTime = nowTime - runP->arrival;
       if(runP->CPUburst_remain == 0){
@@ -516,7 +523,7 @@ void FCFS_alg(int num_process){
       runP->IOburst_remain = runP->IOburst;
       printf("\n<IO interrupt!>p%d, IOburst: %d, CPUburst_remain: %d\n", runP->pid, runP->IOburst, runP->CPUburst_remain);
       add_waitQ(runP);
-      mergesort(waitQ, wQ_front+1, wQ_rear, 1);
+      mergesort(waitQ, wQ_front+1, wQ_rear, IOREMAIN);
       if(isEmpty(rQ_front, rQ_rear)!=1) runP = poll_readyQ();
       else runP = NULL;
     }
@@ -529,108 +536,76 @@ void FCFS_alg(int num_process){
 }/////FCFS_alg
 
 
-//preemption 없는 SJF 알고리즘.
-//CPU_remain이 가장 작은 것부터 실행
-// void SJF_alg(){
-//   printf("\n**************start non-preemptive SJF algorithm:**************\n");
-//
-//   //job queue는 arrival 오름차순으로 정렬
-//   mergesort(jobQ, jQ_front+1, jQ_rear, 0);
-//   clone_jobQ();
-//   // printf("%d, %d", cjQ_front, cjQ_rear);
-//   // for(int i = cjQ_front+1; i <= cjQ_rear; i++){
-//   //   printf("%d ", cjobQ[i]->pid);
-//   // }
-//   // printf("\n");
-//
-// //레디큐 init
-//   init_clonereadyQ();
-//
-//   //wait queue 초기화
-//   init_waitQ();
-//
-//   int wT[rQ_rear - rQ_front];
-//   int tT[rQ_rear - rQ_front];
-//   int rT[rQ_rear - rQ_front];
-//   //현재 시간 나타내는 변수
-//   int nowTime = 0;
-//
-//   proPointer runP;
-//   printf("%d ", runP->pid);
-//   proPointer inP;
-//
-//   do{
-//     for(int i = cjQ_front+1; i <= cjQ_rear; i++){
-//       if(cjobQ[cjQ_front+1]->arrival == nowTime){
-//         inP = poll_cjobQ();
-//         add_clonereadyQ(inP);
-//         printf("%d ", inP->pid);
-//         mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
-//       }
-//     }
-//
-//     if(!isEmpty(crQ_front, crQ_rear)){
-//       runP = poll_clonereadyQ();
-//       printf("\n new process polled! p%d\n", runP->pid);
-//       printf("clone ready queue: ");
-//       for(int i = crQ_front+1; i <= crQ_rear; i++){
-//         printf("p%d ", clonereadyQ[i]->pid);
-//       }
-//       printf("\n");
-//     }
-//
-//     do{
-//
-//       //CPU에서 실행중인 프로세스가 없으면 bb를 출력한다.
-//       if(runP == NULL){
-//         printf("bb ");
-//         //다른 프로세스들 웨이팅 타임 더해준다.
-//         if(!isEmpty(crQ_front, crQ_rear));
-//           wait(runP->pid);
-//         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
-//         if(!isEmpty(wQ_front, wQ_rear));
-//           waiting(0);
-//       }
-//
-//       else{
-//         printf("p%d ", runP->pid);
-//         //해당 프로세스의 CPUburst_remain -1해준다.
-//         runP->CPUburst_remain--;
-//
-//         //다른 프로세스들 웨이팅 타임 더해준다.
-//         if(!isEmpty(crQ_front, crQ_rear));
-//           wait(runP->pid);
-//         //웨이팅 큐에서 기다리는 프로세스들 IOburst_remain 업데이트.
-//         if(!isEmpty(wQ_front, wQ_rear));
-//           waiting(0);
-//
-//
-//         //실행 마치면 turnaroundTime 계산한다.
-//         if(runP->CPUburst_remain == 0){
-//           runP->turnaroundTime = nowTime - runP->arrival + 1;
-//         }
-//         //처음 response 했을때까지 레디큐에서 기다린 시간.
-//         if(runP->CPUburst == runP->CPUburst_remain+1){
-//           runP->responseTime = nowTime - runP->arrival;
-//         }
-//
-//
-//       }/////else
-//       nowTime++;
-//       if(cjobQ[cjQ_front+1]->arrival == nowTime){
-//         inP = poll_cjobQ();
-//         add_clonereadyQ(inP);
-//         mergesort(clonereadyQ, crQ_front+1, crQ_rear, 2);
-//       }
-//     }while( runP->CPUburst_remain > 0 || runP == NULL);
-//     wT[runP->pid - 1] = runP->waitingTime;
-//     tT[runP->pid - 1] = runP->turnaroundTime;
-//     rT[runP->pid - 1] = runP->responseTime;
-//     runP = NULL;
-//   }while(!isEmpty(crQ_front, crQ_rear) || !isEmpty(wQ_front, wQ_rear));
-//   printf("\n");
-//   evaluation(wT, tT, rT);
-// }
+//선입선출
+void SJF_alg(int num_process){
+  printf("\n********************start SJF algorithm********************\n");
+  //난수 생성
+  srand( (unsigned)time(NULL) );
+  //jobQ CPUburst_remain time 정렬
+  mergesort(jobQ, jQ_front+1, jQ_rear, CPUREMAIN);
+  printQ_job();
+  //ready, wait, termination initialize
+  init_readyQ();
+  init_waitQ();
+  init_termQ();
+
+  //현재 시간 나타내는 변수
+  int nowTime = 0;
+  //몇개의 프로세스가 종료했는지 기록
+  int check = 0;
+  //cpu에 할당되는 프로세스
+  proPointer runP = NULL;
+
+  for(nowTime = 0; check < num_process; nowTime++){
+    if(isEmpty(jQ_front, jQ_rear) != 1){
+      for(int i = jQ_front+1; i <= jQ_rear; i++){
+        if(jobQ[i]->arrival == nowTime)
+          add_readyQ(poll_jobQ());
+      }
+    }
+
+    if(isEmpty(rQ_front, rQ_rear)!=1 && runP == NULL){
+      runP = poll_readyQ();
+    }
+
+    if(runP==NULL && isEmpty(wQ_front, wQ_rear)){
+      printf("bb ");
+    }
+    else if(runP==NULL && isEmpty(wQ_front, wQ_rear)!=1){
+      printf("bb ");
+      waiting(CPUREMAIN);
+    }
+    else if(runP != NULL){
+      printf("p%d ", runP->pid);
+      runP->CPUburst_remain--;
+      wait(runP->pid);
+      waiting(CPUREMAIN);
+
+      if(runP->CPUburst_remain+1 == runP->CPUburst) runP->responseTime = nowTime - runP->arrival;
+      if(runP->CPUburst_remain == 0){
+        runP->turnaroundTime = (nowTime+1) - runP->arrival;
+        add_termQ(runP);
+        check++;
+        runP = NULL;
+      }
+    //random IO. 5% 확률로 IO 발생.
+    if(runP != NULL && runP->CPUburst_remain > 0 && runP->CPUburst > runP->CPUburst_remain && rand() % 100 >= 95){
+      runP->IOburst = rand() % 10 + 1; //IOburst는 1~10;
+      runP->IOburst_remain = runP->IOburst;
+      printf("\n<IO interrupt!>p%d, IOburst: %d, CPUburst_remain: %d\n", runP->pid, runP->IOburst, runP->CPUburst_remain);
+      add_waitQ(runP);
+      mergesort(waitQ, wQ_front+1, wQ_rear, IOREMAIN);
+      if(isEmpty(rQ_front, rQ_rear)!=1) runP = poll_readyQ();
+      else runP = NULL;
+    }
+    }/////else
+  }/////for process
+  //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
+  printf("\n");
+  evaluation();
+  reset_jobQ(num_process);
+}/////SJF_alg
+
 //
 // //preemption 없는 priority 알고리즘.
 // //CPU_remain이 가장 작은 것부터 실행
