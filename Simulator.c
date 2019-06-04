@@ -451,7 +451,7 @@ void create_processes(int num_process){
     double avgrT = 0;
     for(int i = tQ_front+1; i <= tQ_rear ; i++){
       printf("pid: %d, waiting time: %d, turnaround time: %d, response time: %d\n",
-        i+1, termQ[i]->waitingTime, termQ[i]->turnaroundTime, termQ[i]->responseTime);
+        termQ[i]->pid, termQ[i]->waitingTime, termQ[i]->turnaroundTime, termQ[i]->responseTime);
         sumwT += termQ[i]->waitingTime;
         sumtT += termQ[i]->turnaroundTime;
         sumrT += termQ[i]->responseTime;
