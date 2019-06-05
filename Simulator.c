@@ -752,8 +752,7 @@ void PRESJF_alg(int num_process){
       //tie breaking은 arrival, pid순서.
       if(isEmpty(rQ_front, rQ_rear) != 1 && runP != NULL){
         mergesort(readyQ, rQ_front+1, rQ_rear, CPUREMAIN);
-        printf("\nreadyQ\n");
-        printQ_ready();
+        //printQ_ready();
         if(readyQ[rQ_front+1]->CPUburst_remain < runP->CPUburst_remain){
           add_readyQ(runP);
           runP = poll_readyQ();
