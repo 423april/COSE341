@@ -1079,7 +1079,7 @@ void RR_alg(int num_process, int tq){
         runP = NULL;
       }
 
-      if(runP->timequantum == 0){
+      if(runP != NULL && runP->timequantum == 0){
         runP->timequantum = tq;
         add_readyQ(runP);
         runP = NULL;
