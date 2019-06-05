@@ -815,7 +815,7 @@ void PRESJF_alg(int num_process){
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   evaluation();
   reset_jobQ(num_process);
-}/////PRESJF_alg//
+}/////PRESJF_alg
 
 // //preemption 있는 Priority 알고리즘.
 // //우선순위 번호가 가장 작은 것부터 실행(숫자가 작을수록 우선순위 높음)
