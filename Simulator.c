@@ -1017,7 +1017,7 @@ void PREPRI_alg(int num_process){
 // //Round Robin 알고리즘.
 // //arrival이 가장 작은 것부터 실행
 // //time quantum = 3(default);
-void RR_alg(int num_process){
+void RR_alg(int num_process, int tq){
   printf("\n********************start ROUND ROBIN algorithm********************\n");
   //난수 생성
   srand( (unsigned)time(NULL) );
