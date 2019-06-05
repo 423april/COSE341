@@ -31,6 +31,7 @@ typedef struct process{
   int priority;
   int CPUburst_remain;
   int IOburst_remain;
+  int timequantum;
   int waitingTime;
   int turnaroundTime;
   int responseTime;
@@ -213,6 +214,7 @@ void clone_jobQ(){
     newP->arrival = GjobQ[i]->arrival;
     newP->priority = GjobQ[i]->priority;
     newP->CPUburst_remain = GjobQ[i]->CPUburst_remain;
+    newP->timequantum = GjobQ[i]->timequantum;
     newP->waitingTime = GjobQ[i]->waitingTime;
     newP->turnaroundTime = GjobQ[i]->turnaroundTime;
     newP->responseTime = GjobQ[i]->responseTime;
@@ -459,7 +461,7 @@ input:
 입력 받은 값에 따라 랜덤으로 프로세스와 IO의 속성값을 결정한 뒤,
 프로세스 id 오름차순으로 job queue에 넣어준다.
 */
-void create_processes(int num_process){
+void create_processes(int num_process, int tq){
 
 	//난수 생성
   srand( (unsigned)time(NULL) );
@@ -474,6 +476,7 @@ void create_processes(int num_process){
     newP->arrival = rand() % (num_process + 10);
     newP->priority = rand() % num_process + 1;
     newP->CPUburst_remain = newP -> CPUburst;
+    newP->timequantum = tq;
     newP->waitingTime = 0;
     newP->turnaroundTime = 0;
     newP->responseTime = 0;
@@ -1042,56 +1045,58 @@ void RR_alg(int num_process, int tq){
   proPointer runP = NULL;
 
   for(nowTime = 0; check < num_process; nowTime++){
-    for(int k = 0; k < tq; k++){
-      if(isEmpty(jQ_front, jQ_rear) != 1){
-        //해당 시간에 도착한 프로세스 모두 레디큐로 옮겨줌.
-        for(int i = jQ_front+1; i <= jQ_rear; i++){
-          if(jobQ[i]->arrival == nowTime)
-            add_readyQ(poll_jobQ());
-        }
+    if(isEmpty(jQ_front, jQ_rear) != 1){
+      //해당 시간에 도착한 프로세스 모두 레디큐로 옮겨줌.
+      for(int i = jQ_front+1; i <= jQ_rear; i++){
+        if(jobQ[i]->arrival == nowTime)
+          add_readyQ(poll_jobQ());
+      }
+    }
+
+    if(isEmpty(rQ_front, rQ_rear)!=1 && runP == NULL){
+      runP = poll_readyQ();
+    }
+
+    if(runP==NULL && isEmpty(wQ_front, wQ_rear)){
+      printf("bb ");
+    }
+    else if(runP==NULL && isEmpty(wQ_front, wQ_rear)!=1){
+      printf("bb ");
+      waiting(ARRIVAL);
+    }
+    else if(runP != NULL){
+      printf("p%d ", runP->pid);
+      runP->CPUburst_remain--;
+      runP->timequantum--;
+      wait(runP->pid);
+
+      if(runP->CPUburst_remain+1 == runP->CPUburst) runP->responseTime = nowTime - runP->arrival;
+
+      if(runP->CPUburst_remain == 0){
+        runP->turnaroundTime = (nowTime+1) - runP->arrival;
+        add_termQ(runP);
+        check++;
+        runP = NULL;
       }
 
-      if(isEmpty(rQ_front, rQ_rear)!=1 && runP == NULL){
-        runP = poll_readyQ();
-      }
-
-      if(runP==NULL && isEmpty(wQ_front, wQ_rear)){
-        printf("bb ");
-      }
-      else if(runP==NULL && isEmpty(wQ_front, wQ_rear)!=1){
-        printf("bb ");
-        waiting(ARRIVAL);
-      }
-      else if(runP != NULL){
-        printf("p%d ", runP->pid);
-        runP->CPUburst_remain--;
-        wait(runP->pid);
-
-        if(runP->CPUburst_remain+1 == runP->CPUburst) runP->responseTime = nowTime - runP->arrival;
-        if(runP->CPUburst_remain == 0){
-          runP->turnaroundTime = (nowTime+1) - runP->arrival;
-          add_termQ(runP);
-          check++;
-          runP = NULL;
-        }
-
-      //random IO. 5% 확률로 IO 발생.
-      if(runP != NULL && runP->CPUburst_remain > 0 && runP->CPUburst > runP->CPUburst_remain && rand() % 100 >= 95){
-        runP->IOburst = rand() % 10 + 1; //IOburst는 1~10;
-        runP->IOburst_remain = runP->IOburst;
-        printf("\n<IO interrupt!>p%d, IOburst: %d\n", runP->pid, runP->IOburst);
-        add_waitQ(runP);
-        mergesort(waitQ, wQ_front+1, wQ_rear, IOREMAIN);
-        if(isEmpty(rQ_front, rQ_rear)!=1) runP = poll_readyQ();
-        else runP = NULL;
-      }
-      }/////else
-      //만약에 타임퀀텀 다 쓰면 바꿔준다.
-      if(k == tq-1){
+      if(runP->timequantum == 0){
+        runP->timequantum = tq;
         add_readyQ(runP);
         runP = NULL;
       }
+
+    //random IO. 5% 확률로 IO 발생.
+    if(runP != NULL && runP->CPUburst_remain > 0 && runP->CPUburst > runP->CPUburst_remain && rand() % 100 >= 95){
+      runP->IOburst = rand() % 10 + 1; //IOburst는 1~10;
+      runP->IOburst_remain = runP->IOburst;
+      printf("\n<IO interrupt!>p%d, IOburst: %d\n", runP->pid, runP->IOburst);
+      runP->timequantum = tq;
+      add_waitQ(runP);
+      mergesort(waitQ, wQ_front+1, wQ_rear, IOREMAIN);
+      if(isEmpty(rQ_front, rQ_rear)!=1) runP = poll_readyQ();
+      else runP = NULL;
     }
+    }/////else
   }/////for process
   printf("\n");
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
@@ -1108,13 +1113,13 @@ int main(int argc, char **argv){
   printf("Time quantum: ");
   scanf("%d", &tq);
 
-  create_processes(num_process);
+  create_processes(num_process, tq);
   //FCFS_alg(num_process);
   //SJF_alg(num_process);
   //PRI_alg(num_process);
   //PRESJF_alg(num_process);
   //PREPRI_alg(num_process);
-  RR_alg(num_process, tq);
+  RR_alg(num_process);
 
 
   return 0;
