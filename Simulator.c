@@ -191,24 +191,24 @@ void merge(proPointer list[], int p, int q, int r, int type){
  // printf("L insert til n1 - 1\n");
   proPointer dummy1 = (proPointer)malloc(sizeof(struct process));
   switch (type) {
-    case 0:
+    case ARRIVAL:
       dummy1 -> arrival = INF;
       break;
-    case 1:
+    case IOREMAIN:
       dummy1 -> IOburst_remain = INF;
       break;
-    case 2:
+    case CPUREMAIN:
       dummy1 -> CPUburst_remain = INF;
       dummy1 -> arrival = INF;
       dummy1 -> pid = INF;
       break;
-    case 3:
+    case PRIORITY:
       dummy1 -> priority = INF;
       dummy1 -> CPUburst_remain = INF;
       dummy1 -> arrival = INF;
       dummy1 -> pid = INF;
       break;
-    case 4:
+    case PID:
       dummy1 -> pid = INF;
       break;
     default:
@@ -223,24 +223,24 @@ void merge(proPointer list[], int p, int q, int r, int type){
  // printf("R insert til n2 -1 \n");
   proPointer dummy2 = (proPointer)malloc(sizeof(struct process));
   switch (type) {
-    case 0:
+    case ARRIVAL:
       dummy2 -> arrival = INF;
       break;
-    case 1:
+    case IOREMAIN:
       dummy2 -> IOburst_remain = INF;
       break;
-    case 2:
+    case CPUREMAIN:
       dummy2 -> CPUburst_remain = INF;
       dummy2 -> arrival = INF;
       dummy2 -> pid = INF;
       break;
-    case 3:
+    case PRIORITY:
       dummy2 -> priority = INF;
       dummy2 -> CPUburst_remain = INF;
       dummy2 -> arrival = INF;
       dummy2 -> pid = INF;
       break;
-    case 4:
+    case PID:
       dummy2 -> pid = INF;
       break;
     default:
@@ -252,7 +252,7 @@ void merge(proPointer list[], int p, int q, int r, int type){
   i = 0; j = 0;
   for(int k = p; k <= r; k++){
     switch(type){
-      case 0:
+      case ARRIVAL:
       if(L[i]->arrival <= R[j]->arrival){
         list[k] = L[i];
         i++;
@@ -263,7 +263,7 @@ void merge(proPointer list[], int p, int q, int r, int type){
       }
       break;
 
-      case 1:
+      case IOREMAIN:
       if(L[i]->IOburst_remain <= R[j]->IOburst_remain){
         list[k] = L[i];
         i++;
@@ -274,7 +274,7 @@ void merge(proPointer list[], int p, int q, int r, int type){
       }
       break;
 
-      case 2:
+      case CPUREMAIN:
       if(L[i]->CPUburst_remain < R[j]->CPUburst_remain){
         list[k] = L[i];
         i++;
@@ -293,7 +293,7 @@ void merge(proPointer list[], int p, int q, int r, int type){
       }
       break;
 
-      case 3:
+      case PRIORITY:
       if(L[i]->priority < R[j]->priority){
         list[k] = L[i];
         i++;
@@ -316,7 +316,7 @@ void merge(proPointer list[], int p, int q, int r, int type){
       }
       break;
 
-      case 4:
+      case PID:
       if(L[i]->pid <= R[j]->pid){
         list[k] = L[i];
         i++;
@@ -338,58 +338,58 @@ void merge(proPointer list[], int p, int q, int r, int type){
 
 void mergesort(proPointer list[], int p, int r, int type){
   switch(type){
-    case 0:
+    case ARRIVAL:
     if(p < r){
   //	  printf("p: %d, r: %d\n", p, r);
       int q = (p+r)/2;
-      mergesort(list, p, q, 0);
-      mergesort(list, q+1, r, 0);
+      mergesort(list, p, q, ARRIVAL);
+      mergesort(list, q+1, r, ARRIVAL);
     //  printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
-      merge(list, p, q, r, 0);
+      merge(list, p, q, r, ARRIVAL);
     }
     break;
 
-    case 1:
+    case IOREMAIN:
     if(p < r){
   //	  printf("p: %d, r: %d\n", p, r);
       int q = (p+r)/2;
-      mergesort(list, p, q, 1);
-      mergesort(list, q+1, r, 1);
+      mergesort(list, p, q, IOREMAIN);
+      mergesort(list, q+1, r, IOREMAIN);
     //  printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
-      merge(list, p, q, r, 1);
+      merge(list, p, q, r, IOREMAIN);
     }
     break;
 
-    case 2:
+    case CPUREMAIN:
     if(p < r){
   //	  printf("p: %d, r: %d\n", p, r);
       int q = (p+r)/2;
-      mergesort(list, p, q, 2);
-      mergesort(list, q+1, r, 2);
+      mergesort(list, p, q, CPUREMAIN);
+      mergesort(list, q+1, r, CPUREMAIN);
     //  printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
-      merge(list, p, q, r, 2);
+      merge(list, p, q, r, CPUREMAIN);
     }
     break;
 
-    case 3:
+    case PRIORITY:
     if(p < r){
   //	  printf("p: %d, r: %d\n", p, r);
       int q = (p+r)/2;
-      mergesort(list, p, q, 3);
-      mergesort(list, q+1, r, 3);
+      mergesort(list, p, q, PRIORITY);
+      mergesort(list, q+1, r, PRIORITY);
     //  printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
-      merge(list, p, q, r, 3);
+      merge(list, p, q, r, PRIORITY);
     }
     break;
 
-    case 4:
+    case PID:
     if(p < r){
   //	  printf("p: %d, r: %d\n", p, r);
       int q = (p+r)/2;
-      mergesort(list, p, q, 4);
-      mergesort(list, q+1, r, 4);
+      mergesort(list, p, q, PID);
+      mergesort(list, q+1, r, PID);
     //  printf("merge %d-%d and %d-%d\n", p, q, q+1, r);
-      merge(list, p, q, r, 4);
+      merge(list, p, q, r, PID);
     }
     break;
 
@@ -743,20 +743,22 @@ void PRESJF_alg(int num_process){
     if(isEmpty(jQ_front, jQ_rear) != 1){
       //해당 시간에 도착한 프로세스 모두 레디큐로 옮겨줌.
       for(int i = jQ_front+1; i <= jQ_rear; i++){
-        if(jobQ[i]->arrival == nowTime)
+        if(jobQ[i]->arrival == nowTime){
           add_readyQ(poll_jobQ());
-      }
+        }//////if process arrived.
+      }////for every process in jobQ
       //preemption
       //레디큐를 CPUburst_remain 순으로 정렬한 후, 현재 실행중인 프로세스와 비교해서 CPUburst_remain이 작으면 프로세스를 바꿔준다.
       //tie breaking은 arrival, pid순서.
       if(isEmpty(rQ_front, rQ_rear) != 1 && runP != NULL){
         mergesort(readyQ, rQ_front+1, rQ_rear, CPUREMAIN);
+        printQ_job();
         if(readyQ[rQ_front+1]->CPUburst_remain < runP->CPUburst_remain){
           add_readyQ(runP);
           runP = poll_readyQ();
         }
-      }
-    }
+      }/////if readyQ is not empty and runP is not null
+    }////if jobQ is not empty
 
     if(isEmpty(rQ_front, rQ_rear)!=1 && runP == NULL){
       //CPUburst_remain 낮은 순서대로 정렬. 우선순위 같으면 arrival time 순서. arrival time도 같으면 pid순서.
