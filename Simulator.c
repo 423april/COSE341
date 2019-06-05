@@ -752,10 +752,11 @@ void PRESJF_alg(int num_process){
       //tie breaking은 arrival, pid순서.
       if(isEmpty(rQ_front, rQ_rear) != 1 && runP != NULL){
         mergesort(readyQ, rQ_front+1, rQ_rear, CPUREMAIN);
-        //printQ_ready();
         if(readyQ[rQ_front+1]->CPUburst_remain < runP->CPUburst_remain){
+          printf("\npreemption from p%d ", runP->pid);
           add_readyQ(runP);
           runP = poll_readyQ();
+          printf("to p%d\n", runP->pid);
         }
       }/////if readyQ is not empty and runP is not null
     }////if jobQ is not empty
@@ -791,8 +792,10 @@ void PRESJF_alg(int num_process){
       waiting(CPUREMAIN);
       mergesort(readyQ, rQ_front+1, rQ_rear, CPUREMAIN);
       if(runP != NULL && isEmpty(rQ_front, rQ_rear) != 1 && readyQ[rQ_front+1]->CPUburst_remain < runP->CPUburst_remain){
+        printf("\npreemption from p%d ", runP->pid);
         add_readyQ(runP);
         runP = poll_readyQ();
+        printf("to p%d\n", runP->pid);
       }
 
 
