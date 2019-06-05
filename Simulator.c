@@ -864,8 +864,8 @@ void PRESJF_alg(int num_process){
   reset_jobQ(num_process);
 }/////PRESJF_alg//
 
-// //preemption 있는 Priority 알고리즘.
-// //우선순위 번호가 가장 작은 것부터 실행(숫자가 작을수록 우선순위 높음)
+//preemption 있는 Priority 알고리즘.
+//우선순위 번호가 가장 작은 것부터 실행(숫자가 작을수록 우선순위 높음)
 void PREPRI_alg(int num_process){
   printf("\n********************start preemptive PRIORITY algorithm********************\n");
   //난수 생성
