@@ -1037,8 +1037,8 @@ int main(int argc, char **argv){
   //FCFS_alg(num_process);
   //SJF_alg(num_process);
   //PRI_alg(num_process);
-  PRESJF_alg(num_process);
-  //PREPRI_alg(num_process);
+  //PRESJF_alg(num_process);
+  PREPRI_alg(num_process);
   //RR_alg(num_IO, tq);
 
 
