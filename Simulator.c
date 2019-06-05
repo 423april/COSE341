@@ -631,10 +631,10 @@ void FCFS_alg(int num_process){
     }
 
     if(runP==NULL && isEmpty(wQ_front, wQ_rear)){
-      //printf("bb ");
+      printf("bb ");
     }
     else if(runP==NULL && isEmpty(wQ_front, wQ_rear)!=1){
-      //printf("bb ");
+      printf("bb ");
       waiting(ARRIVAL);
     }
     else if(runP != NULL){
@@ -834,6 +834,7 @@ void PRESJF_alg(int num_process){
 
   //jobQ arrival 정렬
   mergesort(jobQ, jQ_front+1, jQ_rear, ARRIVAL);
+  printQ_job();
 
   //ready, wait, termination initialize
   init_readyQ();
@@ -931,6 +932,7 @@ void PREPRI_alg(int num_process){
 
   //jobQ arrival 정렬
   mergesort(jobQ, jQ_front+1, jQ_rear, ARRIVAL);
+  printQ_job();
 
   //ready, wait, termination initialize
   init_readyQ();
