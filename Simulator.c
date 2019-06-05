@@ -863,7 +863,7 @@ void PRESJF_alg(int num_process){
       if(isEmpty(rQ_front, rQ_rear) != 1 && runP != NULL){
         mergesort(readyQ, rQ_front+1, rQ_rear, CPUREMAIN);
         if(readyQ[rQ_front+1]->CPUburst_remain < runP->CPUburst_remain){
-          preempt(runP, CPUREMAIN);
+          runP = preempt(runP, CPUREMAIN);
         }
       }/////if readyQ is not empty and runP is not null
     }////if jobQ is not empty
@@ -899,7 +899,7 @@ void PRESJF_alg(int num_process){
       waiting(CPUREMAIN);
       mergesort(readyQ, rQ_front+1, rQ_rear, CPUREMAIN);
       if(runP != NULL && isEmpty(rQ_front, rQ_rear) != 1 && readyQ[rQ_front+1]->CPUburst_remain < runP->CPUburst_remain){
-        preempt(runP, CPUREMAIN);
+        runP = preempt(runP, CPUREMAIN);
       }
 
 
