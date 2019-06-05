@@ -496,6 +496,53 @@ void create_processes(int num_process){
     printf("avgwT: %f, avgtT: %f, avgrT: %f\n", avgwT, avgtT, avgrT);
   }
 
+  proPointer preempt(proPointer runP, int type){
+    proPointer next;
+    switch(type){
+      case CPUREMAIN:
+      if(readyQ[rQ_front+1]->CPUburst_remain < runP->CPUburst_remain){
+        next = poll_readyQ();
+      }
+      else if(readyQ[rQ_front+1]->CPUburst_remain == runP->CPUburst_remain && readyQ[rQ_front+1]->arrival < runP->arrival){
+        next = poll_readyQ();
+      }
+      else if(readyQ[rQ_front+1]->CPUburst_remain == runP->CPUburst_remain && readyQ[rQ_front+1]->arrival == runP->arrival && readyQ[rQ_front+1]->pid < runP->pid){
+        next = poll_readyQ();
+      }
+      else{
+        next = runP;
+      }
+      break;
+
+      case PRIORITY:
+      if(readyQ[rQ_front+1]->priority < runP->priority){
+        next = poll_readyQ();
+      }
+      else if(readyQ[rQ_front+1]->priority == runP->priority && readyQ[rQ_front+1]->CPUburst_remain < runP->CPUburst_remain){
+        next = poll_readyQ();
+      }
+      else if(readyQ[rQ_front+1]->priority == runP->priority && readyQ[rQ_front+1]->CPUburst_remain == runP->CPUburst_remain && readyQ[rQ_front+1]->arrival < runP->arrival){
+        next = poll_readyQ();
+      }
+      else if(readyQ[rQ_front+1]->priority == runP->priority && readyQ[rQ_front+1]->CPUburst_remain == runP->CPUburst_remain && readyQ[rQ_front+1]->arrival == runP->arrival && readyQ[rQ_front+1]->pid < runP->pid){
+        next = poll_readyQ();
+      }
+      else{
+        next = runP;
+      }
+      break;
+      default:
+        printf("<ERROR> preemption type wrong");
+      break;
+    }
+    if(next != runP){
+      printf("\npreemtpion from p%d ", runP->pid);
+      add_readyQ(runP);
+      printf("to p%d\n", next->pid);
+    }
+    return next;
+  }
+
 //선입선출
 void FCFS_alg(int num_process){
   printf("\n********************start FCFS algorithm********************\n");
@@ -851,10 +898,7 @@ void PREPRI_alg(int num_process){
       if(isEmpty(rQ_front, rQ_rear) != 1 && runP != NULL){
         mergesort(readyQ, rQ_front+1, rQ_rear, PRIORITY);
         if(readyQ[rQ_front+1]->priority < runP->priority){
-          printf("\npreemtpion from p%d ", runP->pid);
-          add_readyQ(runP);
-          runP = poll_readyQ();
-          printf("to p%d\n", runP->pid);
+          runP = preempt(runP, PRIORITY);
         }
       }
     }
@@ -888,11 +932,8 @@ void PREPRI_alg(int num_process){
       //priority 낮은 순서대로 정렬. tie breaking은 CPUburst_remain, arrival, pid 순서.
       waiting(PRIORITY);
       mergesort(readyQ, rQ_front+1, rQ_rear, PRIORITY);
-      if(runP != NULL && isEmpty(rQ_front, rQ_rear) != 1 && readyQ[rQ_front+1]->priority < runP->priority){
-        printf("\npreemtpion from p%d ", runP->pid);
-        add_readyQ(runP);
-        runP = poll_readyQ();
-        printf("to p%d\n", runP->pid);
+      if(runP != NULL && isEmpty(rQ_front, rQ_rear) != 1){
+        runP = preempt(runP, PRIORITY);
       }
 
 
