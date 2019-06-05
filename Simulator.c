@@ -851,8 +851,10 @@ void PREPRI_alg(int num_process){
       if(isEmpty(rQ_front, rQ_rear) != 1 && runP != NULL){
         mergesort(readyQ, rQ_front+1, rQ_rear, PRIORITY);
         if(readyQ[rQ_front+1]->priority < runP->priority){
+          printf("\npreemtpion from p%d ", runP->pid);
           add_readyQ(runP);
           runP = poll_readyQ();
+          printf("to p%d\n", runP->pid);
         }
       }
     }
@@ -887,8 +889,10 @@ void PREPRI_alg(int num_process){
       waiting(PRIORITY);
       mergesort(readyQ, rQ_front+1, rQ_rear, PRIORITY);
       if(runP != NULL && isEmpty(rQ_front, rQ_rear) != 1 && readyQ[rQ_front+1]->priority < runP->priority){
+        printf("\npreemtpion from p%d ", runP->pid);
         add_readyQ(runP);
         runP = poll_readyQ();
+        printf("to p%d\n", runP->pid);
       }
 
 
