@@ -812,7 +812,7 @@ void PREPRI_alg(int num_process){
       //레디큐를 CPUburst_remain 순으로 정렬한 후, 현재 실행중인 프로세스와 비교해서 CPUburst_remain이 작으면 프로세스를 바꿔준다.
       if(isEmpty(rQ_front, rQ_rear) != 1 && runP != NULL){
         mergesort(readyQ, rQ_front+1, rQ_rear, PRIORITY);
-        if(readyQ[rQ_front+1]->CPUburst_remain < runP->CPUburst_remain){
+        if(readyQ[rQ_front+1]->priority < runP->priority){
           add_readyQ(runP);
           runP = poll_readyQ();
         }
@@ -848,7 +848,7 @@ void PREPRI_alg(int num_process){
       //현재 실행중인 프로세스와 비교해서 CPUburst_remain이 작으면 프로세스를 바꿔준다.
       waiting(PRIORITY);
       mergesort(readyQ, rQ_front+1, rQ_rear, PRIORITY);
-      if(runP != NULL && isEmpty(rQ_front, rQ_rear) != 1 && readyQ[rQ_front+1]->CPUburst_remain < runP->CPUburst_remain){
+      if(runP != NULL && isEmpty(rQ_front, rQ_rear) != 1 && readyQ[rQ_front+1]->priority < runP->priority){
         add_readyQ(runP);
         runP = poll_readyQ();
       }
