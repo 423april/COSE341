@@ -206,7 +206,7 @@ proPointer poll_jobQ(){
 }
 
 void clone_jobQ(){
-  for(int i = jQ_front+1; i <= jQ_rear; i++){
+  for(int i = GjQ_front+1; i <= GjQ_rear; i++){
     proPointer newP = (proPointer)malloc(sizeof(struct process));
     newP->pid = GjobQ[i]->pid;
     newP->CPUburst = GjobQ[i]->CPUburst;
