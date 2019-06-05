@@ -199,9 +199,14 @@ void merge(proPointer list[], int p, int q, int r, int type){
       break;
     case 2:
       dummy1 -> CPUburst_remain = INF;
+      dummy1 -> arrival = INF;
+      dummy1 -> pid = INF;
       break;
     case 3:
       dummy1 -> priority = INF;
+      dummy1 -> CPUburst_remain = INF;
+      dummy1 -> arrival = INF;
+      dummy1 -> pid = INF;
       break;
     case 4:
       dummy1 -> pid = INF;
@@ -226,9 +231,14 @@ void merge(proPointer list[], int p, int q, int r, int type){
       break;
     case 2:
       dummy2 -> CPUburst_remain = INF;
+      dummy2 -> arrival = INF;
+      dummy2 -> pid = INF;
       break;
     case 3:
       dummy2 -> priority = INF;
+      dummy2 -> CPUburst_remain = INF;
+      dummy2 -> arrival = INF;
+      dummy2 -> pid = INF;
       break;
     case 4:
       dummy2 -> pid = INF;
@@ -265,7 +275,15 @@ void merge(proPointer list[], int p, int q, int r, int type){
       break;
 
       case 2:
-      if(L[i]->CPUburst_remain <= R[j]->CPUburst_remain){
+      if(L[i]->CPUburst_remain < R[j]->CPUburst_remain){
+        list[k] = L[i];
+        i++;
+      }
+      else if(L[i]->CPUburst_remain == R[j]->CPUburst_remain && L[i]->arrival < R[j]->arrival){
+        list[k] = L[i];
+        i++;
+      }
+      else if(L[i]->CPUburst_remain == R[j]->CPUburst_remain && L[i]->arrival == R[j]->arrival && L[i]->pid < R[j]->pid){
         list[k] = L[i];
         i++;
       }
@@ -276,7 +294,19 @@ void merge(proPointer list[], int p, int q, int r, int type){
       break;
 
       case 3:
-      if(L[i]->priority <= R[j]->priority){
+      if(L[i]->priority < R[j]->priority){
+        list[k] = L[i];
+        i++;
+      }
+      else if(L[i]->priority == R[j]->priority && L[i]->CPUburst_remain < R[j]->CPUburst_remain){
+        list[k] = L[i];
+        i++;
+      }
+      else if(L[i]->priority == R[j]->priority && L[i]->CPUburst_remain == R[j]->CPUburst_remain && L[i]->arrival < R[j]->arrival){
+        list[k] = L[i];
+        i++;
+      }
+      else if(L[i]->priority == R[j]->priority && L[i]->CPUburst_remain == R[j]->CPUburst_remain && L[i]->arrival == R[j]->arrival && L[i]->pid < R[j]->pid){
         list[k] = L[i];
         i++;
       }
@@ -716,7 +746,9 @@ void PRESJF_alg(int num_process){
         if(jobQ[i]->arrival == nowTime)
           add_readyQ(poll_jobQ());
       }
+      //preemption
       //레디큐를 CPUburst_remain 순으로 정렬한 후, 현재 실행중인 프로세스와 비교해서 CPUburst_remain이 작으면 프로세스를 바꿔준다.
+      //tie breaking은 arrival, pid순서.
       if(isEmpty(rQ_front, rQ_rear) != 1 && runP != NULL){
         mergesort(readyQ, rQ_front+1, rQ_rear, CPUREMAIN);
         if(readyQ[rQ_front+1]->CPUburst_remain < runP->CPUburst_remain){
@@ -751,8 +783,9 @@ void PRESJF_alg(int num_process){
         check++;
         runP = NULL;
       }
+      //preemption
       //waiting 종료 후에 레디큐를 CPUburst_remain 순으로 정렬한 후,
-      //현재 실행중인 프로세스와 비교해서 CPUburst_remain이 작으면 프로세스를 바꿔준다.
+      //tie breaking은 arrival, pid순서.
       waiting(CPUREMAIN);
       mergesort(readyQ, rQ_front+1, rQ_rear, CPUREMAIN);
       if(runP != NULL && isEmpty(rQ_front, rQ_rear) != 1 && readyQ[rQ_front+1]->CPUburst_remain < runP->CPUburst_remain){
@@ -809,7 +842,7 @@ void PREPRI_alg(int num_process){
         if(jobQ[i]->arrival == nowTime)
           add_readyQ(poll_jobQ());
       }
-      //레디큐를 CPUburst_remain 순으로 정렬한 후, 현재 실행중인 프로세스와 비교해서 CPUburst_remain이 작으면 프로세스를 바꿔준다.
+      //레디큐를 priority 순으로 정렬한 후, 현재 실행중인 프로세스와 비교해서 priority이 작으면 프로세스를 바꿔준다.
       if(isEmpty(rQ_front, rQ_rear) != 1 && runP != NULL){
         mergesort(readyQ, rQ_front+1, rQ_rear, PRIORITY);
         if(readyQ[rQ_front+1]->priority < runP->priority){
@@ -820,7 +853,7 @@ void PREPRI_alg(int num_process){
     }
 
     if(isEmpty(rQ_front, rQ_rear)!=1 && runP == NULL){
-      //CPUburst_remain 낮은 순서대로 정렬. 우선순위 같으면 arrival time 순서. arrival time도 같으면 pid순서.
+      //priority 낮은 순서대로 정렬. tie breaking은 CPUburst_remain, arrival, pid 순서.
       mergesort(readyQ, rQ_front+1, rQ_rear, PRIORITY);
       runP = poll_readyQ();
     }
@@ -845,7 +878,7 @@ void PREPRI_alg(int num_process){
         runP = NULL;
       }
       //waiting 종료 후에 레디큐를 CPUburst_remain 순으로 정렬한 후,
-      //현재 실행중인 프로세스와 비교해서 CPUburst_remain이 작으면 프로세스를 바꿔준다.
+      //priority 낮은 순서대로 정렬. tie breaking은 CPUburst_remain, arrival, pid 순서.
       waiting(PRIORITY);
       mergesort(readyQ, rQ_front+1, rQ_rear, PRIORITY);
       if(runP != NULL && isEmpty(rQ_front, rQ_rear) != 1 && readyQ[rQ_front+1]->priority < runP->priority){
@@ -995,7 +1028,7 @@ int main(int argc, char **argv){
   //FCFS_alg(num_process);
   //SJF_alg(num_process);
   //PRI_alg(num_process);
-  //PRESJF_alg(num_process);
+  PRESJF_alg(num_process);
   PREPRI_alg(num_process);
   //RR_alg(num_IO, tq);
 
