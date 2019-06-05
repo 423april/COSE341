@@ -37,9 +37,9 @@ typedef struct process{
 
 }process;
 
-//job queue를 최대 프로세스 개수만큼 선언
-proPointer jobQ[MAX_PROCESS_NUM];
-int jQ_front, jQ_rear;
+//처음에 받은 프로세스 정보.
+proPointer GjobQ[MAX_PROCESS_NUM];
+int GjQ_front, GjQ_rear;
 
 //ready queue 배열 선언
 proPointer readyQ[MAX_PROCESS_NUM];
@@ -52,33 +52,32 @@ int wQ_front, wQ_rear;
 proPointer termQ[MAX_PROCESS_NUM];
 int tQ_front, tQ_rear;
 
+//각 스케줄링 알고리즘마다 이용할 jobQ.
+proPointer jobQ[MAX_PROCESS_NUM];
+int jQ_front, jQ_rear;
+
 //job queue 초기화
-void init_jobQ(){
-  jQ_front = -1;
-  jQ_rear = -1;
+void init_GjobQ(){
+  GjQ_front = -1;
+  GjQ_rear = -1;
 
   for(int i = 0; i < MAX_PROCESS_NUM; i++){
-    jobQ[i] = NULL;
+    GjobQ[i] = NULL;
   }
 }
 //job queue enqueue
-void add_jobQ(proPointer newP){
-  if(jQ_rear == MAX_PROCESS_NUM - 1)
-    printf("jobQ is FULL");
+void add_GjobQ(proPointer newP){
+  if(GjQ_rear == MAX_PROCESS_NUM - 1)
+    printf("GjobQ is FULL");
   else
-    jobQ[++jQ_rear] = newP;
+    GjobQ[++GjQ_rear] = newP;
 }
 //job queue dequeue
-proPointer poll_jobQ(){
-  if(jQ_front == jQ_rear)
-    printf("jobQ is EMPTY");
+proPointer poll_GjobQ(){
+  if(GjQ_front == GjQ_rear)
+    printf("GjobQ is EMPTY");
   else
-    return jobQ[++jQ_front];
-}
-
-void reset_jobQ(int num_process){
-  jQ_front = -1;
-  jQ_rear = num_process-1;
+    return GjobQ[++GjQ_front];
 }
 
 
@@ -153,6 +152,15 @@ proPointer poll_termQ(){
   else
     return termQ[++tQ_front];
 }
+void printQ_Gjob(){
+  for(int i = 0; i < (GjQ_rear - GjQ_front); i++){
+    printf("p%d , ", GjobQ[i]->pid);
+    printf("CPUburst %d, ", GjobQ[i]->CPUburst);
+    printf("arrival %d, ", GjobQ[i]->arrival);
+    printf("priority %d\n", GjobQ[i]->priority);
+  }
+}
+
 void printQ_job(){
   for(int i = 0; i < (jQ_rear - jQ_front); i++){
     printf("p%d , ", jobQ[i]->pid);
@@ -171,6 +179,49 @@ void printQ_ready(){
     printf("priority %d\n", readyQ[i]->priority);
   }
   printf("\n");
+}
+
+//job queue 초기화
+void init_jobQ(){
+  jQ_front = -1;
+  jQ_rear = -1;
+
+  for(int i = 0; i < MAX_PROCESS_NUM; i++){
+    jobQ[i] = NULL;
+  }
+}
+//job queue enqueue
+void add_jobQ(proPointer newP){
+  if(jQ_rear == MAX_PROCESS_NUM - 1)
+    printf("jobQ is FULL");
+  else
+    jobQ[++jQ_rear] = newP;
+}
+//job queue dequeue
+proPointer poll_jobQ(){
+  if(jQ_front == jQ_rear)
+    printf("jobQ is EMPTY");
+  else
+    return jobQ[++jQ_front];
+}
+
+void clone_jobQ(){
+  for(int i = jQ_front+1; i <= jQ_rear; i++){
+    proPointer newP = (proPointer)malloc(sizeof(struct process));
+    newP->pid = GjobQ[i]->pid;
+    newP->CPUburst = GjobQ[i]->CPUburst;
+    newP->arrival = GjobQ[i]->arrival;
+    newP->priority = GjobQ[i]->priority;
+    newP->CPUburst_remain = GjobQ[i]->CPUburst_remain;
+    newP->waitingTime = GjobQ[i]->waitingTime;
+    newP->turnaroundTime = GjobQ[i]->turnaroundTime;
+    newP->responseTime = GjobQ[i]->responseTime;
+    newP->IOburst = GjobQ[i]->IOburst;
+    newP->IOburst_remain = GjobQ[i]->IOburst_remain;
+
+    //job queue에 넣어준다. 순서는 pid 오름차순.
+    add_jobQ(newP);
+  }
 }
 
 
@@ -414,7 +465,7 @@ void create_processes(int num_process){
   srand( (unsigned)time(NULL) );
 
   //job queue 초기화
-  init_jobQ();
+  init_GjobQ();
 
   for(int i = 0; i < num_process; i++){
     proPointer newP = (proPointer)malloc(sizeof(struct process));
@@ -430,9 +481,9 @@ void create_processes(int num_process){
     newP->IOburst_remain = 0;
 
     //job queue에 넣어준다. 순서는 pid 오름차순.
-    add_jobQ(newP);
+    add_GjobQ(newP);
   }
-  printQ_job();
+  printQ_Gjob();
 
   }
   //한 프로세스를 실행하는 동안 다른 프로세스들의 waiting time을 +1 해주는 함수
@@ -548,6 +599,10 @@ void FCFS_alg(int num_process){
   printf("\n********************start FCFS algorithm********************\n");
   //난수 생성
   srand( (unsigned)time(NULL) );
+
+  init_jobQ();
+  clone_jobQ();
+
   //jobQ arrival time 정렬
   mergesort(jobQ, jQ_front+1, jQ_rear, ARRIVAL);
   printQ_job();
@@ -618,8 +673,11 @@ void SJF_alg(int num_process){
   printf("\n********************start SJF algorithm********************\n");
   //난수 생성
   srand( (unsigned)time(NULL) );
+
+  init_jobQ();
+  clone_jobQ();
+
   //jobQ arrival 정렬
-  reset_jobQ(num_process);
   mergesort(jobQ, jQ_front+1, jQ_rear, ARRIVAL);
   printQ_job();
   //ready, wait, termination initialize
@@ -684,7 +742,6 @@ void SJF_alg(int num_process){
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   printf("\n");
   evaluation();
-  reset_jobQ(num_process);
 }/////SJF_alg
 
 
@@ -693,8 +750,11 @@ void PRI_alg(int num_process){
   printf("\n********************start Priority algorithm********************\n");
   //난수 생성
   srand( (unsigned)time(NULL) );
+
+  init_jobQ();
+  clone_jobQ();
+
   //jobQ arrival 정렬
-  reset_jobQ(num_process);
   mergesort(jobQ, jQ_front+1, jQ_rear, ARRIVAL);
   printQ_job();
   //ready, wait, termination initialize
@@ -760,7 +820,6 @@ void PRI_alg(int num_process){
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   printf("\n");
   evaluation();
-  reset_jobQ(num_process);
 }/////PRI_alg
 
 //preemption 있는 SJF 알고리즘.
@@ -769,8 +828,11 @@ void PRESJF_alg(int num_process){
   printf("\n********************start preemptive SJF algorithm********************\n");
   //난수 생성
   srand( (unsigned)time(NULL) );
+
+  init_jobQ();
+  clone_jobQ();
+
   //jobQ arrival 정렬
-  reset_jobQ(num_process);
   mergesort(jobQ, jQ_front+1, jQ_rear, ARRIVAL);
 
   //ready, wait, termination initialize
@@ -855,7 +917,6 @@ void PRESJF_alg(int num_process){
   printf("\n");
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   evaluation();
-  reset_jobQ(num_process);
 }/////PRESJF_alg//
 
 //preemption 있는 Priority 알고리즘.
@@ -864,8 +925,11 @@ void PREPRI_alg(int num_process){
   printf("\n********************start preemptive PRIORITY algorithm********************\n");
   //난수 생성
   srand( (unsigned)time(NULL) );
+
+  init_jobQ();
+  clone_jobQ();
+
   //jobQ arrival 정렬
-  reset_jobQ(num_process);
   mergesort(jobQ, jQ_front+1, jQ_rear, ARRIVAL);
 
   //ready, wait, termination initialize
@@ -946,7 +1010,6 @@ void PREPRI_alg(int num_process){
   printf("\n");
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   evaluation();
-  reset_jobQ(num_process);
 }/////PREPRI_alg//
 
 // //Round Robin 알고리즘.
@@ -1069,9 +1132,9 @@ int main(int argc, char **argv){
   scanf("%d", &tq);
 
   create_processes(num_process);
-  //FCFS_alg(num_process);
-  //SJF_alg(num_process);
-  //PRI_alg(num_process);
+  FCFS_alg(num_process);
+  SJF_alg(num_process);
+  PRI_alg(num_process);
   PRESJF_alg(num_process);
   PREPRI_alg(num_process);
   //RR_alg(num_IO, tq);
