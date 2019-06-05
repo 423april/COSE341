@@ -1052,8 +1052,6 @@ void RR_alg(int num_process, int tq){
       }
 
       if(isEmpty(rQ_front, rQ_rear)!=1 && runP == NULL){
-        //priority 낮은 순서대로 정렬. tie breaking은 CPUburst_remain, arrival, pid 순서.
-        mergesort(readyQ, rQ_front+1, rQ_rear, ARRIVAL);
         runP = poll_readyQ();
       }
 
