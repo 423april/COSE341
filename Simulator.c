@@ -1119,7 +1119,7 @@ int main(int argc, char **argv){
   //PRI_alg(num_process);
   //PRESJF_alg(num_process);
   //PREPRI_alg(num_process);
-  RR_alg(num_process);
+  RR_alg(num_process, tq);
 
 
   return 0;
