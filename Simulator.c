@@ -60,9 +60,9 @@ int jQ_front, jQ_rear;
 proPointer ready2Q[MAX_PROCESS_NUM];
 int r2Q_front, r2Q_rear;
 
-proPointer wT[MAX_PROCESS_NUM] = {NULL};
-proPointer tT[MAX_PROCESS_NUM] = {NULL};
-proPointer rT[MAX_PROCESS_NUM] = {NULL};
+double wT[MAX_PROCESS_NUM] = {NULL};
+double tT[MAX_PROCESS_NUM] = {NULL};
+double rT[MAX_PROCESS_NUM] = {NULL};
 
 
 //job queue 초기화
@@ -638,7 +638,7 @@ void create_processes(int num_process, int tq){
   }
 
   void TotalEval(){
-    int sum = 0;
+    double avg = 0;
     int which = -1;
     for(int i = 0; i < 7; i++){
       switch (i) {
@@ -652,19 +652,19 @@ void create_processes(int num_process, int tq){
         default: break;
       }
       printf("waiting Time: %d, turnaround Time: %d, response Time: %d\n", wT[i], tT[i], rT[i]);
-      if(sum > (wT[i]+tT[i]+rT[i])/3){
-        sum = sum > (wT[i]+tT[i]+rT[i])/3;
+      if(avg > (wT[i]+tT[i]+rT[i])/3){
+        avg = avg > (wT[i]+tT[i]+rT[i])/3;
         which = i;
       }
     }
     switch (which) {
-      case FCFS: printf("FCFS has the smallest evaluation time average: %d\n", sum); break;
-      case SJF: printf("SJF has the smallest evaluation time average: %d\n", sum); break;
-      case PRI: printf("PRIORITY has the smallest evaluation time average: %d\n", sum); break;
-      case PRESJF: printf("PREEMPTIVE SJF has the smallest evaluation time average: %d\n", sum); break;
-      case PREPRI: printf("PREEMPTIVE PRIORITY has the smallest evaluation time average: %d\n", sum); break;
-      case RR: printf("RR has the smallest evaluation time average: %d\n", sum); break;
-      case MULTI: printf("MULTILEVEL QUEUE has the smallest evaluation time average: %d\n", sum); break;
+      case FCFS: printf("FCFS has the smallest evaluation time average: %d\n", avg); break;
+      case SJF: printf("SJF has the smallest evaluation time average: %d\n", avg); break;
+      case PRI: printf("PRIORITY has the smallest evaluation time average: %d\n", avg); break;
+      case PRESJF: printf("PREEMPTIVE SJF has the smallest evaluation time average: %d\n", avg); break;
+      case PREPRI: printf("PREEMPTIVE PRIORITY has the smallest evaluation time average: %d\n", avg); break;
+      case RR: printf("RR has the smallest evaluation time average: %d\n", avg); break;
+      case MULTI: printf("MULTILEVEL QUEUE has the smallest evaluation time average: %d\n", avg); break;
       default: break;
     }
   }
@@ -1298,13 +1298,7 @@ int main(int argc, char **argv){
   printf("Time quantum: ");
   scanf("%d", &tq);
 
-  create_processes(num_process, tq);
-  FCFS_alg(num_process);
-  SJF_alg(num_process);
-  PRI_alg(num_process);
-  PRESJF_alg(num_process);
-  PREPRI_alg(num_process);
-  RR_alg(num_process, tq);
+  create_processes(num_procedoubleFCFS_alg(num_pdoubleSJF_alg(num_pdoublePRI_alg(num_pdoublePRESJF_alg(num_pdoublePREPRI_alg(num_pdoubleRR_alg(num_process, tq);
   MULTI_Q(num_process, tq);
   TotalEval();
 
