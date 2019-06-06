@@ -653,6 +653,7 @@ void create_processes(int num_process, int tq){
         default: break;
       }
       printf("waiting Time: %f, turnaround Time: %f, response Time: %f\n", wT[i], tT[i], rT[i]);
+      printf("%f\n",(wT[i]+tT[i]+rT[i])/3);
       if(avg > (wT[i]+tT[i]+rT[i])/3){
         avg = avg > (wT[i]+tT[i]+rT[i])/3;
         which = i;
