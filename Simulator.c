@@ -654,23 +654,6 @@ void create_processes(int num_process, int tq){
         default: break;
       }
       printf("waiting Time: %f, turnaround Time: %f, response Time: %f\n", wT[i], tT[i], rT[i]);
-      tmp = (wT[i]+tT[i]+rT[i])/3;
-      printf("%f: ", tmp);
-      if(avg > tmp){
-        printf("%f, %f\n", avg, tmp);
-        avg = avg > tmp;
-        which = i;
-      }
-    }
-    switch (which) {
-      case FCFS: printf("FCFS has the smallest evaluation time average: %f\n", avg); break;
-      case SJF: printf("SJF has the smallest evaluation time average: %f\n", avg); break;
-      case PRI: printf("PRIORITY has the smallest evaluation time average: %f\n", avg); break;
-      case PRESJF: printf("PREEMPTIVE SJF has the smallest evaluation time average: %f\n", avg); break;
-      case PREPRI: printf("PREEMPTIVE PRIORITY has the smallest evaluation time average: %f\n", avg); break;
-      case RR: printf("RR has the smallest evaluation time average: %f\n", avg); break;
-      case MULTI: printf("MULTILEVEL QUEUE has the smallest evaluation time average: %f\n", avg); break;
-      default: break;
     }
   }
 
