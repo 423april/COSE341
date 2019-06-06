@@ -643,13 +643,13 @@ void create_processes(int num_process, int tq){
     printf("\n*********************total evaluation*****************\n");
     for(int i = 0; i < 7; i++){
       switch (i) {
-        case FCFS: printf("FCFS: "); break;
-        case SJF: printf("SJF: "); break;
-        case PRI: printf("PRIORITY: "); break;
-        case PRESJF: printf("PREEMPTIVE SJF: "); break;
-        case PREPRI: printf("PREEMPTIVE PRIORITY: "); break;
-        case RR: printf("RR: "); break;
-        case MULTI: printf("MULTILEVEL QUEUE: "); break;
+       case FCFS: printf("FCFS:                "); break;
+        case SJF: printf("SJF:                 "); break;
+        case PRI: printf("PRIORITY:            "); break;
+     case PRESJF: printf("PREEMPTIVE SJF:      "); break;
+     case PREPRI: printf("PREEMPTIVE PRIORITY: "); break;
+         case RR: printf("RR:                  "); break;
+      case MULTI: printf("MULTILEVEL QUEUE:    "); break;
         default: break;
       }
       printf("waiting Time: %f, turnaround Time: %f, response Time: %f\n", wT[i], tT[i], rT[i]);
