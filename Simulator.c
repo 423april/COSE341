@@ -30,33 +30,6 @@ typedef struct process{
 
 }process;
 
-typedef struct queue{
-  proPointer q[MAX_PROCESS_NUM];
-  int p[2];
-}queue;
-
-void initQ(queue Q){
-  for(int i = 0; i < MAX_PROCESS_NUM; i++){
-    Q.q[i] = NULL;
-  }
-  Q.p[0] = -1; //front
-  Q.p[1] = -1; //rear
-}
-
-void addQ(queue Q, proPointer newP){
-  if(Q.p[1] == MAX_PROCESS_NUM - 1)
-    printf("<ERROR> Q is FULL");
-  else
-    Q.q[++Q.p[1]] = newP;
-}
-
-proPointer pollQ(queue Q){
-  if(Q.p[0] == Q.p[1])
-    printf("<ERROR>Q is EMPTY");
-  else
-    return Q.q[++Q.p[0]];
-}
-
 //처음에 받은 프로세스 정보.
 proPointer GjobQ[MAX_PROCESS_NUM];
 int GjQ_front, GjQ_rear;
@@ -76,6 +49,8 @@ int tQ_front, tQ_rear;
 proPointer jobQ[MAX_PROCESS_NUM];
 int jQ_front, jQ_rear;
 
+proPointer ready2Q[MAX_PROCESS_NUM];
+int r2Q_front, r2Q_rear;
 
 
 //job queue 초기화
@@ -225,6 +200,30 @@ proPointer poll_jobQ(){
     printf("jobQ is EMPTY");
   else
     return jobQ[++jQ_front];
+}
+
+//background ready queue 초기화
+void init_ready2Q(){
+  r2Q_front = -1;
+  r2Q_rear = -1;
+
+  for(int i = 0; i < MAX_PROCESS_NUM; i++){
+    ready2Q[i] = NULL;
+  }
+}
+//background ready queue enqueue
+void add_ready2Q(proPointer newP){
+  if(r2Q_rear == MAX_PROCESS_NUM - 1)
+    printf("ready2Q is FULL");
+  else
+    ready2Q[++r2Q_rear] = newP;
+}
+//background ready queue dequeue
+proPointer poll_ready2Q(){
+  if(r2Q_front == r2Q_rear)
+    printf("ready2Q is EMPTY");
+  else
+    return ready2Q[++r2Q_front];
 }
 
 void clone_jobQ(){
@@ -517,6 +516,11 @@ void create_processes(int num_process, int tq){
         readyQ[i]->waitingTime++;
       }
     }
+      for(int i = r2Q_front+1; i <= r2Q_rear; i++){
+        if(ready2Q[i]->pid != pid){
+          ready2Q[i]->waitingTime++;
+        }
+      }
   }
 //큐의 front, rear index 넣으면 해당 큐가 비었는지 알려준다.
   int isEmpty(int front, int rear){
@@ -1124,7 +1128,7 @@ void RR_alg(int num_process, int tq){
   evaluation();
 }/////RR_alg
 
-void MULTI_Q(int num_process){
+void MULTI_Q(int num_process, int tq){
   printf("\n********************start Scheduling with MULTILEVEL QUEUE********************\n");
   //난수 생성
   srand( (unsigned)time(NULL) );
@@ -1132,30 +1136,107 @@ void MULTI_Q(int num_process){
   init_jobQ();
   clone_jobQ();
 
-  queue forwardQ;
-  queue backgroundQ;
+  //jobQ arrival 정렬
+  mergesort(jobQ, jQ_front+1, jQ_rear, ARRIVAL);
+  printQ_job();
 
-  initQ(forwardQ);
-  initQ(backgroundQ);
+  //ready, wait, termination initialize
+  init_readyQ();
+  init_ready2Q();
+  init_waitQ();
+  init_termQ();
 
-  for(int i = 0; i < num_process; i++){
-    if(jobQ[i]->priority < num_process * 0.5)
-      addQ(forwardQ, jobQ[i]);
-    else
-      addQ(backgroundQ, jobQ[i]);
-  }
-  if(isEmpty(forwardQ.p[0], forwardQ.p[1]) != 1){
-    for(int i = forwardQ.p[0]+1; i <= forwardQ.p[1]; i++){
-      printf("p%d on forwardQ\n", forwardQ.q[i]->pid);
+  //현재 시간 나타내는 변수
+  int nowTime = 0;
+  //몇개의 프로세스가 종료했는지 기록
+  int check = 0;
+  //cpu에 할당되는 프로세스
+  proPointer runP = NULL;
+
+  int whichQ = 0; //0: front, 1: background
+
+  for(nowTime = 0; check < num_process; nowTime++){
+    if(isEmpty(jQ_front, jQ_rear) != 1){
+      //해당 시간에 도착한 프로세스 모두 레디큐로 옮겨줌.
+      for(int i = jQ_front+1; i <= jQ_rear; i++){
+        if(jobQ[i]->arrival == nowTime && jobQ[i]->priority < 0.5 * num_process)
+          add_readyQ(poll_jobQ());
+        else if(jobQ[i]->arrival == nowTime && jobQ[i]->priority >= 0.5 * num_process)
+          add_ready2Q(poll_jobQ());
+      }
     }
-  }
-  if(isEmpty(forwardQ.p[0], forwardQ.p[1]) != 1){
-    for(int i = backgroundQ.p[0]+1; i <= backgroundQ.p[1]; i++){
-      printf("p%d on backgroundQ\n", backgroundQ.q[i]->pid);
+
+    //background Q에서 너무 오래 기다린 프로세스는 front로 올려준다.
+    if(isEmpty(r2Q_front, r2Q_rear) != 1){
+      mergesort(ready2Q, r2Q_front+1, r2Q_rear, ARRIVAL);
+      for(int i = r2Q_front+1; i <= r2Q_rear; i++){
+        if(ready2Q[i]->waitingTime > 20)
+          add_readyQ(poll_ready2Q());
+      }
     }
-  }
 
+    if(isEmpty(rQ_front, rQ_rear)!=1 && runP == NULL){
+      runP = poll_readyQ();
+      whichQ = 0;
+    }
 
+    //forward Q가 다 비어야 background Q 실행가능
+    if(isEmpty(rQ_front, rQ_rear)==1 && isEmpty(r2Q_front, r2Q_rear)!=1 && runP == NULL){
+      runP = poll_ready2Q();
+      whichQ = 1;
+    }
+
+    if(runP==NULL && isEmpty(wQ_front, wQ_rear)){
+      printf("bb ");
+    }
+    else if(runP==NULL && isEmpty(wQ_front, wQ_rear)!=1){
+      printf("bb ");
+      waiting(ARRIVAL);
+    }
+    else if(runP != NULL){
+      printf("p%d ", runP->pid);
+      runP->CPUburst_remain--;
+      runP->timequantum--;
+      wait(runP->pid);
+
+      if(runP->CPUburst_remain+1 == runP->CPUburst) runP->responseTime = nowTime - runP->arrival;
+
+      if(runP->CPUburst_remain == 0){
+        runP->turnaroundTime = (nowTime+1) - runP->arrival;
+        add_termQ(runP);
+        check++;
+        runP = NULL;
+      }
+
+      if(runP != NULL && runP->timequantum == 0){
+        runP->timequantum = tq;
+        (whichQ == 0)?add_readyQ(runP):add_ready2Q(runP);
+        runP = NULL;
+      }
+
+    //random IO. 5% 확률로 IO 발생.
+    if(runP != NULL && runP->CPUburst_remain > 0 && runP->CPUburst > runP->CPUburst_remain && rand() % 100 >= 95){
+      runP->IOburst = rand() % 10 + 1; //IOburst는 1~10;
+      runP->IOburst_remain = runP->IOburst;
+      printf("\n<IO interrupt!>p%d, IOburst: %d\n", runP->pid, runP->IOburst);
+      runP->timequantum = tq;
+      add_waitQ(runP);
+      mergesort(waitQ, wQ_front+1, wQ_rear, IOREMAIN);
+      if(isEmpty(rQ_front, rQ_rear)!=1){
+        runP = poll_readyQ();
+        whichQ = 0;
+      }
+      else if(isEmpty(rQ2_front, r2Q_rear) != 1){
+        runP = poll_ready2Q();
+        whichQ = 1;
+      }
+      else runP = NULL;
+    }
+    }/////else
+  }/////for process
+  printf("\n");
+  //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
+  evaluation();
 }
 
 
