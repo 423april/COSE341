@@ -1144,12 +1144,15 @@ void MULTI_Q(int num_process){
     else
       addQ(backgroundQ, jobQ[i]);
   }
-
-  for(int i = forwardQ.p[0]+1; i <= forwardQ.p[1]; i++){
-    printf("p%d on forwardQ\n", forwardQ.q[i]->pid);
+  if(isEmpty(forwardQ.p[0], forwardQ.p[1]) != 1){
+    for(int i = forwardQ.p[0]+1; i <= forwardQ.p[1]; i++){
+      printf("p%d on forwardQ\n", forwardQ.q[i]->pid);
+    }
   }
-  for(int i = backgroundQ.p[0]+1; i <= backgroundQ.p[1]; i++){
-    printf("p%d on backgroundQ\n", backgroundQ.q[i]->pid);
+  if(isEmpty(forwardQ.p[0], forwardQ.p[1]) != 1){
+    for(int i = backgroundQ.p[0]+1; i <= backgroundQ.p[1]; i++){
+      printf("p%d on backgroundQ\n", backgroundQ.q[i]->pid);
+    }
   }
 
 
