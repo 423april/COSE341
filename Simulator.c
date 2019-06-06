@@ -13,14 +13,6 @@
 #define PRIORITY 3
 #define PID 4
 
-typedef struct IO* IOPointer;
-typedef struct IO{
-  int pid;
-  int IOburst;
-//해당 프로세스의 CPUburst_remain 이 얼마일때 IO interrupt 될 것인지.
-  int when;
-}IO;
-
 //프로세스 구조체
 typedef struct process* proPointer;
 typedef struct process{
@@ -37,6 +29,33 @@ typedef struct process{
   int responseTime;
 
 }process;
+
+typedef struct queue{
+  proPointer q[MAX_PROCESS_NUM];
+  int p[2];
+}queue;
+
+void initQ(queue Q){
+  for(int i = 0; i < MAX_PROCESS_NUM; i++){
+    Q.q[i] = NULL;
+  }
+  Q.p[0] = -1; //front
+  Q.p[1] = -1; //rear
+}
+
+void addQ(queue Q, proPointer newP){
+  if(Q.p[1] == MAX_PROCESS_NUM - 1)
+    printf("<ERROR> Q is FULL");
+  else
+    Q.q[++Q.p[1]] = newP;
+}
+
+proPointer pollQ(queue Q){
+  if(Q.p[0] == Q.p[1])
+    printf("<ERROR>Q is EMPTY");
+  else
+    return Q.q[++Q.p[0]];
+}
 
 //처음에 받은 프로세스 정보.
 proPointer GjobQ[MAX_PROCESS_NUM];
@@ -56,6 +75,8 @@ int tQ_front, tQ_rear;
 //각 스케줄링 알고리즘마다 이용할 jobQ.
 proPointer jobQ[MAX_PROCESS_NUM];
 int jQ_front, jQ_rear;
+
+
 
 //job queue 초기화
 void init_GjobQ(){
@@ -1103,6 +1124,37 @@ void RR_alg(int num_process, int tq){
   evaluation();
 }/////RR_alg
 
+void MULTI_Q(int num_process){
+  printf("\n********************start Scheduling with MULTILEVEL QUEUE********************\n");
+  //난수 생성
+  srand( (unsigned)time(NULL) );
+
+  init_jobQ();
+  clone_jobQ();
+
+  queue forwardQ;
+  queue backgroundQ;
+
+  initQ(forwardQ);
+  initQ(backgroundQ);
+
+  for(int i = 0; i < num_process; i++){
+    if(jobQ[i]->priority < num_process * 0.5)
+      addQ(forwardQ, jobQ[i]);
+    else
+      addQ(backgroundQ, jobQ[i]);
+  }
+
+  for(int i = forwardQ.p[0]+1; i <= forwardQ.p[1]; i++){
+    printf("p%d on forwardQ\n", forwardQ.q[i]);
+  }
+  for(int i = backgroundQ.p[0]+1; i <= backgroundQ.p[1]; i++){
+    printf("p%d on backgroundQ\n", backgroundQ.q[i]);
+  }
+
+
+}
+
 
 int main(int argc, char **argv){
   int num_process, tq;
@@ -1114,12 +1166,13 @@ int main(int argc, char **argv){
   scanf("%d", &tq);
 
   create_processes(num_process, tq);
-  FCFS_alg(num_process);
-  SJF_alg(num_process);
-  PRI_alg(num_process);
-  PRESJF_alg(num_process);
-  PREPRI_alg(num_process);
-  RR_alg(num_process, tq);
+  //FCFS_alg(num_process);
+  //SJF_alg(num_process);
+  //PRI_alg(num_process);
+  //PRESJF_alg(num_process);
+  //PREPRI_alg(num_process);
+  //RR_alg(num_process, tq);
+  MULTI_Q(num_process);
 
 
   return 0;
