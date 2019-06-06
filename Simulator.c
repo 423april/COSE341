@@ -638,9 +638,7 @@ void create_processes(int num_process, int tq){
   }
 
   void TotalEval(){
-    double avg = 1000000.0;
-    double tmp = 0;
-    int which = -1;
+    double avg = 0;
     printf("\n*********************total evaluation*****************\n");
     for(int i = 0; i < 7; i++){
       switch (i) {
@@ -653,7 +651,8 @@ void create_processes(int num_process, int tq){
       case MULTI: printf("MULTILEVEL QUEUE:    "); break;
         default: break;
       }
-      printf("waiting Time: %f, turnaround Time: %f, response Time: %f\n", wT[i], tT[i], rT[i]);
+      avg = (wT[i]+tT[i]+rT[i])/3;
+      printf("waiting Time: %f, turnaround Time: %f, response Time: %f, evaluation Time average: %f\n", wT[i], tT[i], rT[i], avg);
     }
   }
 
