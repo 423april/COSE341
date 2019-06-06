@@ -639,7 +639,7 @@ void create_processes(int num_process, int tq){
 
   void TotalEval(){
     double avg = 1000000.0;
-    doube tmp = 0;
+    double tmp = 0;
     int which = -1;
     printf("\n*********************total evaluation*****************\n");
     for(int i = 0; i < 7; i++){
