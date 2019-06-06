@@ -13,6 +13,14 @@
 #define PRIORITY 3
 #define PID 4
 
+#define FCFS 0
+#define SJF 1
+#define PRI 2
+#define PRESJF 3
+#define PREPRI 4
+#define RR 5
+#define MULTI 6
+
 //프로세스 구조체
 typedef struct process* proPointer;
 typedef struct process{
@@ -51,6 +59,10 @@ int jQ_front, jQ_rear;
 
 proPointer ready2Q[MAX_PROCESS_NUM];
 int r2Q_front, r2Q_rear;
+
+proPointer wT[MAX_PROCESS_NUM] = {NULL};
+proPointer tT[MAX_PROCESS_NUM] = {NULL};
+proPointer rT[MAX_PROCESS_NUM] = {NULL};
 
 
 //job queue 초기화
@@ -551,7 +563,7 @@ void create_processes(int num_process, int tq){
     }
   }
 
-  void evaluation(){
+  void evaluation(int type){
     //evaluation
     //termination queue를 pid순으로 정렬
     mergesort(termQ, tQ_front+1, tQ_rear, 4);
@@ -573,6 +585,9 @@ void create_processes(int num_process, int tq){
     avgtT = (double)sumtT/num;
     avgrT = (double)sumrT/num;
     printf("avgwT: %f, avgtT: %f, avgrT: %f\n", avgwT, avgtT, avgrT);
+    wT[type] = avgwT;
+    tT[type] = avgtT;
+    rT[type] = avgrT;
   }
 
   proPointer preempt(proPointer runP, int type){
@@ -620,6 +635,38 @@ void create_processes(int num_process, int tq){
       printf("to p%d\n", next->pid);
     }
     return next;
+  }
+
+  void TotalEval(){
+    int sum = 0;
+    int which = -1;
+    for(int i = 0; i < 7; i++){
+      switch (i) {
+        case FCFS: printf("FCFS:\n"); break;
+        case SJF: printf("SJF:\n"); break;
+        case PRI: printf("PRIORITY:\n"); break;
+        case PRESJF: printf("PREEMPTIVE SJF:\n"); break;
+        case PREPRI: printf("PREEMPTIVE PRIORITY:\n"); break;
+        case RR: printf("RR:\n"); break;
+        case MULTI: printf("MULTILEVEL QUEUE:\n"); break;
+        default: break;
+      }
+      printf("waiting Time: %d, turnaround Time: %d, response Time: %d\n", wT[i], tT[i], rT[i]);
+      if(sum > (wT[i]+tT[i]+rT[i])/3){
+        sum = sum > (wT[i]+tT[i]+rT[i])/3;
+        which = i;
+      }
+    }
+    switch (which) {
+      case FCFS: printf("FCFS has the smallest evaluation time average: %d\n", sum); break;
+      case SJF: printf("SJF has the smallest evaluation time average: %d\n", sum); break;
+      case PRI: printf("PRIORITY has the smallest evaluation time average: %d\n", sum); break;
+      case PRESJF: printf("PREEMPTIVE SJF has the smallest evaluation time average: %d\n", sum); break;
+      case PREPRI: printf("PREEMPTIVE PRIORITY has the smallest evaluation time average: %d\n", sum); break;
+      case RR: printf("RR has the smallest evaluation time average: %d\n", sum); break;
+      case MULTI: printf("MULTILEVEL QUEUE has the smallest evaluation time average: %d\n", sum); break;
+      default: break;
+    }
   }
 
 //선입선출
@@ -692,7 +739,7 @@ void FCFS_alg(int num_process){
   }/////for process
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   printf("\n");
-  evaluation();
+  evaluation(FCFS);
 }/////FCFS_alg
 
 
@@ -769,7 +816,7 @@ void SJF_alg(int num_process){
   }/////for process
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   printf("\n");
-  evaluation();
+  evaluation(SJF);
 }/////SJF_alg
 
 
@@ -847,7 +894,7 @@ void PRI_alg(int num_process){
   }/////for process
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   printf("\n");
-  evaluation();
+  evaluation(PRI);
 }/////PRI_alg
 
 //preemption 있는 SJF 알고리즘.
@@ -945,7 +992,7 @@ void PRESJF_alg(int num_process){
   }/////for process
   printf("\n");
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
-  evaluation();
+  evaluation(PRESJF);
 }/////PRESJF_alg//
 
 //preemption 있는 Priority 알고리즘.
@@ -1039,7 +1086,7 @@ void PREPRI_alg(int num_process){
   }/////for process
   printf("\n");
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
-  evaluation();
+  evaluation(PREPRI);
 }/////PREPRI_alg//
 
 // //Round Robin 알고리즘.
@@ -1094,6 +1141,7 @@ void RR_alg(int num_process, int tq){
       runP->CPUburst_remain--;
       runP->timequantum--;
       wait(runP->pid);
+      waiting(ARRIVAL);
 
       if(runP->CPUburst_remain+1 == runP->CPUburst) runP->responseTime = nowTime - runP->arrival;
 
@@ -1125,7 +1173,7 @@ void RR_alg(int num_process, int tq){
   }/////for process
   printf("\n");
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
-  evaluation();
+  evaluation(RR);
 }/////RR_alg
 
 void MULTI_Q(int num_process, int tq){
@@ -1237,7 +1285,7 @@ void MULTI_Q(int num_process, int tq){
   }/////for process
   printf("\n");
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
-  evaluation();
+  evaluation(MULTI);
 }
 
 
@@ -1251,14 +1299,14 @@ int main(int argc, char **argv){
   scanf("%d", &tq);
 
   create_processes(num_process, tq);
-  //FCFS_alg(num_process);
-  //SJF_alg(num_process);
-  //PRI_alg(num_process);
-  //PRESJF_alg(num_process);
-  //PREPRI_alg(num_process);
-  //RR_alg(num_process, tq);
+  FCFS_alg(num_process);
+  SJF_alg(num_process);
+  PRI_alg(num_process);
+  PRESJF_alg(num_process);
+  PREPRI_alg(num_process);
+  RR_alg(num_process, tq);
   MULTI_Q(num_process, tq);
-
+  TotalEval();
 
   return 0;
 }
