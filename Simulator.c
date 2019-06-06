@@ -1198,6 +1198,7 @@ void MULTI_Q(int num_process, int tq){
       runP->CPUburst_remain--;
       runP->timequantum--;
       wait(runP->pid);
+      waiting(ARRIVAL);
 
       if(runP->CPUburst_remain+1 == runP->CPUburst) runP->responseTime = nowTime - runP->arrival;
 
