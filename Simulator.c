@@ -1226,7 +1226,7 @@ void MULTI_Q(int num_process, int tq){
         runP = poll_readyQ();
         whichQ = 0;
       }
-      else if(isEmpty(rQ2_front, r2Q_rear) != 1){
+      else if(isEmpty(r2Q_front, r2Q_rear) != 1){
         runP = poll_ready2Q();
         whichQ = 1;
       }
@@ -1256,7 +1256,7 @@ int main(int argc, char **argv){
   //PRESJF_alg(num_process);
   //PREPRI_alg(num_process);
   //RR_alg(num_process, tq);
-  MULTI_Q(num_process);
+  MULTI_Q(num_process, tq);
 
 
   return 0;
