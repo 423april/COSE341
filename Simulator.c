@@ -1114,11 +1114,11 @@ int main(int argc, char **argv){
   scanf("%d", &tq);
 
   create_processes(num_process, tq);
-  //FCFS_alg(num_process);
-  //SJF_alg(num_process);
-  //PRI_alg(num_process);
-  //PRESJF_alg(num_process);
-  //PREPRI_alg(num_process);
+  FCFS_alg(num_process);
+  SJF_alg(num_process);
+  PRI_alg(num_process);
+  PRESJF_alg(num_process);
+  PREPRI_alg(num_process);
   RR_alg(num_process, tq);
 
 
