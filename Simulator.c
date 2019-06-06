@@ -640,7 +640,7 @@ void create_processes(int num_process, int tq){
   void TotalEval(){
     double avg = INF;
     int which = -1;
-    printf("\n*********************total evaluation*****************\n")
+    printf("\n*********************total evaluation*****************\n");
     for(int i = 0; i < 7; i++){
       switch (i) {
         case FCFS: printf("FCFS: "); break;
