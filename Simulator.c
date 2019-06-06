@@ -639,6 +639,7 @@ void create_processes(int num_process, int tq){
 
   void TotalEval(){
     double avg = 1000000.0;
+    doube tmp = 0;
     int which = -1;
     printf("\n*********************total evaluation*****************\n");
     for(int i = 0; i < 7; i++){
@@ -653,9 +654,10 @@ void create_processes(int num_process, int tq){
         default: break;
       }
       printf("waiting Time: %f, turnaround Time: %f, response Time: %f\n", wT[i], tT[i], rT[i]);
-      printf("%f\n",(wT[i]+tT[i]+rT[i])/3);
-      if(avg > (wT[i]+tT[i]+rT[i])/3){
-        avg = avg > (wT[i]+tT[i]+rT[i])/3;
+      tmp = (wT[i]+tT[i]+rT[i])/3;
+      if(avg > tmp){
+        printf("%f, %f\n", avg, tmp);
+        avg = avg > tmp;
         which = i;
       }
     }
