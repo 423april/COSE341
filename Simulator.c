@@ -1146,10 +1146,10 @@ void MULTI_Q(int num_process){
   }
 
   for(int i = forwardQ.p[0]+1; i <= forwardQ.p[1]; i++){
-    printf("p%d on forwardQ\n", forwardQ.q[i]);
+    printf("p%d on forwardQ\n", forwardQ.q[i]->pid);
   }
   for(int i = backgroundQ.p[0]+1; i <= backgroundQ.p[1]; i++){
-    printf("p%d on backgroundQ\n", backgroundQ.q[i]);
+    printf("p%d on backgroundQ\n", backgroundQ.q[i]->pid);
   }
 
 
