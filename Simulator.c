@@ -1159,9 +1159,9 @@ void MULTI_Q(int num_process, int tq){
     if(isEmpty(jQ_front, jQ_rear) != 1){
       //해당 시간에 도착한 프로세스 모두 레디큐로 옮겨줌.
       for(int i = jQ_front+1; i <= jQ_rear; i++){
-        if(jobQ[i]->arrival == nowTime && jobQ[i]->priority < 0.5 * num_process)
+        if(jobQ[i]->arrival == nowTime && jobQ[i]->priority <= 0.5 * num_process)
           add_readyQ(poll_jobQ());
-        else if(jobQ[i]->arrival == nowTime && jobQ[i]->priority >= 0.5 * num_process)
+        else if(jobQ[i]->arrival == nowTime && jobQ[i]->priority > 0.5 * num_process)
           add_ready2Q(poll_jobQ());
       }
     }
