@@ -1133,6 +1133,7 @@ void RR_alg(int num_process, int tq){
     }
 
     if(isEmpty(rQ_front, rQ_rear)!=1 && runP == NULL){
+      mergesort(readyQ, rQ_front+1, rQ_rear, ARRIVAL);
       runP = poll_readyQ();
     }
 
@@ -1173,8 +1174,9 @@ void RR_alg(int num_process, int tq){
       runP->timequantum = tq;
       add_waitQ(runP);
       mergesort(waitQ, wQ_front+1, wQ_rear, IOREMAIN);
-      if(isEmpty(rQ_front, rQ_rear)!=1) runP = poll_readyQ();
-      else runP = NULL;
+      // if(isEmpty(rQ_front, rQ_rear)!=1) runP = poll_readyQ();
+      // else
+      runP = NULL;
     }
     }/////else
   }/////for process
