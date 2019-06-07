@@ -130,13 +130,6 @@ void add_waitQ(proPointer newP){
   else
     waitQ[++wQ_rear] = newP;
 }
-//wait queue dequeue
-proPointer poll_waitQ(){
-  if(wQ_front == wQ_rear)
-    printf("waitQ is EMPTY");
-  else
-    return waitQ[++wQ_front];
-}
 
 //termination queue 초기화
 void init_termQ(){
@@ -542,6 +535,30 @@ void create_processes(int num_process, int tq){
       return 0;//false;
   }
 
+  //wait queue dequeue
+  //해당 pid를 가진 걸 빼주고, 나머지는 땡겨준다.
+  proPointer poll_waitQ(int pid){
+    proPointer res;
+    if(wQ_front == wQ_rear)
+      printf("waitQ is EMPTY");
+    else{
+      for(int i = wQ_front+1; i <= wQ_rear; i++){
+        if(waitQ[i]->pid == pid && i == wQ_rear){
+          wQ_rear--;
+          return waitQ[i];
+        }
+        else if(waitQ[i]->pid == pid){
+          res = waitQ[i];
+          for(int j = i+1; j <= wQ_rear; j++){
+            waitQ[j-1] = waitQ[j];
+          }
+          wQ_rear--;
+          return res;
+        }
+      }
+    }
+  }
+
 //IO busrt 얼마나 했는지 매 타임  -1 해주고,
 //IOburst_remain == 0 되면 내보내준다.
   void waiting(int type){
@@ -550,7 +567,7 @@ void create_processes(int num_process, int tq){
         waitQ[i]->IOburst_remain--;
         if(waitQ[i]->IOburst_remain == 0){
           printf("\n<IO finished> p%d CPUburst_remain: %d\n", waitQ[i]->pid, waitQ[i]->CPUburst_remain);
-          add_readyQ(poll_waitQ());
+          add_readyQ(poll_waitQ(waitQ[i]->pid));
           //waiting queue는 남아있는 IOburst time 오름차순으로 정렬한다.
           mergesort(waitQ, wQ_front+1, wQ_rear, 1);
           //readyQ는 해당 우선순위에 부합하게 오름차순 정렬한다.
@@ -679,8 +696,9 @@ void FCFS_alg(int num_process){
   int check = 0;
   //cpu에 할당되는 프로세스
   proPointer runP = NULL;
-
+//모든 프로세스 끝날 때까지
   for(nowTime = 0; check < num_process; nowTime++){
+
     if(isEmpty(jQ_front, jQ_rear) != 1){
       for(int i = jQ_front+1; i <= jQ_rear; i++){
         if(jobQ[i]->arrival == nowTime)
@@ -691,14 +709,16 @@ void FCFS_alg(int num_process){
     if(isEmpty(rQ_front, rQ_rear)!=1 && runP == NULL){
       runP = poll_readyQ();
     }
-
+    //cpu에서 실행중인 것 없음. 대기하는 프로세스도 없음.
     if(runP==NULL && isEmpty(wQ_front, wQ_rear)){
       printf("bb ");
     }
+    //cpu에서 실행중인 것 없음. 대기하는 프로세스 있음.
     else if(runP==NULL && isEmpty(wQ_front, wQ_rear)!=1){
       printf("bb ");
       waiting(ARRIVAL);
     }
+    //cpu에서 실행중인 프로세스 있음.
     else if(runP != NULL){
       printf("p%d ", runP->pid);
       runP->CPUburst_remain--;
@@ -716,7 +736,7 @@ void FCFS_alg(int num_process){
     if(runP != NULL && runP->CPUburst_remain > 0 && runP->CPUburst > runP->CPUburst_remain && rand() % 100 >= 95){
       runP->IOburst = rand() % 10 + 1; //IOburst는 1~10;
       runP->IOburst_remain = runP->IOburst;
-      printf("\n<IO interrupt!>p%d, IOburst: %d, CPUburst_remain: %d\n", runP->pid, runP->IOburst, runP->CPUburst_remain);
+      printf("\n<IO interrupt!>p%d, IOburst: %d\n", runP->pid, runP->IOburst);
       add_waitQ(runP);
       mergesort(waitQ, wQ_front+1, wQ_rear, IOREMAIN);
       if(isEmpty(rQ_front, rQ_rear)!=1) runP = poll_readyQ();
