@@ -60,10 +60,10 @@ int jQ_front, jQ_rear;
 proPointer ready2Q[MAX_PROCESS_NUM];
 int r2Q_front, r2Q_rear;
 
-double wT[MAX_PROCESS_NUM] = {0};
-double tT[MAX_PROCESS_NUM] = {0};
-double rT[MAX_PROCESS_NUM] = {0};
-double util[MAX_PROCESS_NUM] = {0};
+double wT[7] = {0};
+double tT[7] = {0};
+double rT[7] = {0};
+double util[7] = {0};
 
 
 //job queue 초기화
@@ -670,7 +670,7 @@ void create_processes(int num_process, int tq){
         default: break;
       }
       avg = (wT[i]+tT[i]+rT[i])/3;
-      printf("waiting Time: %f, turnaround Time: %f, response Time: %f, evaluation Time average: %f\n", wT[i], tT[i], rT[i], avg);
+      printf("waiting Time: %f, turnaround Time: %f, response Time: %f, evaluation Time average: %f, CPU utilization: %f\n", wT[i], tT[i], rT[i], avg, util[i]);
     }
   }
 
@@ -694,6 +694,7 @@ void FCFS_alg(int num_process){
   //현재 시간 나타내는 변수
   int nowTime = 0;
   int idle = 0;
+  double cpuutil = 0;
   //몇개의 프로세스가 종료했는지 기록
   int check = 0;
   //cpu에 할당되는 프로세스
@@ -751,8 +752,9 @@ void FCFS_alg(int num_process){
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   printf("\n");
   evaluation(FCFS);
-  util[FCFS] = (nowTime-idle)/nowTime;
-  printf("CPU utilization: %f\n", util[FCFS]);
+  cpuutil = (nowTime-idle)/nowTime;
+  util[FCFS] = cpuutil;
+  printf("CPU utilization: %f\n", cpuutil);
 
 }/////FCFS_alg
 
