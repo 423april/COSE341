@@ -754,7 +754,7 @@ void FCFS_alg(int num_process){
   evaluation(FCFS);
   printf("%d ", nowTime);
   printf("%d ", nowTime-idle);
-  printf("%f \n", (nowTime-idle)/nowTime)
+  printf("%f \n", (double)(nowTime-idle)/nowTime);
   cpuutil = (nowTime-idle)/nowTime;
   util[FCFS] = cpuutil;
   printf("CPU utilization: %f\n", cpuutil);
