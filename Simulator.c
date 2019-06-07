@@ -1156,7 +1156,6 @@ void RR_alg(int num_process, int tq){
             add_readyQ(poll_jobQ());
         }
       }
-      
       waiting(ARRIVAL);
 
       if(runP->CPUburst_remain+1 == runP->CPUburst) runP->responseTime = nowTime - runP->arrival;
@@ -1170,13 +1169,6 @@ void RR_alg(int num_process, int tq){
 
       if(runP != NULL && runP->timequantum == 0){
         runP->timequantum = tq;
-        if(isEmpty(jQ_front, jQ_rear) != 1){
-          //해당 시간에 도착한 프로세스 모두 레디큐로 옮겨줌.
-          for(int i = jQ_front+1; i <= jQ_rear; i++){
-            if(jobQ[i]->arrival == nowTime)
-              add_readyQ(poll_jobQ());
-          }
-        }
         runP->arrival = nowTime;
         add_readyQ(runP);
         runP = poll_readyQ();
