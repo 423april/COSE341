@@ -63,6 +63,7 @@ int r2Q_front, r2Q_rear;
 double wT[MAX_PROCESS_NUM] = {0};
 double tT[MAX_PROCESS_NUM] = {0};
 double rT[MAX_PROCESS_NUM] = {0};
+double util[MAX_PROCESS_NUM] = {0};
 
 
 //job queue 초기화
@@ -692,6 +693,7 @@ void FCFS_alg(int num_process){
 
   //현재 시간 나타내는 변수
   int nowTime = 0;
+  int idle = 0;
   //몇개의 프로세스가 종료했는지 기록
   int check = 0;
   //cpu에 할당되는 프로세스
@@ -712,10 +714,12 @@ void FCFS_alg(int num_process){
     //cpu에서 실행중인 것 없음. 대기하는 프로세스도 없음.
     if(runP==NULL && isEmpty(wQ_front, wQ_rear)){
       printf("bb ");
+      idle++;
     }
     //cpu에서 실행중인 것 없음. 대기하는 프로세스 있음.
     else if(runP==NULL && isEmpty(wQ_front, wQ_rear)!=1){
       printf("bb ");
+      idle++;
       waiting(ARRIVAL);
     }
     //cpu에서 실행중인 프로세스 있음.
@@ -747,6 +751,9 @@ void FCFS_alg(int num_process){
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   printf("\n");
   evaluation(FCFS);
+  util[FCFS] = (nowTime-idle)/nowTime;
+  printf("CPU utilization: %f\n", util[FCFS]);
+
 }/////FCFS_alg
 
 
@@ -769,6 +776,7 @@ void SJF_alg(int num_process){
 
   //현재 시간 나타내는 변수
   int nowTime = 0;
+  int idle = 0;
   //몇개의 프로세스가 종료했는지 기록
   int check = 0;
   //cpu에 할당되는 프로세스
@@ -791,9 +799,11 @@ void SJF_alg(int num_process){
 
     if(runP==NULL && isEmpty(wQ_front, wQ_rear)){
       printf("bb ");
+      idle++;
     }
     else if(runP==NULL && isEmpty(wQ_front, wQ_rear)!=1){
       printf("bb ");
+      idle++;
       waiting(CPUREMAIN);
     }
     else if(runP != NULL){
@@ -824,6 +834,8 @@ void SJF_alg(int num_process){
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   printf("\n");
   evaluation(SJF);
+  util[SJF] = (nowTime-idle)/nowTime;
+  printf("CPU utilization: %f\n", util[SJF]);
 }/////SJF_alg
 
 
@@ -846,6 +858,7 @@ void PRI_alg(int num_process){
 
   //현재 시간 나타내는 변수
   int nowTime = 0;
+  int idle = 0;
   //몇개의 프로세스가 종료했는지 기록
   int check = 0;
   //cpu에 할당되는 프로세스
@@ -869,9 +882,11 @@ void PRI_alg(int num_process){
 
     if(runP==NULL && isEmpty(wQ_front, wQ_rear)){
       printf("bb ");
+      idle++;
     }
     else if(runP==NULL && isEmpty(wQ_front, wQ_rear)!=1){
       printf("bb ");
+      idle++;
       waiting(PRIORITY);
     }
     else if(runP != NULL){
@@ -902,6 +917,8 @@ void PRI_alg(int num_process){
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   printf("\n");
   evaluation(PRI);
+  util[PRI] = (nowTime-idle)/nowTime;
+  printf("CPU utilization: %f\n", util[PRI]);
 }/////PRI_alg
 
 //preemption 있는 SJF 알고리즘.
@@ -925,6 +942,7 @@ void PRESJF_alg(int num_process){
 
   //현재 시간 나타내는 변수
   int nowTime = 0;
+  int idle = 0;
   //몇개의 프로세스가 종료했는지 기록
   int check = 0;
   //cpu에 할당되는 프로세스
@@ -958,9 +976,11 @@ void PRESJF_alg(int num_process){
 
     if(runP==NULL && isEmpty(wQ_front, wQ_rear)){
       printf("bb ");
+      idle++;
     }
     else if(runP==NULL && isEmpty(wQ_front, wQ_rear)!=1){
       printf("bb ");
+      idle++;
       waiting(CPUREMAIN);
     }
     else if(runP != NULL){
@@ -1000,6 +1020,8 @@ void PRESJF_alg(int num_process){
   printf("\n");
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   evaluation(PRESJF);
+  util[PRESJF] = (nowTime-idle)/nowTime;
+  printf("CPU utilization: %f\n", util[PRESJF]);
 }/////PRESJF_alg//
 
 //preemption 있는 Priority 알고리즘.
@@ -1023,6 +1045,7 @@ void PREPRI_alg(int num_process){
 
   //현재 시간 나타내는 변수
   int nowTime = 0;
+  int idle = 0;
   //몇개의 프로세스가 종료했는지 기록
   int check = 0;
   //cpu에 할당되는 프로세스
@@ -1053,9 +1076,11 @@ void PREPRI_alg(int num_process){
 
     if(runP==NULL && isEmpty(wQ_front, wQ_rear)){
       printf("bb ");
+      idle++;
     }
     else if(runP==NULL && isEmpty(wQ_front, wQ_rear)!=1){
       printf("bb ");
+      idle++;
       waiting(PRIORITY);
     }
     else if(runP != NULL){
@@ -1094,6 +1119,8 @@ void PREPRI_alg(int num_process){
   printf("\n");
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   evaluation(PREPRI);
+  util[PREPRI] = (nowTime-idle)/nowTime;
+  printf("CPU utilization: %f\n", util[PREPRI]);
 }/////PREPRI_alg//
 
 // //Round Robin 알고리즘.
@@ -1118,6 +1145,7 @@ void RR_alg(int num_process, int tq){
 
   //현재 시간 나타내는 변수
   int nowTime = 0;
+  int idle = 0;
   //몇개의 프로세스가 종료했는지 기록
   int check = 0;
   //cpu에 할당되는 프로세스
@@ -1138,9 +1166,11 @@ void RR_alg(int num_process, int tq){
 
     if(runP==NULL && isEmpty(wQ_front, wQ_rear)){
       printf("bb ");
+      idle++;
     }
     else if(runP==NULL && isEmpty(wQ_front, wQ_rear)!=1){
       printf("bb ");
+      idle++;
       waiting(ARRIVAL);
     }
     else if(runP != NULL){
@@ -1183,6 +1213,8 @@ void RR_alg(int num_process, int tq){
   printf("\n");
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   evaluation(RR);
+  util[RR] = (nowTime-idle)/nowTime;
+  printf("CPU utilization: %f\n", util[RR]);
 }/////RR_alg
 
 
@@ -1207,6 +1239,7 @@ void MULTI_Q(int num_process, int tq){
 
   //현재 시간 나타내는 변수
   int nowTime = 0;
+  int idle = 0;
   //몇개의 프로세스가 종료했는지 기록
   int check = 0;
   //cpu에 할당되는 프로세스
@@ -1247,9 +1280,11 @@ void MULTI_Q(int num_process, int tq){
 
     if(runP==NULL && isEmpty(wQ_front, wQ_rear)){
       printf("bb ");
+      idle++;
     }
     else if(runP==NULL && isEmpty(wQ_front, wQ_rear)!=1){
       printf("bb ");
+      idle++;
       waiting(ARRIVAL);
     }
     else if(runP != NULL){
@@ -1297,6 +1332,8 @@ void MULTI_Q(int num_process, int tq){
   printf("\n");
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   evaluation(MULTI);
+  util[MULTI] = (nowTime-idle)/nowTime;
+  printf("CPU utilization: %f\n", util[MULTI]);
 }
 
 
