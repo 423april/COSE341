@@ -63,7 +63,7 @@ int r2Q_front, r2Q_rear;
 double wT[7] = {0};
 double tT[7] = {0};
 double rT[7] = {0};
-double util[7] = {0};
+double util[7] = {0,0,0,0,0,0,0};
 
 
 //job queue 초기화
@@ -834,7 +834,7 @@ void SJF_alg(int num_process){
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   printf("\n");
   evaluation(SJF);
-  util[SJF] = (nowTime-idle)/nowTime;
+  util[SJF] = (double)(nowTime-idle)/nowTime;
   printf("CPU utilization: %f\n", util[SJF]);
 }/////SJF_alg
 
@@ -917,7 +917,7 @@ void PRI_alg(int num_process){
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   printf("\n");
   evaluation(PRI);
-  util[PRI] = (nowTime-idle)/nowTime;
+  util[PRI] = (double)(nowTime-idle)/nowTime;
   printf("CPU utilization: %f\n", util[PRI]);
 }/////PRI_alg
 
@@ -1020,7 +1020,7 @@ void PRESJF_alg(int num_process){
   printf("\n");
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   evaluation(PRESJF);
-  util[PRESJF] = (nowTime-idle)/nowTime;
+  util[PRESJF] = (double)(nowTime-idle)/nowTime;
   printf("CPU utilization: %f\n", util[PRESJF]);
 }/////PRESJF_alg//
 
@@ -1119,7 +1119,7 @@ void PREPRI_alg(int num_process){
   printf("\n");
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   evaluation(PREPRI);
-  util[PREPRI] = (nowTime-idle)/nowTime;
+  util[PREPRI] = (double)(nowTime-idle)/nowTime;
   printf("CPU utilization: %f\n", util[PREPRI]);
 }/////PREPRI_alg//
 
@@ -1213,7 +1213,7 @@ void RR_alg(int num_process, int tq){
   printf("\n");
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   evaluation(RR);
-  util[RR] = (nowTime-idle)/nowTime;
+  util[RR] = (double)(nowTime-idle)/nowTime;
   printf("CPU utilization: %f\n", util[RR]);
 }/////RR_alg
 
@@ -1332,7 +1332,7 @@ void MULTI_Q(int num_process, int tq){
   printf("\n");
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   evaluation(MULTI);
-  util[MULTI] = (nowTime-idle)/nowTime;
+  util[MULTI] = (double)(nowTime-idle)/nowTime;
   printf("CPU utilization: %f\n", util[MULTI]);
 }
 
