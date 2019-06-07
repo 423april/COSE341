@@ -19,7 +19,9 @@
 #define PRESJF 3
 #define PREPRI 4
 #define RR 5
-#define MULTI 6
+#define RRPRI 6
+#define RRSJF 7
+#define MULTI 8
 
 //프로세스 구조체
 typedef struct process* proPointer;
@@ -657,7 +659,7 @@ void create_processes(int num_process, int tq){
   void TotalEval(){
     double avg = 0;
     printf("\n*********************total evaluation*****************\n");
-    for(int i = 0; i < 7; i++){
+    for(int i = 0; i < 9; i++){
       switch (i) {
        case FCFS: printf("FCFS:                "); break;
         case SJF: printf("SJF:                 "); break;
@@ -665,6 +667,8 @@ void create_processes(int num_process, int tq){
      case PRESJF: printf("PREEMPTIVE SJF:      "); break;
      case PREPRI: printf("PREEMPTIVE PRIORITY: "); break;
          case RR: printf("RR:                  "); break;
+      case RRPRI: printf("RR PRIORITY:         "); break;
+      case RRSJF: printf("RR SJF:              "); break;
       case MULTI: printf("MULTILEVEL QUEUE:    "); break;
         default: break;
       }
@@ -1141,6 +1145,178 @@ void RR_alg(int num_process, int tq){
     }
     else if(runP==NULL && isEmpty(wQ_front, wQ_rear)!=1){
       printf("bb ");
+      waiting(ARRIVAL);
+    }
+    else if(runP != NULL){
+      printf("p%d ", runP->pid);
+      runP->CPUburst_remain--;
+      runP->timequantum--;
+      wait(runP->pid);
+      waiting(ARRIVAL);
+
+      if(runP->CPUburst_remain+1 == runP->CPUburst) runP->responseTime = nowTime - runP->arrival;
+
+      if(runP->CPUburst_remain == 0){
+        runP->turnaroundTime = (nowTime+1) - runP->arrival;
+        add_termQ(runP);
+        check++;
+        runP = NULL;
+      }
+
+      if(runP != NULL && runP->timequantum == 0){
+        runP->timequantum = tq;
+        runP->arrival = nowTime;
+        add_readyQ(runP);
+        runP = poll_readyQ();
+      }
+
+    //random IO. 5% 확률로 IO 발생.
+    if(runP != NULL && runP->CPUburst_remain > 0 && runP->CPUburst > runP->CPUburst_remain && rand() % 100 >= 95){
+      runP->IOburst = rand() % 10 + 1; //IOburst는 1~10;
+      runP->IOburst_remain = runP->IOburst;
+      printf("\n<IO interrupt!>p%d, IOburst: %d\n", runP->pid, runP->IOburst);
+      runP->timequantum = tq;
+      add_waitQ(runP);
+      mergesort(waitQ, wQ_front+1, wQ_rear, IOREMAIN);
+      if(isEmpty(rQ_front, rQ_rear)!=1) runP = poll_readyQ();
+      else runP = NULL;
+    }
+
+    }/////else
+  }/////for process
+  printf("\n");
+  //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
+  evaluation(RR);
+}/////RR_alg
+
+void RRPRI_alg(int num_process, int tq){
+  printf("\n********************start ROUND ROBIN with PRIORITY ********************\n");
+  //난수 생성
+  srand( (unsigned)time(NULL) );
+
+  init_jobQ();
+  clone_jobQ();
+
+  //jobQ arrival 정렬
+  mergesort(jobQ, jQ_front+1, jQ_rear, ARRIVAL);
+  printQ_job();
+
+  //ready, wait, termination initialize
+  init_readyQ();
+  init_waitQ();
+  init_termQ();
+
+  //현재 시간 나타내는 변수
+  int nowTime = 0;
+  //몇개의 프로세스가 종료했는지 기록
+  int check = 0;
+  //cpu에 할당되는 프로세스
+  proPointer runP = NULL;
+
+  for(nowTime = 0; check < num_process; nowTime++){
+    if(isEmpty(jQ_front, jQ_rear) != 1){
+      //해당 시간에 도착한 프로세스 모두 레디큐로 옮겨줌.
+      for(int i = jQ_front+1; i <= jQ_rear; i++){
+        if(jobQ[i]->arrival == nowTime)
+        add_readyQ(poll_jobQ());
+      }
+    }
+
+    if(isEmpty(rQ_front, rQ_rear)!=1 && runP == NULL){
+      runP = poll_readyQ();
+    }
+
+    if(runP==NULL && isEmpty(wQ_front, wQ_rear)){
+      printf("bb ");
+    }
+    else if(runP==NULL && isEmpty(wQ_front, wQ_rear)!=1){
+      printf("bb ");
+      waiting(PRIORITY);
+    }
+    else if(runP != NULL){
+      printf("p%d ", runP->pid);
+      runP->CPUburst_remain--;
+      runP->timequantum--;
+      wait(runP->pid);
+      waiting(PRIORITY);
+
+      if(runP->CPUburst_remain+1 == runP->CPUburst) runP->responseTime = nowTime - runP->arrival;
+
+      if(runP->CPUburst_remain == 0){
+        runP->turnaroundTime = (nowTime+1) - runP->arrival;
+        add_termQ(runP);
+        check++;
+        runP = NULL;
+      }
+
+      if(runP != NULL && runP->timequantum == 0){
+        runP->timequantum = tq;
+        runP->arrival = nowTime;
+        add_readyQ(runP);
+        runP = poll_readyQ();
+      }
+
+    //random IO. 5% 확률로 IO 발생.
+    if(runP != NULL && runP->CPUburst_remain > 0 && runP->CPUburst > runP->CPUburst_remain && rand() % 100 >= 95){
+      runP->IOburst = rand() % 10 + 1; //IOburst는 1~10;
+      runP->IOburst_remain = runP->IOburst;
+      printf("\n<IO interrupt!>p%d, IOburst: %d\n", runP->pid, runP->IOburst);
+      runP->timequantum = tq;
+      add_waitQ(runP);
+      mergesort(waitQ, wQ_front+1, wQ_rear, IOREMAIN);
+      if(isEmpty(rQ_front, rQ_rear)!=1) runP = poll_readyQ();
+      else runP = NULL;
+    }
+
+    }/////else
+  }/////for process
+  printf("\n");
+  //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
+  evaluation(RR);
+}/////RRPRI_alg
+
+void RRSJF_alg(int num_process, int tq){
+  printf("\n********************start ROUND ROBIN algorithm********************\n");
+  //난수 생성
+  srand( (unsigned)time(NULL) );
+
+  init_jobQ();
+  clone_jobQ();
+
+  //jobQ arrival 정렬
+  mergesort(jobQ, jQ_front+1, jQ_rear, ARRIVAL);
+  printQ_job();
+
+  //ready, wait, termination initialize
+  init_readyQ();
+  init_waitQ();
+  init_termQ();
+
+  //현재 시간 나타내는 변수
+  int nowTime = 0;
+  //몇개의 프로세스가 종료했는지 기록
+  int check = 0;
+  //cpu에 할당되는 프로세스
+  proPointer runP = NULL;
+
+  for(nowTime = 0; check < num_process; nowTime++){
+    if(isEmpty(jQ_front, jQ_rear) != 1){
+      //해당 시간에 도착한 프로세스 모두 레디큐로 옮겨줌.
+      for(int i = jQ_front+1; i <= jQ_rear; i++){
+        if(jobQ[i]->arrival == nowTime)
+        add_readyQ(poll_jobQ());
+      }
+    }
+
+    if(isEmpty(rQ_front, rQ_rear)!=1 && runP == NULL){
+      runP = poll_readyQ();
+    }
+
+    if(runP==NULL && isEmpty(wQ_front, wQ_rear)){
+      printf("bb ");
+    }
+    else if(runP==NULL && isEmpty(wQ_front, wQ_rear)!=1){
+      printf("bb ");
       waiting(CPUREMAIN);
     }
     else if(runP != NULL){
@@ -1183,7 +1359,7 @@ void RR_alg(int num_process, int tq){
   printf("\n");
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   evaluation(RR);
-}/////RR_alg
+}/////RRSJF_alg
 
 void MULTI_Q(int num_process, int tq){
   printf("\n********************start Scheduling with MULTILEVEL QUEUE********************\n");
@@ -1314,6 +1490,8 @@ int main(int argc, char **argv){
   PRESJF_alg(num_process);
   PREPRI_alg(num_process);
   RR_alg(num_process, tq);
+  RRPRI_alg(num_process, tq);
+  RRSJF_alg(num_process, tq);
   MULTI_Q(num_process, tq);
   TotalEval();
 
