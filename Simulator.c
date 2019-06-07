@@ -752,6 +752,7 @@ void FCFS_alg(int num_process){
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   printf("\n");
   evaluation(FCFS);
+  printf("%d", nowTime);
   cpuutil = (nowTime-idle)/nowTime;
   util[FCFS] = cpuutil;
   printf("CPU utilization: %f\n", cpuutil);
