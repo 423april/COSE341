@@ -694,7 +694,6 @@ void FCFS_alg(int num_process){
   //현재 시간 나타내는 변수
   int nowTime = 0;
   int idle = 0;
-  double cpuutil = 0;
   //몇개의 프로세스가 종료했는지 기록
   int check = 0;
   //cpu에 할당되는 프로세스
@@ -752,12 +751,8 @@ void FCFS_alg(int num_process){
   //내용물은 그대로. front, rear가 가리키는 인덱스만 초기상태로 바꿔줌.
   printf("\n");
   evaluation(FCFS);
-  printf("%d ", nowTime);
-  printf("%d ", nowTime-idle);
-  printf("%f \n", (double)(nowTime-idle)/nowTime);
-  cpuutil = (nowTime-idle)/nowTime;
-  util[FCFS] = cpuutil;
-  printf("CPU utilization: %f\n", cpuutil);
+  util[FCFS] = (double)(nowTime-idle)/nowTime;
+  printf("CPU utilization: %f\n", util[FCFS]);
 
 }/////FCFS_alg
 
