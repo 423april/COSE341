@@ -1149,15 +1149,6 @@ void RR_alg(int num_process, int tq){
       runP->timequantum--;
       wait(runP->pid);
 
-      if(isEmpty(jQ_front, jQ_rear) != 1){
-        //해당 시간에 도착한 프로세스 모두 레디큐로 옮겨줌.
-        for(int i = jQ_front+1; i <= jQ_rear; i++){
-          if(jobQ[i]->arrival == nowTime)
-            add_readyQ(poll_jobQ());
-        }
-      }
-      waiting(ARRIVAL);
-
       if(runP->CPUburst_remain+1 == runP->CPUburst) runP->responseTime = nowTime - runP->arrival;
 
       if(runP->CPUburst_remain == 0){
@@ -1167,12 +1158,21 @@ void RR_alg(int num_process, int tq){
         runP = NULL;
       }
 
+      if(isEmpty(jQ_front, jQ_rear) != 1){
+        //해당 시간에 도착한 프로세스 모두 레디큐로 옮겨줌.
+        for(int i = jQ_front+1; i <= jQ_rear; i++){
+          if(jobQ[i]->arrival == nowTime)
+            add_readyQ(poll_jobQ());
+        }
+      }
+
       if(runP != NULL && runP->timequantum == 0){
         runP->timequantum = tq;
         runP->arrival = nowTime;
         add_readyQ(runP);
         runP = poll_readyQ();
       }
+      waiting(ARRIVAL);
 
     //random IO. 5% 확률로 IO 발생.
     if(runP != NULL && runP->CPUburst_remain > 0 && runP->CPUburst > runP->CPUburst_remain && rand() % 100 >= 95){
@@ -1185,6 +1185,7 @@ void RR_alg(int num_process, int tq){
       if(isEmpty(rQ_front, rQ_rear)!=1) runP = poll_readyQ();
       else runP = NULL;
     }
+
     }/////else
   }/////for process
   printf("\n");
