@@ -1172,7 +1172,6 @@ void RR_alg(int num_process, int tq){
         add_readyQ(runP);
         runP = poll_readyQ();
       }
-      waiting(ARRIVAL);
 
     //random IO. 5% 확률로 IO 발생.
     if(runP != NULL && runP->CPUburst_remain > 0 && runP->CPUburst > runP->CPUburst_remain && rand() % 100 >= 95){
@@ -1186,6 +1185,7 @@ void RR_alg(int num_process, int tq){
       else runP = NULL;
     }
 
+    waiting(ARRIVAL);
     }/////else
   }/////for process
   printf("\n");
