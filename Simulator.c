@@ -1161,6 +1161,13 @@ void RR_alg(int num_process, int tq){
 
       if(runP != NULL && runP->timequantum == 0){
         runP->timequantum = tq;
+        if(isEmpty(jQ_front, jQ_rear) != 1){
+          //해당 시간에 도착한 프로세스 모두 레디큐로 옮겨줌.
+          for(int i = jQ_front+1; i <= jQ_rear; i++){
+            if(jobQ[i]->arrival == nowTime)
+              add_readyQ(poll_jobQ());
+          }
+        }
         add_readyQ(runP);
         runP = poll_readyQ();
       }
