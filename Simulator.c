@@ -19,9 +19,7 @@
 #define PRESJF 3
 #define PREPRI 4
 #define RR 5
-#define RRPRI 6
-#define RRSJF 7
-#define MULTI 8
+#define MULTI 6
 
 //프로세스 구조체
 typedef struct process* proPointer;
@@ -659,7 +657,7 @@ void create_processes(int num_process, int tq){
   void TotalEval(){
     double avg = 0;
     printf("\n*********************total evaluation*****************\n");
-    for(int i = 0; i < 9; i++){
+    for(int i = 0; i < 7; i++){
       switch (i) {
        case FCFS: printf("FCFS:                "); break;
         case SJF: printf("SJF:                 "); break;
@@ -667,8 +665,6 @@ void create_processes(int num_process, int tq){
      case PRESJF: printf("PREEMPTIVE SJF:      "); break;
      case PREPRI: printf("PREEMPTIVE PRIORITY: "); break;
          case RR: printf("RR:                  "); break;
-      case RRPRI: printf("RR PRIORITY:         "); break;
-      case RRSJF: printf("RR SJF:              "); break;
       case MULTI: printf("MULTILEVEL QUEUE:    "); break;
         default: break;
       }
